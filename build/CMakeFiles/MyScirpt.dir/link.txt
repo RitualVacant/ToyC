@@ -1,0 +1,1 @@
+/bin/x86_64-linux-gnu-g++-11  -g  -rdynamic CMakeFiles/MyScirpt.dir/main.cpp.o  -o MyScirpt 
