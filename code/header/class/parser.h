@@ -1,5 +1,5 @@
-#ifndef STRING
-#define STRING
+#ifndef STRING_H
+#define STRING_H
 #include <string>
 #endif
 
@@ -8,47 +8,42 @@
 #include <fstream>
 #endif
 
-#ifndef TUPLE
-#define TUPLE
+#ifndef TUPLE_H
+#define TUPLE_H
 #include <tuple>
 #endif
 
-#ifndef TOKEN
-#define TOKEN
-#include "./AST/token.h"
+#ifndef TOKEN_H
+#define TOKEN_H
+#include "./../AST/token.h"
 #endif
 
-#ifndef STDLIB
-#define STDLIB
+#ifndef STDLIB_H
+#define STDLIB_H
 #include <stdlib.h>
 #endif
 
-#ifndef AST
-#define AST
-#include "./AST/ast.h"
+#ifndef AST_H
+#define AST_H
+#include "./../AST/ast.h"
+#endif
+
+#ifndef SCANNING_CPP
+#define SCANNING_CPP
+#include "./../../scanning.cpp"
 #endif
 
 class parser {
     private:
         unsigned int line = 0;
         unsigned int column = 0;
-        char c;
+        std::tuple<token, std::string> &&now_token = {};
         std::size_t num_token = 0;  //the number of token in this script file
         std::string file_path;
-        std::fstream file;
-        std::tuple<token, std::string> &&now_token = {};
 
-        std::tuple<token, std::string> next_token();
-        void get_next_char();
-
-        std::tuple<token, std::string> to_number();
-        std::tuple<token, std::string> to_keyWord_or_indentif();
-        std::tuple<token, std::string> to_comment();
-        std::tuple<token, std::string> to_char();
-        std::tuple<token, std::string> to_string();
-
-        token get_token(std::tuple<token, std::string> &tuple_);
-        std::string get_value(std::tuple<token, std::string> &tuple_);
+        //词法分析
+        scanning* scan;
+        //词法分析器
 
         //创造节点
         ast::if_statement*        parser_if_statement ();
@@ -66,35 +61,17 @@ class parser {
 
     public:
         //parser(std::string file_path_) : file_path(file_path_) {};
-        explicit parser(std::string &file_path_) : file_path (file_path_) {
-            file.open(file_path);
-            if (!file.is_open()) {
-                std::cout
-                << "fail to open the file!" << std::endl
-                << "please check the input file's path" << std::endl
-                << "--end--" << std::endl;
-                exit(1);
-            }
-            c = file.get();
+        explicit parser(std::string &file_path_) : file_path(file_path_) {
+            scan = new scanning(file_path);
         };
         ~parser() {
-            file.close();
+            delete scan;
         };
 
-        //测试词义分析器函数
-        void test_output() {
-            while (!file.eof()) {
-                auto &&a = next_token();
-                if (test_output_token.find(std::get<0>(a)) == test_output_token.end())
-                    std::cout << "indentif " << std::get<1>(a) << std::endl;
-                else
-                    std::cout << test_output_token.at(std::get<0>(a)) << ' ' << std::get<1>(a) << std::endl;
-            }
-        }
         void create_node() {
-            while (!file.eof()) {
-                auto &&a = next_token();
-                switch (get_token(a)) {
+            while (!scan->file.eof()) {
+                auto &&a = scan->next_token();
+                switch (scan->get_token(a)) {
                         case token::invalid:
 
                         case token::class_int:     //int

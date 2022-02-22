@@ -3,7 +3,7 @@ set(CMAKE_HOST_SYSTEM_NAME "Linux")
 set(CMAKE_HOST_SYSTEM_VERSION "5.10.60.1-microsoft-standard-WSL2")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
-
+include("/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 set(CMAKE_SYSTEM "Linux-5.10.60.1-microsoft-standard-WSL2")
 set(CMAKE_SYSTEM_NAME "Linux")

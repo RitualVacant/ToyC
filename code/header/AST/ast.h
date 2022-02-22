@@ -13,8 +13,8 @@
 #include <iostream>
 #endif
 
-#ifndef TOKEN
-#define TOKEN
+#ifndef TOKEN_H
+#define TOKEN_H
 #include "token.h"
 #endif
 

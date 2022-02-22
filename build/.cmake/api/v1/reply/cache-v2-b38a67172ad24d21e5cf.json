@@ -30,22 +30,6 @@
 			"value" : "BZRCOMMAND-NOTFOUND"
 		},
 		{
-			"name" : "BZR_UPDATE_OPTIONS",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
 			"name" : "CMAKE_ADDR2LINE",
 			"properties" : 
 			[
@@ -181,10 +165,6 @@
 			"name" : "CMAKE_CTEST_COMMAND",
 			"properties" : 
 			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
 				{
 					"name" : "HELPSTRING",
 					"value" : "Path to ctest program executable."
@@ -1202,6 +1182,22 @@
 			"value" : "/bin/strip"
 		},
 		{
+			"name" : "CMAKE_TOOLCHAIN_FILE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "The CMake toolchain file"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake"
+		},
+		{
 			"name" : "CMAKE_UNAME",
 			"properties" : 
 			[
@@ -1262,54 +1258,6 @@
 			"value" : "-l"
 		},
 		{
-			"name" : "CPACK_BINARY_7Z",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_BINARY_BUNDLE",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_BINARY_CYGWIN",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
 			"name" : "CPACK_BINARY_DEB",
 			"properties" : 
 			[
@@ -1324,22 +1272,6 @@
 			],
 			"type" : "BOOL",
 			"value" : "OFF"
-		},
-		{
-			"name" : "CPACK_BINARY_DRAGNDROP",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
 		},
 		{
 			"name" : "CPACK_BINARY_FREEBSD",
@@ -1388,70 +1320,6 @@
 			],
 			"type" : "BOOL",
 			"value" : "OFF"
-		},
-		{
-			"name" : "CPACK_BINARY_NUGET",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_BINARY_OSXX11",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_BINARY_PACKAGEMAKER",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_BINARY_PRODUCTBUILD",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
 		},
 		{
 			"name" : "CPACK_BINARY_RPM",
@@ -1548,70 +1416,6 @@
 			],
 			"type" : "BOOL",
 			"value" : "ON"
-		},
-		{
-			"name" : "CPACK_BINARY_WIX",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_BINARY_ZIP",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_SOURCE_7Z",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "CPACK_SOURCE_CYGWIN",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
 		},
 		{
 			"name" : "CPACK_SOURCE_RPM",
@@ -1910,38 +1714,6 @@
 			"value" : "P4COMMAND-NOTFOUND"
 		},
 		{
-			"name" : "PURIFYCOMMAND",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
-			"name" : "SCPCOMMAND",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
-				}
-			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
-		},
-		{
 			"name" : "SITE",
 			"properties" : 
 			[
@@ -2006,7 +1778,91 @@
 			"value" : "SVNCOMMAND-NOTFOUND"
 		},
 		{
-			"name" : "SVN_UPDATE_OPTIONS",
+			"name" : "VCPKG_APPLOCAL_DEPS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Automatically copy dependencies into the output directory for executables."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
+		},
+		{
+			"name" : "VCPKG_INSTALLED_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory which contains the installed libraries for each triplet"
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/lzj/software/vcpkg/installed"
+		},
+		{
+			"name" : "VCPKG_MANIFEST_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The path to the vcpkg manifest directory."
+				}
+			],
+			"type" : "PATH",
+			"value" : ""
+		},
+		{
+			"name" : "VCPKG_MANIFEST_INSTALL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Install the dependencies listed in your manifest:\n    If this is off, you will have to manually install your dependencies.\n    See https://github.com/microsoft/vcpkg/tree/master/docs/specifications/manifests.md for more info.\n"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "VCPKG_MANIFEST_MODE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Use manifest mode, as opposed to classic mode."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "VCPKG_PREFER_SYSTEM_LIBS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Appends the vcpkg paths to CMAKE_PREFIX_PATH, CMAKE_LIBRARY_PATH and CMAKE_FIND_ROOT_PATH so that vcpkg libraries/packages are found after toolchain/system libraries/packages."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "VCPKG_TARGET_TRIPLET",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Vcpkg target triplet (ex. x86-windows)"
+				}
+			],
+			"type" : "STRING",
+			"value" : "x64-linux"
+		},
+		{
+			"name" : "VCPKG_VERBOSE",
 			"properties" : 
 			[
 				{
@@ -2015,11 +1871,95 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
+					"value" : "Enables messages from the VCPKG toolchain for debugging purposes."
 				}
 			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "X_VCPKG_APPLOCAL_DEPS_INSTALL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "(experimental) Automatically copy dependencies into the install target directory for executables. Requires CMake 3.14."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "X_VCPKG_APPLOCAL_DEPS_SERIALIZED",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "(experimental) Add USES_TERMINAL to VCPKG_APPLOCAL_DEPS to force serialization."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "Z_VCPKG_CHECK_MANIFEST_MODE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Making sure VCPKG_MANIFEST_MODE doesn't change"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "Z_VCPKG_CL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a program."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "Z_VCPKG_CL-NOTFOUND"
+		},
+		{
+			"name" : "Z_VCPKG_ROOT_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Vcpkg root directory"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/home/lzj/software/vcpkg"
+		},
+		{
+			"name" : "_VCPKG_INSTALLED_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory which contains the installed libraries for each triplet"
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/lzj/software/vcpkg/installed"
+		},
+		{
+			"name" : "fmt_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for fmt."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/lzj/software/vcpkg/installed/x64-linux/share/fmt"
 		}
 	],
 	"kind" : "cache",

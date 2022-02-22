@@ -4,7 +4,7 @@
 # compile CXX with /bin/x86_64-linux-gnu-g++-11
 CXX_FLAGS = -g  
 
-CXX_DEFINES = 
+CXX_DEFINES = -DFMT_LOCALE
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -isystem /home/lzj/software/vcpkg/installed/x64-linux/include 
 
