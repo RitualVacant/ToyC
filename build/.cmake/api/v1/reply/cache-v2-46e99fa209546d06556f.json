@@ -1159,11 +1159,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "(This variable does not exist and should not be used)"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "UNINITIALIZED",
-			"value" : ""
+			"type" : "STRING",
+			"value" : "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake"
 		},
 		{
 			"name" : "CMAKE_UNAME",

@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.0.0)
 
 project(MyScirpt VERSION 0.1.0)
 
-include("/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
+#include("/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
 enable_testing()
 
 add_executable(MyScirpt main.cpp)
