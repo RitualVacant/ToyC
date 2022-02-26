@@ -1,7 +1,7 @@
 [
 {
-  "directory": "/home/lzj/code/program/scirpt/build",
-  "command": "/bin/x86_64-linux-gnu-g++-11  -DFMT_LOCALE -isystem /home/lzj/software/vcpkg/installed/x64-linux/include  -g   -o CMakeFiles/MyScirpt.dir/main.cpp.o -c /home/lzj/code/program/scirpt/main.cpp",
-  "file": "/home/lzj/code/program/scirpt/main.cpp"
+  "directory": "/home/lzj/code/program/script/build",
+  "command": "/bin/x86_64-linux-gnu-g++-11 -DFMT_LOCALE -isystem /home/lzj/software/vcpkg/installed/x64-linux/include -g -o CMakeFiles/MyScirpt.dir/main.cpp.o -c /home/lzj/code/program/script/main.cpp",
+  "file": "/home/lzj/code/program/script/main.cpp"
 }
 ]

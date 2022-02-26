@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/lzj/code/program/scirpt/main.cpp" "/home/lzj/code/program/scirpt/build/CMakeFiles/MyScirpt.dir/main.cpp.o"
+  "/home/lzj/code/program/script/main.cpp" "/home/lzj/code/program/script/build/CMakeFiles/MyScirpt.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
