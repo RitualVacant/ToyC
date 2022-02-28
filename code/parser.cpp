@@ -220,6 +220,72 @@ void parser::output_error_message(token token) {
     //^_^'should I write this return, for beaute
     return;
 }
+
+
+void parser::create_node() {
+    while (!scan->file.eof()) {
+        auto &&a = scan->next_token();
+        switch (scan->get_token(a)) {
+                case token::invalid:
+
+                case token::class_int:     //int
+                  //auto* int_node = new ast::int_expr(line, column);
+                  //int_node->value = atoi(getw<1>(a));
+                case token::class_double:  //double
+                  //auto* double_node = new ast::double_expr(line, column);
+                case token::class_string:  //string
+                  //auto* string_node = new ast::string_expr(line, column);
+                case token::class_char:    //char
+                case token::bit_and: //&
+                case token::bit_or:  //|
+                case token::bit_not: //~
+                case token::log_and: //&&
+                case token::log_or:  //||
+                case token::log_not: //~
+                case token::plus:   //+
+                case token::minus:  //-
+                case token::times:  //*
+                case token::div:    ///
+                case token::mod:    //%
+                case token::equ:        //==
+                case token::not_equ:       //!=
+                case token::great_equ:  //>=
+                case token::less_equ:   //<=
+                case token::great:      //>
+                case token::less:       //<
+                case token::assign:     //=
+                case token::plus_agn:   //+=
+                case token::minus_agn:  //-=
+                case token::times_agn:  //*=
+                case token::div_agn:    ///=
+                case token::mod_agn:    //%=
+                case token::l_par:       //(
+                case token::r_par:       //)
+                case token::l_mid_par:   //[
+                case token::r_mid_par:   //]
+                case token::l_big_par:   //{
+                case token::r_big_par:   //}
+                case token::comma:   //,
+                case token::comment: //#
+                case token::indentif:  //标识符
+                case token::key_if:         //if
+
+                case token::key_else:       //else
+                case token::key_true:       //true
+                case token::key_false:      //false
+                case token::key_while:      //while
+                case token::key_for:        //for
+                case token::key_null:       //null
+                case token::key_func:       //func
+                case token::key_return:     //return
+                case token::key_break:      //break
+                case token::key_continue:   //continue
+
+                default:
+                break;
+        }
+    }
+}
 //⠄⠄⠄⠄⢠⣿⣿⣿⣿⣿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣯⢻⣿⣿⣿⣿⣆
 //⠄⠄⣼⢀⣿⣿⣿⣿⣏⡏⠄⠹⣿⣿⣿⣿⣿⣿⣿⣿⣧⢻⣿⣿⣿⣿
 //⠄⠄⡟⣼⣿⣿⣿⣿⣿⠄⠄⠄⠈⠻⣿⣿⣿⣿⣿⣿⣿⣇⢻⣿⣿⣿⣿

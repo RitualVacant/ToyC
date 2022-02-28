@@ -26,11 +26,13 @@ void output_help_information();
 //int main(int argc, char* argv[]) {
 
 std::string file_path;
+std::string output_path;
 
 int main() {
     //std::ios::sync_with_stdio(false);
     fmt::print("path of MyScript(.txt) file: ");
     std::cin >> file_path;
+    fmt::print("path of output file path: ");
     choose_mode_run();
     return 0;
 }
