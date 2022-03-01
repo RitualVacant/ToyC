@@ -1,4 +1,4 @@
-enum class token : unsigned int {
+enum class token {
     invalid = 0,
 
     class_int,     //int
