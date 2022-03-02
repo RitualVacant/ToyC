@@ -25,32 +25,5 @@
             "preLaunchTask": "C/C++: g++-11 生成活动文件",
             "miDebuggerPath": "/bin/gdb"
         },
-        {
-            "name": "g++11重定向",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
-            //输入输出管道重定向
-            "args": [
-                "<",
-				"/home/lzj/code/vscode_wsl_code/code/std_iostream_files/in.txt",
-				">",
-				"/home/lzj/code/vscode_wsl_code/code/std_iostream_files/out.txt"
-            ],
-            "stopAtEntry": false,
-            "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "为 gdb 启用整齐打印",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "C/C++: g++-11 生成活动文件",
-            "miDebuggerPath": "/bin/gdb"
-        }
     ]
 }
