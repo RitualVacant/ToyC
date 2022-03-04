@@ -26,6 +26,8 @@
 class sign_map {
     private:
         //
+        int bp = 0;
+        int sp = 0;
         std::vector<std::tuple<token, std::string>> sign_stack;
         std::unordered_set<std::tuple<token, std::string>> global_sign;
 
@@ -35,6 +37,6 @@ class sign_map {
         void push_token(std::tuple<token, std::string>);
         void push_global_sign(std::tuple<token, std::string>);
 
-        void push_func();
-        void pop_func();
+        void push_func(std::tuple<token, std::string> x);
+        void pop_func(std::tuple<token, std::string> x);
 };

@@ -16,7 +16,7 @@
 void sign_map::push_token(std::tuple<token, std::string> x) {
     for (int i = bp; i < sp; ++i) {
         if (sign_stack[i] == x) {
-            worng::print_worng();
+            worng::print_worng_redef();
         }
     }
     sign_stack.push_back(x);
@@ -24,7 +24,7 @@ void sign_map::push_token(std::tuple<token, std::string> x) {
 }
 
 void sign_map::push_global_sign(std::tuple<token, std::string> x) {
-    if (global_sign.find(x) == x.end()) {
+    if (global_sign.find(x) == global_sign.end()) {
         worng::print_worng_redef();
     }
     global_sign.insert(x);
@@ -36,7 +36,7 @@ void sign_map::pop_func(std::tuple<token, std::string> x) {
     return;
 }
 
-void sign_map::push_func(std::tuple<token, std::string x) {
+void sign_map::push_func(std::tuple<token, std::string> x) {
     while (getw<0>(sign_stack.back()) != token::invalid) {
         sign_stack.pop_back();
     }

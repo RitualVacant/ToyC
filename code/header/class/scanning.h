@@ -72,6 +72,11 @@ class scanning {
             file.close();
         };
 
+        scanning(scanning const &)      = delete;
+        scanning(scanning&&)            = delete;
+        scanning& operator=(scanning&)  = delete;
+        scanning& operator=(scanning&&) = delete;
+
         //-----------------------------------------------------------------------------------
         //
         //-----------------------------------------------------------------------------------

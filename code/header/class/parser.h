@@ -35,7 +35,7 @@
 
 #ifndef SIGN_MAP
 #define SIGN_MAP
-#include "./../../sign.cpp"
+#include "./../../sign_map.cpp"
 class parser {
     private:
         unsigned int line = 0;
@@ -82,7 +82,14 @@ class parser {
             //main funcion jmp;
             output_file << "jmp main\n";
         };
+
         ~parser() {
             delete scan;
         };
+
+        parser(parser const&)       = delete;
+        parser(parser&&)            = delete;
+        parser& operator=(parser&)  = delete;
+        parser& operator=(parser&&) = delete;
+
 };
