@@ -1,6 +1,7 @@
 {
     "cmake.configureOnOpen": false,
-    "cmake.configureSettings": {
-        "CMAKE_TOOLCHAIN_FILE": "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake"
-    }
+  //"cmake.configureSettings": {
+  //    "CMAKE_TOOLCHAIN_FILE": "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  //},
+    "C_Cpp.errorSquiggles": "Enabled"
 }

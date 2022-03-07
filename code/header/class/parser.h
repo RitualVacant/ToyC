@@ -36,6 +36,8 @@
 #ifndef SIGN_MAP
 #define SIGN_MAP
 #include "./../../sign_map.cpp"
+#endif
+
 class parser {
     private:
         unsigned int line = 0;

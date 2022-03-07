@@ -38,6 +38,7 @@
 #include "fmt/color.h"
 #endif
 
+
 class scanning {
     private:
         unsigned int line = 0;

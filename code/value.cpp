@@ -23,7 +23,7 @@
 #include "./header/AST/ast.h"
 #endif
 
-enum class value_type : char{
+enum class value_type : char {
     int_type,
     double_type,
     string_type,
@@ -55,7 +55,7 @@ namespace script {
         std::string name;
 
         explicit function() = default;
-        ~function() {delete block}
+        ~function() {delete block;}
     };
 
 
@@ -121,10 +121,10 @@ script::variable* context::get_variable(std::string &name) {
 class run_time : public context {
     using bulit_in_func_type = script::value (*)(run_time*, std::);
     private:
-        std::unordered_map<std::string, bulit_in_func_type>;
+        std::unordered_map<token, std::string> m;
         std::vector<ast::statement*> statements;
     public:
         explicit run_time();
 
-        bool 
+        bool fw;
 }

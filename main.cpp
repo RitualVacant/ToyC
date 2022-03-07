@@ -3,6 +3,11 @@
 #include "./code/parser.cpp"
 #endif
 
+#ifndef FMT_CORE_H
+#define FMT_CORE_H
+#include "fmt/core.h"
+#endif
+
 //run mode
 //for debug
 enum class mode : char {
@@ -29,6 +34,7 @@ std::string file_path;
 std::string output_path;
 
 int main() {
+    //cin.tie(0);
     //std::ios::sync_with_stdio(false);
     fmt::print("path of MyScript(.txt) file: ");
     std::cin >> file_path;
@@ -66,8 +72,8 @@ inline void choose_mode_run() {
 
 inline void output_help_information() {
     fmt::print("(s) scan--lexical analysis and output the token\n");
-    fmt::print("(b)\n");
-    fmt::print("(c)\n");
+    fmt::print("(b) \n");
+    fmt::print("(c) create--ctreate the \n");
     fmt::print("(h) help\n");
     fmt::print("(q) quit\n");
     return;

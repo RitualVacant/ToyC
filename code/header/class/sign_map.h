@@ -23,15 +23,20 @@
 #include <string>
 #endif
 //
+
 class sign_map {
     private:
         //
         int bp = 0;
         int sp = 0;
         std::vector<std::tuple<token, std::string>> sign_stack;
+        /*
+        按道理应该这样写的,c++标准库居然不支持塞这种类，不能生成哈希值
+        只能塞string了，坑死人
         std::unordered_set<std::tuple<token, std::string>> global_sign;
+        */
 
-        //
+        std::unordered_set<std::string> global_sign;
 
     public:
         void push_token(std::tuple<token, std::string>);

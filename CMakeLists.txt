@@ -10,6 +10,9 @@ enable_testing()
 
 add_executable(MyScirpt main.cpp)
 
+#不编译文件
+
+set(CXX_STANDARD 20)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 
