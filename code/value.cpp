@@ -1,27 +1,12 @@
-#ifndef ANY
-#define ANY
+#ifndef VALUE_CPP
+#define VALUE_CPP
+
+#pragma once
 #include <any>
-#endif
-
-#ifndef UNORDERED_MAP
-#define UNORDERED_MAP
 #include <unordered_map>
-#endif
-
-#ifndef STRING
-#define STRING
 #include <string>
-#endif
-
-#ifndef VECTOR
-#define VECTOR
 #include <vector>
-#endif
-
-#ifndef AST_H
-#define AST_H
 #include "./header/AST/ast.h"
-#endif
 
 enum class value_type : char {
     int_type,
@@ -128,3 +113,5 @@ class run_time : public context {
 
         bool fw;
 }
+
+#endif

@@ -3,14 +3,17 @@ cmake_minimum_required(VERSION 3.0.0)
 #set(VCPKG_ROOT "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
 #set(DCMAKE_TOOLCHAIN_FILE ${VCPKG_ROOT})
 
-project(MyScirpt VERSION 0.1.0)
+project(MyScript VERSION 0.1.0)
 
 #include("/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
 enable_testing()
 
-add_executable(MyScirpt main.cpp)
-
+add_executable(MyScript main.cpp)
 #不编译文件
+
+
+set(CMAKE_BUILD_TYPE "Debug")#模式
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
 
 set(CXX_STANDARD 20)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

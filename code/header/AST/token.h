@@ -1,3 +1,5 @@
+#ifndef TOKEN_H
+#define TOKEN_H
 enum class token {
     invalid = 0,
 
@@ -6,6 +8,17 @@ enum class token {
     class_string,  //string
     class_char,    //char
     class_bool,    //bool
+
+    key_int,
+    key_double,
+    key_string,
+    key_char,
+    key_bool,
+
+    r_int,
+    r_double,
+    r_char,
+    r_bool,
 
     bit_and, //&
     bit_or,  //|
@@ -45,6 +58,7 @@ enum class token {
 
     comma,   //,
     comment, //#
+    end,     //;
 
     indentif,  //标识符
     key_if,         //if
@@ -59,3 +73,4 @@ enum class token {
     key_break,      //break
     key_continue,   //continue
 };
+#endif

@@ -1,43 +1,14 @@
-#ifndef STRING
-#define STRING
+#ifndef SCANNING_H
+#define SCANNING_H
+#pragma once
 #include <string>
-#endif
-
-#ifndef FSTREAM
-#define FSTREAM
 #include <fstream>
-#endif
-
-#ifndef TUPLE
-#define TUPLE
 #include <tuple>
-#endif
-
-#ifndef TOKEN_H
-#define TOKEN_H
 #include "./../AST/token.h"
-#endif
-
-#ifndef STDLIB_H
-#define STDLIB_H
 #include <stdlib.h>
-#endif
-
-#ifndef AST_H
-#define AST_H
 #include "./../AST/ast.h"
-#endif
-
-#ifndef FMT_CORE_H
-#define FMT_CORE_H
 #include "fmt/core.h"
-#endif
-
-#ifndef FMT_COLOR_H
-#define FMT_COLOR_H
 #include "fmt/color.h"
-#endif
-
 
 class scanning {
     private:
@@ -46,7 +17,6 @@ class scanning {
         char c;
         std::size_t num_token = 0;  //the number of token in this script file
         std::string file_path;
-        std::tuple<token, std::string> &&now_token = {};
 
         void get_next_char();
 
@@ -58,6 +28,7 @@ class scanning {
 
     public:
         std::fstream file;
+        std::tuple<token, std::string> now_token;
 
         explicit scanning(std::string &file_path_) : file_path (file_path_) {
             file.open(file_path);
@@ -83,17 +54,21 @@ class scanning {
         //-----------------------------------------------------------------------------------
 
         std::tuple<token, std::string> next_token();
+        token                          get_token();
         token                          get_token(std::tuple<token, std::string> &tuple_);
+        std::string                    get_value();
         std::string                    get_value(std::tuple<token, std::string> &tuple_);
 
         //测试词义分析器函数
         void token_output() {
             while (!file.eof()) {
                 auto &&a = next_token();
-                if (test_output_token.find(std::get<0>(a)) == test_output_token.end())
-                    fmt::print("[token:] indentif [string:] \"{}\"\n", std::get<1>(a));
+                if (trans_output_token_to_string.find(std::get<0>(a)) == trans_output_token_to_string.end())
+                    fmt::print("[token:] indentif   [string:] \"{}\"\n", std::get<1>(a));
                 else
-                    fmt::print("[token:] {:8} [string:] \"{}\"\n", test_output_token.at(std::get<0>(a)), std::get<1>(a));
+                    fmt::print("[token:] {:10} [string:] \"{}\"\n", trans_output_token_to_string.at(std::get<0>(a)), std::get<1>(a));
             }
         }
 };
+
+#endif

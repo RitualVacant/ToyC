@@ -1,17 +1,11 @@
-#ifndef STRING
-#define STRING
+#ifndef JUDGE_CHAR_H
+#define JUDGE_CHAR_H
+
+#pragma once
 #include <string>
-#endif
-
-#ifndef TOKEN_H
-#define TOKEN_H
 #include "./token.h"
-#endif
-
-#ifndef UNORDERED_MAP
-#define UNORDERED_MAP
 #include <unordered_map>
-#endif
+
 
 char const useless_char[] = {
     '\n',
@@ -21,7 +15,7 @@ char const useless_char[] = {
 };
 
 //测试词法划分是否正确的输出转换
-std::unordered_map<token, std::string> const test_output_token {
+std::unordered_map<token, std::string> const trans_output_token_to_string {
     {token::invalid, "0"},
 
     {token::class_int,     "int"},
@@ -68,7 +62,7 @@ std::unordered_map<token, std::string> const test_output_token {
     {token::comma,   ","},
     {token::comment, "#"},
 
-    //{token::indentif,  "标识符"},
+    {token::indentif,       "indentif"},
     {token::key_if,         "if"},
     {token::key_else,       "else"},
     {token::key_true,       "true"},
@@ -79,7 +73,13 @@ std::unordered_map<token, std::string> const test_output_token {
     {token::key_func,       "func"},
     {token::key_return,     "return"},
     {token::key_break,      "break"},
-    {token::key_continue,   "continue"}
+    {token::key_continue,   "continue"},
+
+    {token::key_int,    "key_int"},
+    {token::key_double, "key_double"},
+    {token::key_bool,   "key_bool"},
+    {token::key_string, "key_string"},
+    {token::key_char,   "key_char"}
 };
 
 //查找关键字
@@ -94,7 +94,12 @@ std::unordered_map<std::string, token> const key_words {
     {"func",     token::key_func},
     {"return",   token::key_return},
     {"break",    token::key_break},
-    {"continue", token::key_continue}
+    {"continue", token::key_continue},
+    {"int",      token::key_int},
+    {"double",   token::key_double},
+    {"char",     token::key_char},
+    {"string",   token::key_string},
+    {"bool",     token::key_bool}
 };
 inline bool is_useless(char const c) {
     for (char i : useless_char) {
@@ -148,6 +153,23 @@ inline bool is_primary_operator(token token_) {
     ) return true;
     return false;
 }
+inline bool is_basic_type(token token_) {
+    switch (token_) {
+        case token::class_int:
+            return true;
+        case token::class_bool:
+            return true;
+        case token::class_double:
+            return true;
+        case token::class_string:
+            return true;
+        case token::class_char:
+            return true;
+        default:
+            return false;
+    }
+    return false;
+}
 short unsigned int precedence(token operator_) {
     switch (operator_) {
     case token::log_not:
@@ -179,3 +201,5 @@ short unsigned int precedence(token operator_) {
         return 0;
     }
 }
+
+#endif

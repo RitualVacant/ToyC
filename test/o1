@@ -1,0 +1,6 @@
+fes:
+   pushl %ebp
+   movl %esp %ebp
+   movl %ebp %esp
+   popl %ebp
+   ret

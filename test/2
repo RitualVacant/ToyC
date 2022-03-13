@@ -1,6 +1,0 @@
-double i
-double sum
-while (i <= 2.4) {
-    sum += i
-    i = i + 1
-}

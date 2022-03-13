@@ -1,17 +1,10 @@
-#ifndef JUDGE_CHAR
-#define JUDGE_CHAR
+#ifndef SCANNING_CPP
+#define SCANNING_CPP
+
+#pragma once
 #include "./header/AST/judge_char.h"
-#endif
-
-#ifndef TOKEN_H
-#define TOKEN_H
 #include "./header/AST/token.h"
-#endif
-
-#ifndef SCANNING_H
-#define SCANNING_H
 #include "./header/class/scanning.h"
-#endif
 
 inline void scanning::get_next_char() {
     ++column;
@@ -31,8 +24,14 @@ inline std::tuple<token, std::string> scanning::to_number() {
         re += c;
         get_next_char();
     }
-    if (is_double) return std::make_tuple(token::class_double, re);
-    else           return std::make_tuple(token::class_int, re);
+    if (is_double) {
+        now_token = std::make_tuple(token::class_double, re);
+        return std::make_tuple(token::class_double, re);
+    }
+    else {
+        now_token = std::make_tuple(token::class_int, re);
+        return std::make_tuple(token::class_int, re);
+    }
 }
 
 inline std::tuple<token, std::string> scanning::to_keyWord_or_indentif() {
@@ -44,8 +43,14 @@ inline std::tuple<token, std::string> scanning::to_keyWord_or_indentif() {
         re += c;
         get_next_char();
     }
-    if (key_words.find(re) == key_words.end()) return std::make_tuple(token::indentif, re);
-    else                                       return std::make_tuple(key_words.at(re), re);
+    if (key_words.find(re) == key_words.end()) {
+        now_token = std::make_tuple(token::indentif, re);
+        return std::make_tuple(token::indentif, re);
+    }
+    else {
+        now_token = std::make_tuple(key_words.at(re), re);
+        return std::make_tuple(key_words.at(re), re);
+    }
 }
 
 inline std::tuple<token, std::string> scanning::to_string() {
@@ -56,6 +61,7 @@ inline std::tuple<token, std::string> scanning::to_string() {
         get_next_char();
     }
     get_next_char();    //pass string end sign "
+    now_token = std::make_tuple(token::class_string, re);
     return std::make_tuple(token::class_string, re);
 }
 
@@ -66,6 +72,7 @@ inline std::tuple<token, std::string> scanning::to_comment() {
         re += c;
         get_next_char();
     }
+    now_token = std::make_tuple(token::comment, re);
     return std::make_tuple(token::comment, re);
 }
 
@@ -74,9 +81,10 @@ inline std::tuple<token, std::string> scanning::to_char() {
     std::string re;
     re += c;
     get_next_char();
+    now_token = std::make_tuple(token::class_char, re);
     return std::make_tuple(token::class_char, re);
 }
-inline std::tuple<token, std::string> scanning::next_token() {
+std::tuple<token, std::string> scanning::next_token() {
     std::string re;
     while (is_useless(c)) {
         if (c == '\n') {
@@ -88,115 +96,168 @@ inline std::tuple<token, std::string> scanning::next_token() {
     switch (c) {
         case '[':
             get_next_char();
+            now_token = std::make_tuple(token::l_mid_par, "[");
             return std::make_tuple(token::l_mid_par, "[");
 
         case ']':
             get_next_char();
+            now_token = std::make_tuple(token::r_mid_par, "]");
             return std::make_tuple(token::r_mid_par, "]");
 
         case '{':
             get_next_char();
+            now_token = std::make_tuple(token::l_big_par, "{");
             return std::make_tuple(token::l_big_par, "{");
 
         case '}':
             get_next_char();
+            now_token = std::make_tuple(token::r_big_par, "}");
             return std::make_tuple(token::r_big_par, "}");
 
         case '(':
             get_next_char();
+            now_token = std::make_tuple(token::l_par, "(");
             return std::make_tuple(token::l_par, "(");
 
         case ')':
             get_next_char();
+            now_token = std::make_tuple(token::r_par, ")");
             return std::make_tuple(token::r_par, ")");
 
         case ',':
             get_next_char();
+            now_token = std::make_tuple(token::comma, ",");
             return std::make_tuple(token::comma, ",");
+
+        case ';':
+            get_next_char();
+            now_token = std::make_tuple(token::end, ";");
+            return std::make_tuple(token::end, ";");
 
         case '~':
             get_next_char();
+            now_token = std::make_tuple(token::bit_not, "~");
             return std::make_tuple(token::bit_not, "~");
 
         case '+':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::plus_agn, "+=");
                 return std::make_tuple(token::plus_agn, "+=");
             }
-            else return std::make_tuple(token::plus, "+");
+            else {
+                now_token = std::make_tuple(token::plus, "+");
+                return std::make_tuple(token::plus, "+");
+            }
 
         case '-':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::minus_agn, "-=");
                 return std::make_tuple(token::minus_agn, "-=");
             }
-            else return std::make_tuple(token::minus, "-");
+            else{
+                now_token = std::make_tuple(token::minus, "-");
+                return std::make_tuple(token::minus, "-");
+            }
 
         case '*':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::times_agn, "*=");
                 return std::make_tuple(token::times_agn, "*=");
             }
-            else return std::make_tuple(token::times, "*");
+            else {
+                now_token = std::make_tuple(token::times, "*");
+                return std::make_tuple(token::times, "*");
+            }
 
         case '/':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::div_agn, "/=");
                 return std::make_tuple(token::div_agn, "/=");
             }
-            else return std::make_tuple(token::div, "/");
+            else {
+                now_token = std::make_tuple(token::div, "/");
+                return std::make_tuple(token::div, "/");
+            }
 
         case '%':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::mod_agn, "%=");
                 return std::make_tuple(token::mod_agn, "%=");
             }
-            else return std::make_tuple(token::div, "%");
+            else{
+                now_token = std::make_tuple(token::div, "%");
+                return std::make_tuple(token::div, "%");
+            }
 
         case '=':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::equ, "==");
                 return std::make_tuple(token::equ, "==");
             }
-            else return std::make_tuple(token::assign, "=");
+            else {
+                now_token = std::make_tuple(token::assign, "=");
+                return std::make_tuple(token::assign, "=");
+            }
 
         case '!':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::not_equ, "!=");
                 return std::make_tuple(token::not_equ, "!=");
             }
-            else return std::make_tuple(token::log_not, "!");
+            else {
+                now_token = std::make_tuple(token::log_not, "!");
+                return std::make_tuple(token::log_not, "!");
+            }
 
         case '>':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::great_equ, ">=");
                 return std::make_tuple(token::great_equ, ">=");
             }
-            else return std::make_tuple(token::great, ">");
+            else {
+                now_token = std::make_tuple(token::great, ">");
+                return std::make_tuple(token::great, ">");
+            }
 
         case '<':
             get_next_char();
             if (c == '=') {
                 get_next_char();
+                now_token = std::make_tuple(token::less_equ, "<=");
                 return std::make_tuple(token::less_equ, "<=");
             }
-            else return std::make_tuple(token::less, "<");
+            else {
+                now_token = std::make_tuple(token::less, "<");
+                return std::make_tuple(token::less, "<");
+            }
 
         case '&':
             get_next_char();
             if (c == '&') {
                 get_next_char();
+                now_token = std::make_tuple(token::log_and, "&&");
                 return std::make_tuple(token::log_and, "&&");
             }
-            else return std::make_tuple(token::bit_and, "&");
+            else {
+                now_token = std::make_tuple(token::bit_and, "&");
+                return std::make_tuple(token::bit_and, "&");
+            }
 
         case '#': return to_comment();
 
@@ -209,14 +270,24 @@ inline std::tuple<token, std::string> scanning::next_token() {
             if (is_char(c))   return to_keyWord_or_indentif();
             break;
     }
+    get_next_char();
     return std::make_tuple(token::invalid, "");
 }
 
-inline token scanning::get_token(std::tuple<token, std::string> &tuple_) {
+token scanning::get_token(std::tuple<token, std::string> &tuple_) {
     return std::get<0>(tuple_);
 }
 
-inline std::string scanning::get_value(std::tuple<token, std::string> &tuple_) {
+token scanning::get_token() {
+    return std::get<0>(now_token);
+}
+
+std::string scanning::get_value(std::tuple<token, std::string> &tuple_) {
     return std::get<1>(tuple_);
 }
-//
+
+std::string scanning::get_value() {
+    return std::get<1>(now_token);
+}
+
+#endif

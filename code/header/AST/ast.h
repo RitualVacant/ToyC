@@ -1,22 +1,11 @@
-#ifndef VECTOR
-#define VECTOR
+#ifndef AST_H
+#define AST_H
+
+#pragma once
 #include <vector>
-#endif
-
-#ifndef STRING
-#define STRING
 #include <string>
-#endif
-
-#ifndef IOSTREAM
-#define IOSTREAM
 #include <iostream>
-#endif
-
-#ifndef TOKEN_H
-#define TOKEN_H
 #include "token.h"
-#endif
 
 namespace ast {
     //basic
@@ -160,3 +149,5 @@ namespace ast {
         explicit while_statement(std::size_t line,std::size_t colume) : statement(line, column) {}; //委托构造
     };
 }
+
+#endif
