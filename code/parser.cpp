@@ -47,20 +47,6 @@ void parser::parser_if_statement() {
 
 void parser::parser_while_statement() {
     auto* node = new ast::while_statement(line, column);
-
-    //(
-    now_token = scan->next_token();
-    //if (scan->get_token(now_token) != token::l_par) output_error_message(scan->get_token(now_token));
-
-    //条件
-    //node->jugement_statement = parser_expression();
-
-    //)
-    now_token = scan->next_token();
-    //if (scan->get_token(now_token) != token::r_par) output_error_message(scan->get_token(now_token));
-
-    //while ture 的语句块
-    //node->while_block = parse_block();
     return;
 }
 
@@ -68,8 +54,8 @@ void parser::parser_while_statement() {
 //return
 void parser::parser_return_statement() {
     //return
-    sign->asm_func_end();
     scan->next_token();
+    //TODO这里还要解析返回表达式
     return;
 }
 
@@ -82,93 +68,348 @@ void parser::parser_unary_expression() {
     //一元表达式
     //
     if (token_ ==  token::bit_and || token_ == token::bit_not || token_ == token::bit_or) {
-        //
-        //
-        //
-        //
         return;
     }
     else if (is_primary_operator(token_)) {
         parser_primary_expression();
     }
-    //其实这里永远都不会返回，只是编译器看着烦
     return;
 }
 
 void parser::parser_primary_expression() {
-    switch (scan->get_token(now_token)) {
-        case token::indentif: {
-            auto indentif_ = scan->get_value(now_token);
-            now_token = scan->next_token();
-            switch (scan->get_token(now_token)) {
-            //遇到(, 当作函数处理
-                case token::l_par: {
-                    auto now_token = scan->next_token();
-                    //TODO这里要对函数的参数赋值并且调用函数
-                    while (scan->get_token(now_token) != token::r_par) {
-                        //
-                        if (scan->get_token(now_token) == token::comma)
-                            now_token = scan->next_token();
-                    }
-                    //看是不是分号结束
-                    if (scan->get_token() == token::end)
-                        return;
-                    break;
-                }
-            //遇到[, array[x]
-                case token::l_mid_par: {
-                    //scan->next_token();
-                    //TODO里面的具体细节
-                    parser_expression(); //下标
-                    now_token = scan->next_token();//eat ]
-                    return;
-                }
-                default: {
-                    return;//new ast::indentfi_expr(line, column);
-                }
-            }
-        }
-    //int
-        case token::class_int: {
-            return;// int_ret;
-        }
-    //double
-        case token::class_double: {
-            return;// double_ret;
-        }
-        case token::class_char: {
-            return;//char_ret;
-        }
-        case token::class_bool: {
-            return;// bool_ret;
-        }
-        case token::class_string: {
-            return;// string_ret;
-        }
-        case token::key_null: {
-            return;// new ast::null_expr(line, column);
-        }
-        //TODO应该是不保留这个左括号的
-        case token::l_par: {
-            //cross (
-            now_token = scan->next_token();
-            //parser (expression)
-            //auto value = parser_expression();
-            now_token = scan->next_token();
-            return;// value;
-        }
-        case token::l_mid_par: {
-        }
-    }
-    //编译器烦人
-    return;
+
 }
 
+void parser::
 
-void parser::parser_expression() {
-    //TODO这里没有完工
-    parser_unary_expression();
-    parser_primary_expression();
+void parser::parser_pre_to_pos() {
+    std::vector<std::tuple<token, std::string>> symbol_stack;
+    std::vector<std::tuple<token, std::string>> res;//后缀表达式
+
+    while (scan->get_token() != token::end) {
+        switch (scan->get_token()) {
+            case token::class_int:     //int
+            case token::class_double:  //double
+            case token::class_char:    //char
+            case token::class_bool:    //bool
+                symbol_stack.push_back(scan->now_token);
+
+            case token::bit_and: //&
+            case token::bit_or:  //|
+            case token::bit_not: //~
+
+            case token::log_and: //&&
+            case token::log_or:  //||
+            case token::log_not: //~
+
+            case token::plus:   //+
+                if (preceden(token::plus) > preceden(std::get<0>(symbol_stack.back())))
+                    symbol_stack.push_back(scan->now_token);
+                else {
+                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                        res.push_back(symbol_stack.back());
+                        symbol_stack.pop_back();
+                    }
+                }
+                break;
+
+            case token::minus:  //-
+                if (preceden(token::minus) > preceden(std::get<0>(symbol_stack.back())))
+                    symbol_stack.push_back(scan->now_token);
+                else {
+                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                        res.push_back(symbol_stack.back());
+                        symbol_stack.pop_back();
+                    }
+                }
+                break;
+
+            case token::times:  //*
+                if (preceden(token::times) > preceden(std::get<0>(symbol_stack.back())))
+                    symbol_stack.push_back(scan->now_token);
+                else {
+                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                        res.push_back(symbol_stack.back());
+                        symbol_stack.pop_back();
+                    }
+                }
+                break;
+
+            case token::div:    ///
+                if (preceden(token::div) > preceden(std::get<0>(symbol_stack.back())))
+                    symbol_stack.push_back(scan->now_token);
+                else {
+                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                        res.push_back(symbol_stack.back());
+                        symbol_stack.pop_back();
+                    }
+                }
+                break;
+
+            case token::mod:    //%
+                if (preceden(token::minus) > preceden(std::get<0>(symbol_stack.back())))
+                    symbol_stack.push_back(scan->now_token);
+                else {
+                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                        res.push_back(symbol_stack.back());
+                        symbol_stack.pop_back();
+                    }
+                }
+                break;
+
+            case token::equ:        //==
+            case token::not_equ:    //!=
+            case token::great_equ:  //>=
+            case token::less_equ:   //<=
+            case token::great:      //>
+            case token::less:       //<
+
+
+            case token::plus_agn:   //+=
+            case token::minus_agn:  //-=
+            case token::times_agn:  //*=
+            case token::div_agn:    ///=
+            case token::mod_agn:    //%=
+        }
+    }
+}
+
+//TODO 这个函数应该传入返回值的大小
+void parser::parser_expression(std::size_t size) {
+    //解析前先把返回的rax清零
+    sign->asm_mov("rax", "0");
+    //rax是否被初始化为栈顶
+    bool rax_init = false;
+    //符号栈 和 数字栈
+    std::vector<token> symbol_stack;
+    std::vector<std::string> num_stack;
+    //符号队列 和 数字队列 近似于后缀表达式的正确运算顺序
+    std::vector<token> symbol_queue;
+    std::vector<std::string> num_queue;
+    //操作数的大小
+    //std::size_t size;
+
+    //--------------------------------
+    //判断是不是一元表达式
+    //TODO暂时不支持一元表达式
+    //if (!is_binary_operator(scan->get_token()))
+    //    parser_unary_expression();
+    scan->next_token();
+
+    while (true) {
+        switch (scan->get_token()) {
+        //--------------------------------
+        // ;
+            case token::end: {
+                //可能有一元运算符
+                if (symbol_stack.size() != 0) {
+                    //TODO 这里可能会有多个值残留在栈里面
+                    //TODO 一元表达式无支持
+                    while (symbol_stack.size() != 0) {
+                        std::string a = num_stack.back();
+                        num_stack.pop_back();
+                        std::string b = num_stack.back();
+                        num_stack.pop_back();
+                        token symbol = symbol_stack.back();
+                        symbol_stack.pop_back();
+                        if (!rax_init) {
+                            //是右值
+                            if (sign->find_local(b) == "") {
+
+                            }
+                            //是左值
+                            else {
+                                sign->asm_mov_auto_r__(size, "ax", sign->find_local(a));
+                                rax_init = true;
+                            }
+                        }
+                        sign->asm_any_auto_r__(symbol, size, "ax", b);
+                        num_stack.push_back(b);
+                    }
+                }
+                //可能没有运算符只有一个数字
+                //TODO
+                if (num_stack.size() == 1) {
+                    if (std::get<0>(scan->last_token) == token::indentif) {
+                        sign->asm_mov_auto_r__(size_class.at(std::get<0>(scan->last_token)), "ax", sign->find_local(num_stack[0]));
+                        return;
+                    }//是右值
+                    else {
+                        sign->asm_mov_auto_r__(size_class.at(std::get<0>(scan->last_token)), "ax", num_stack[0]);
+                    }
+                    num_stack.pop_back();
+                }
+            }
+
+        //--------------------------------
+        //是内存地址
+            //TODO没有全局变量的支持
+            case token::indentif: {
+                //获得标识符的类型
+                std::string indentif_ = scan->get_value();               //第一个标识符
+                token indentif_token = sign->find_var_class(indentif_);  //标识符类型
+                //size = size_class.at(indentif_token);                    //类型大小
+
+                scan->next_token();
+                switch (scan->get_token()) {
+
+                //遇到(, 当作函数处理
+                    case token::l_par: {
+                        auto now_token = scan->next_token();
+                        //TODO这里要对函数的参数赋值并且调用函数
+                        while (scan->get_token(now_token) != token::r_par) {
+                            //
+                            if (scan->get_token(now_token) == token::comma)
+                                now_token = scan->next_token();
+                        }
+                        //看是不是分号结束
+                        if (scan->get_token() == token::end)
+                            return;
+                        break;
+                    }
+
+                //遇到[, array[x]
+                    case token::l_mid_par: {
+                        //scan->next_token();
+                        //TODO里面的具体细节
+                        //TODO下标的大小
+                        //parser_expression(); //下标
+                        now_token = scan->next_token();//eat ]
+                        continue;
+                    }
+                //是其他符号
+                    default: {
+                        //标识符入栈
+                        num_stack.push_back(std::get<1>(scan->last_token));
+                        continue;
+                    }
+                }
+            }
+        //数值
+            case token::class_int: {
+                num_stack.push_back(scan->get_value());
+                scan->next_token();
+                continue;
+            }
+            case token::class_double: {
+                num_stack.push_back(scan->get_value());
+                scan->next_token();
+                continue;
+            }
+            case token::class_char: {
+                num_stack.push_back(scan->get_value());
+                scan->next_token();
+                continue;
+            }
+            case token::class_bool: {
+                //TODO
+                num_stack.push_back(scan->get_value());
+                scan->next_token();
+                continue;
+            }
+            case token::key_null: {
+                //TODO
+            }
+        // (
+            case token::l_par: {
+                symbol_stack.push_back(token::l_par);
+                continue;
+            }
+        // )
+            case token::r_par: {
+                while (scan->get_token() != token::l_par) {
+
+                }
+                continue;
+            }
+        // 运算符
+            case token::bit_and: //&
+            case token::bit_or:  //|
+            case token::bit_not: //~
+            case token::log_and: //&&
+            case token::log_or:  //||
+            case token::log_not: //~
+            case token::plus: { //+
+                if (!symbol_stack.empty() && preceden(token::plus) <= preceden(symbol_stack.back())) {
+                    while (!symbol_stack.empty() && preceden(token::plus) <= preceden(symbol_stack.back())) {
+                        std::string a = num_stack.back();
+                        num_stack.pop_back();
+                        std::string b = num_stack.back();
+                        num_stack.pop_back();
+                        token symbol = symbol_stack.back();
+                        symbol_stack.pop_back();
+                        //如果rax没有初始化
+                        if (!rax_init) {
+                            sign->asm_mov_auto___r(size_class.at(sign->find_var_class(a)), sign->find_local(a), "ax");
+                            rax_init = true;
+                        }
+                        //
+                        sign->asm_add_auto_r__(size_class.at(sign->find_var_class(b)), "ax", sign->find_local(b));
+                        //要把弹出的结果入栈，但是这里ax已经起了栈顶的作用，所有就假装 b 塞一个进去
+                        num_stack.push_back(b);
+                    }
+                }
+                //最后的符号都要入栈
+                symbol_stack.push_back(token::plus);
+                scan->next_token();
+                continue;
+            }
+
+            case token::minus: {//-
+                if (!symbol_stack.empty() && preceden(token::minus) <= preceden(symbol_stack.back())) {
+                    while (!symbol_stack.empty() && preceden(token::minus) <= preceden(symbol_stack.back())) {
+                        std::string a = num_stack.back();
+                        num_stack.pop_back();
+                        std::string b = num_stack.back();
+                        num_stack.pop_back();
+                        token symbol = symbol_stack.back();
+                        symbol_stack.pop_back();
+                        //如果rax没有初始化
+                        if (!rax_init) {
+                            sign->asm_mov_auto___r(size_class.at(sign->find_var_class(a)), sign->find_local(a), "ax");
+                            rax_init = true;
+                        }
+                        //
+                        sign->asm_add_auto_r__(size_class.at(sign->find_var_class(b)), "ax", sign->find_local(b));
+                        //要把弹出的结果入栈，但是这里ax已经起了栈顶的作用，所有就假装 b 塞一个进去
+                        num_stack.push_back(b);
+                    }
+                }
+                //最后的符号都要入栈
+                symbol_stack.push_back(token::minus);
+                scan->next_token();
+                continue;
+            }
+            case token::times:  //*
+                while (preceden(token::plus) > preceden(symbol_stack.back())) {
+                }
+                continue;
+            case token::div:    ///
+                while (preceden(token::plus) > preceden(symbol_stack.back())) {
+                }
+                continue;
+            case token::mod:    //%
+                while (preceden(token::plus) > preceden(symbol_stack.back())) {
+                }
+                continue;
+            case token::equ:        //==
+            case token::not_equ:       //!=
+            case token::great_equ:  //>=
+            case token::less_equ:   //<=
+            case token::great:      //>
+            case token::less:       //<
+            case token::assign:     //=
+            case token::plus_agn:   //+=
+            case token::minus_agn:  //-=
+            case token::times_agn:  //*=
+            case token::div_agn:    ///=
+            case token::mod_agn:    //%=
+            default:
+                break;
+        }
+        //
+    }
+    //编译器烦人
     return;
 }
 
@@ -177,90 +418,142 @@ void parser::parser_lvalue() {
     scan->next_token(); //标识符
     scan->next_token(); //
     if (scan->get_token() == token::assign) {
-        parser_expression();
+        //TODO
+        //parser_expression();
         //TODO还有赋值未完成
     }
     return;
 }
 
 void parser::parser_declare() {
-    token token_class = scan->get_token(); //左值类型
-    scan->next_token();                    //int 后的标识符,或者是数组[
+    token token_class = scan->get_token();  //左值类型
+    std::size_t size = size_class.at(token_class);
+    scan->next_token();                    //class 后的标识符,或者是数组[
+
+    //--------------------------------
     //数组声明
     if (scan->get_token() == token::l_mid_par) {
         scan->next_token();
         int size_array = stoi(scan->get_value());
         scan->next_token(); //]
-        //TODO数组没有声明时的赋值
+        //TODO数组没有声明时的空间分配
         return;
     }
-    //基本类型
+
+    //--------------------------------
+    //标识符
     if (sign->find(scan->now_token))       //重复定义,报错直接退出
         worng::redefine(line, column, scan->now_token);
-    sign->push_token(scan->now_token); //入栈
+    std::string name = scan->get_value();  //标识符名字
+    sign->push_token({token_class, scan->get_value()}); //入栈
     scan->next_token();
+
+    //--------------------------------
     //赋值或直接分号结束
-    if (scan->get_token() == token::end) //分号终结
+    if (scan->get_token() == token::end)      //分号终结
         return;
-    if (scan->get_token() == token::assign) {
-        parser_expression();
-        //TODO应该想怎么赋值，
+    if (scan->get_token() == token::assign) { //赋值
+        parser_expression(size);
+        sign->asm_mov_auto___r(size_class.at(token_class), sign->find_local(name), "ax");
     }
-    parser_statement();//回到初始状态
+
+    //--------------------------------
+    //NOTE这里貌似不需要回去
+    //parser_statement();//回到初始状态
     return;
 }
 
+//
+//解析函数,包括参数和函数体
+//
+
 void parser::parser_function() {
+    //函数
+    std::vector<std::tuple<token, std::string>> argu; //记录参数
+    std::string name;                                 //函数名
+    token class_return;                               //返回类型
+
+    //--------------------------------
     //函数名
+    //前面已经解析了func
     scan->next_token();
-    sign->push_func(scan->now_token);
-    //函数参数
+    sign->push_func();
+    name = scan->get_value();
+    sign->asm_func_head(name);//函数头
+
+    //--------------------------------
     scan->next_token();                    // (
     if (scan->get_token() != token::l_par) //没有 (
-        worng::lack_token(line, column, scan->now_token);
-    scan->next_token();
+        worng::lack_token(line, column, {token::l_par, "("});
+
+    //--------------------------------
+    //函数参数
+    scan->next_token();                            //这里是为了没有参数时直接跳出(.......)中的分析
     while (scan->get_token() != token::r_par) {
-        scan->next_token();                  //函数参数类型
-        token class_argu = scan->get_token();//记录参数类型
-        scan->next_token();                  //函数参数声明符
-        sign->push_token(std::tuple<token, std::string>(class_argu, scan->get_value()));
-        scan->next_token();                   //下个参数
+        token class_argu = scan->get_token();      //函数参数类型
+        scan->next_token();                        //
+        std::string name_argu = scan->get_value(); //参数名字
+        argu.push_back(std::tuple<token, std::string>(class_argu, name_argu));//参数暂时保存
+        scan->next_token();                        //下个参数
         if (scan->get_token() == token::comma)// ,
             scan->next_token();
     }
+    //--------------------------------
+    //返回值
+    scan->next_token();
+    if (scan->get_token() != token::ver)
+        worng::lack_token(line, column, {token::ver, "->"});
+    scan->next_token();
+    class_return = scan->get_token();
+
+    //--------------------------------
+    //向函数表中插入函数,TODO这一步会对参数分配寄存器
+    sign->insert_func(func(name, argu, class_return));
+
+    //--------------------------------
     // {
     scan->next_token();
     if (scan->get_token() != token::l_big_par)
         worng::lack_token(line, column, scan->now_token);
+
+    //--------------------------------
     //函数体
     while (scan->get_token() != token::key_return) {
         parser_statement();
     }
+
+    //--------------------------------
     //函数返回
     parser_return_statement();
     sign->pop_func();
+
+    //--------------------------------
     // }
     scan->next_token();
+    if (scan->get_token() != token::r_big_par)
+        worng::lack_token(line, column, scan->now_token);
+    sign->asm_func_end(); // { ret
+
     return;
 }
 
+//
+//解析语句
+//
 void parser::parser_statement() {
     scan->next_token();
     switch (scan->get_token()) {
             case token::invalid:
+        //函数调用或者表达式
+            case token::indentif:
 
         //声明
             case token::key_int:
             case token::key_double:
             case token::key_char:
-            case token::key_bool: {
+            case token::key_bool:
                 parser_declare();
-                if (scan->get_token() == token::assign) {
-                    parser_expression();
-                    //TODO这里要补上负值语句
-                }
-                break;
-            }
+                return;
 
         //函数声明
             case token::key_func: {
@@ -269,17 +562,12 @@ void parser::parser_statement() {
             }
 
         //数值
-        //int
             case token::class_int: {
                 break;
             }
-        //double
             case token::class_double: {
                 break;
             }
-
-            case token::class_string:  //string
-
             case token::class_char:    //char
 
             case token::bit_and: //&
@@ -313,7 +601,6 @@ void parser::parser_statement() {
             case token::r_big_par:   //}
             case token::comma:   //,
             case token::comment: //#
-            case token::indentif:  //标识符
             case token::key_if:         //if
 
             case token::key_else:       //else

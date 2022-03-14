@@ -28,6 +28,7 @@ namespace worng {
         {token::div,   "/"},
         {token::mod,   "%"},
 
+        {token::ver,        "->"},
         {token::equ,        "=="},
         {token::not_equ,    "!="},
         {token::great_equ,  ">="},
@@ -64,27 +65,27 @@ namespace worng {
         {token::key_func,       "func"},
         {token::key_return,     "return"},
         {token::key_break,      "break"},
-        {token::key_continue,   "continue"}
+        {token::key_continue,   "continue"},
     };
     //this funcion's argc will rewirte after
     //need really line and colume
     void redefine(std::size_t line, std::size_t colume, std::tuple<token, std::string> x) {
-        fmt::print("a worng at line : {} , colume : {}\n", line, colume);
-        fmt::print("you define {} twice!\n", std::get<1>(x));
+        fmt::print(fg(fmt::color::red), "a worng at line : {} , colume : {}\n", line, colume);
+        fmt::print(fg(fmt::color::red), "you define {} twice!\n", std::get<1>(x));
         exit(0);
         return;
     }
 
     void lack_token(std::size_t line, std::size_t colume, std::tuple<token, std::string> x) {
-        fmt::print("a worng at (line : {} , colume : {}\n", line, colume);
-        fmt::print("there should is a {}\n", trans_token_to_string.at(std::get<0>(x)));
+        fmt::print(fg(fmt::color::red), "a worng at line : {} , colume : {}\n", line, colume);
+        fmt::print(fg(fmt::color::red), "there should is a {}\n", trans_token_to_string.at(std::get<0>(x)));
         exit(0);
         return;
     }
 
     void havent_define(std::size_t line, std::size_t colume, std::tuple<token, std::string> x) {
-        fmt::print("a worng at (line : {} , colume : {}\n", line, colume);
-        fmt::print("haven't defind \'{}\' {}\n", trans_token_to_string.at(std::get<0>(x)), std::get<1>(x));
+        fmt::print(fg(fmt::color::red), "a worng at line : {} , colume : {}\n", line, colume);
+        fmt::print(fg(fmt::color::red), "haven't defind \'{}\' {}\n", trans_token_to_string.at(std::get<0>(x)), std::get<1>(x));
         exit(0);
         return;
     }

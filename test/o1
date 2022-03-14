@@ -1,6 +1,25 @@
-fes:
-   pushl %ebp
-   movl %esp %ebp
-   movl %ebp %esp
-   popl %ebp
+test1:
+   push rbp
+   mov  rsp rbp
+   sub  rsp 4
+   mov  rax 0
+   mov  eax 1
+   mov  [rbp - 0] eax
+   sub  rsp 4
+   mov  rax 0
+   mov  eax 18
+   mov  [rbp - 4] eax
+   sub  rsp 1
+   mov  rax 0
+   mov  eax 1
+   mov  [rbp - 8] lax
+   mov  rbp rsp
+   pop  rbp
+   ret
+test2:
+   push rbp
+   mov  rsp rbp
+   sub  rsp 4
+   mov  rbp rsp
+   pop  rbp
    ret

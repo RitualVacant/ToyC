@@ -15,8 +15,6 @@
 
 class parser {
     private:
-        unsigned int line = 0;
-        unsigned int column = 0;
         std::tuple<token, std::string> &&now_token = {};
         std::size_t num_token = 0;  //the number of token in this script file
         std::string file_path; //初始化scanning
@@ -37,11 +35,13 @@ class parser {
         //解析----没有完工
         void parser_statement();
         void parser_function();
-        void parser_expression();
+        void parser_expression(std::size_t size);
         void parser_unary_expression();
         void parser_primary_expression();
         void parser_lvalue();
         void parser_declare();
+
+        void parser_pre_to_pos();
 
     public:
         //parser(std::string file_path_) : file_path(file_path_) {};
@@ -62,7 +62,6 @@ parser::parser(std::string &file_path_, std::string &output_file_path_)
     //TODO 这里要调用
     while (!scan->file.eof()) {
         parser_statement();
-        scan->next_token();
     }
 };
 

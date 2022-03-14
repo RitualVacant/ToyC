@@ -1,3 +1,4 @@
-func fes() {
-    return;
+func test2(int c) -> int {
+    int d = 3 - 1;
+    return c;
 }

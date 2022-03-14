@@ -31,6 +31,8 @@ std::unordered_map<token, std::string> const trans_output_token_to_string {
     {token::log_or,  "||"},
     {token::log_not, "~"},
 
+    {token::ver,     "->"},
+
     {token::plus,  "+"},
     {token::minus, "-"},
     {token::times, "*"},
@@ -79,7 +81,8 @@ std::unordered_map<token, std::string> const trans_output_token_to_string {
     {token::key_double, "key_double"},
     {token::key_bool,   "key_bool"},
     {token::key_string, "key_string"},
-    {token::key_char,   "key_char"}
+    {token::key_char,   "key_char"},
+    {token::key_void,   "key_void"}
 };
 
 //查找关键字
@@ -99,7 +102,8 @@ std::unordered_map<std::string, token> const key_words {
     {"double",   token::key_double},
     {"char",     token::key_char},
     {"string",   token::key_string},
-    {"bool",     token::key_bool}
+    {"bool",     token::key_bool},
+    {"void",     token::key_void}
 };
 inline bool is_useless(char const c) {
     for (char i : useless_char) {
@@ -170,7 +174,7 @@ inline bool is_basic_type(token token_) {
     }
     return false;
 }
-short unsigned int precedence(token operator_) {
+short unsigned int preceden(token operator_) {
     switch (operator_) {
     case token::log_not:
         return 1;

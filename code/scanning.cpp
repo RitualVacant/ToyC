@@ -85,6 +85,8 @@ inline std::tuple<token, std::string> scanning::to_char() {
     return std::make_tuple(token::class_char, re);
 }
 std::tuple<token, std::string> scanning::next_token() {
+    //
+    last_token = now_token;
     std::string re;
     while (is_useless(c)) {
         if (c == '\n') {
@@ -157,6 +159,11 @@ std::tuple<token, std::string> scanning::next_token() {
                 get_next_char();
                 now_token = std::make_tuple(token::minus_agn, "-=");
                 return std::make_tuple(token::minus_agn, "-=");
+            }
+            if (c == '>') {
+                get_next_char();
+                now_token = std::make_tuple(token::ver, "->");
+                return std::make_tuple(token::ver, "->");
             }
             else{
                 now_token = std::make_tuple(token::minus, "-");

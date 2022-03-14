@@ -9,11 +9,11 @@
 #include "./../AST/ast.h"
 #include "fmt/core.h"
 #include "fmt/color.h"
+unsigned int line = 0;
+unsigned int column = 0;
 
 class scanning {
     private:
-        unsigned int line = 0;
-        unsigned int column = 0;
         char c;
         std::size_t num_token = 0;  //the number of token in this script file
         std::string file_path;
@@ -29,6 +29,7 @@ class scanning {
     public:
         std::fstream file;
         std::tuple<token, std::string> now_token;
+        std::tuple<token, std::string> last_token;
 
         explicit scanning(std::string &file_path_) : file_path (file_path_) {
             file.open(file_path);

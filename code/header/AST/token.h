@@ -3,12 +3,14 @@
 enum class token {
     invalid = 0,
 
+
     class_int,     //int
     class_double,  //double
     class_string,  //string
     class_char,    //char
     class_bool,    //bool
 
+    key_void,
     key_int,
     key_double,
     key_string,
@@ -19,6 +21,7 @@ enum class token {
     r_double,
     r_char,
     r_bool,
+
 
     bit_and, //&
     bit_or,  //|
@@ -34,8 +37,9 @@ enum class token {
     div,    ///
     mod,    //%
 
+    ver,        //->
     equ,        //==
-    not_equ,       //!=
+    not_equ,    //!=
     great_equ,  //>=
     less_equ,   //<=
     great,      //>
