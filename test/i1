@@ -1,4 +1,10 @@
-func test2(int c) -> int {
-    int d = 3 - 1;
-    return c;
+func test2(int c) -> void {
+    int d = 3;
+    return;
+}
+func test3(int a, int b, int c) -> void {
+    a = 3;
+    b = 3;
+    c = 234;
+    return;
 }

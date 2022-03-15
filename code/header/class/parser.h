@@ -12,20 +12,31 @@
 #include "./../../sign_map.cpp"
 #include "./../../worng.cpp"
 
+struct statement {
+    token symbol;
+    std::string arg1;
+    std::string arg2;
+    std::string result;
+    statement(token symbol_, std::string arg1_, std::string arg2_, std::string result_) :
+        symbol(symbol_), arg1(arg1_), arg2(arg2_), result(result_) {};
+};
+
 
 class parser {
     private:
-        std::tuple<token, std::string> &&now_token = {};
-        std::size_t num_token = 0;  //the number of token in this script file
-        std::string file_path; //初始化scanning
+        std::string file_path;         //初始化scanning
         std::string output_file_path;
+
+        std::vector<statement> code;
+        std::size_t lable = 0;
 
         //符号表 RAII
         sign_map* sign;
         //词法分析 RAII
         scanning* scan;
 
-        //词法分析器
+        //临时变量的个数, 会累加的闭包
+        std::size_t var_time = 0;
 
         //创造节点
         void parser_if_statement ();
@@ -35,16 +46,20 @@ class parser {
         //解析----没有完工
         void parser_statement();
         void parser_function();
-        void parser_expression(std::size_t size);
+        void parser_expression_(std::string l_value);
+        //TODO这两个函数
+        void parser_expression(std::string l_value);
         void parser_unary_expression();
         void parser_primary_expression();
         void parser_lvalue();
         void parser_declare();
+        void parser_expression_unit();
 
-        void parser_pre_to_pos();
+        std::vector<std::tuple<token, std::string>> parser_pre_to_pos();
+
+        std::size_t get_var_time();
 
     public:
-        //parser(std::string file_path_) : file_path(file_path_) {};
         explicit parser(std::string &file_path_, std::string &output_file_path_);
         ~parser();
         parser(parser const&)       = delete;

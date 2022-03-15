@@ -4,9 +4,24 @@ enum class token {
     invalid = 0,
 
 
+    jmp,     //*jmp
+    lable,   //*
+
+    //声明
+    dec_int,    //*
+    dec_double, //*
+    dec_char,   //*
+    dec_bool,   //*
+
+    dec_int_arrary,     //*
+    dec_double_arrary,  //*
+    dec_char_arrary,    //*
+    dec_bool_arrary,    //*
+
+    //
+
     class_int,     //int
     class_double,  //double
-    class_string,  //string
     class_char,    //char
     class_bool,    //bool
 

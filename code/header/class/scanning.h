@@ -24,7 +24,7 @@ class scanning {
         std::tuple<token, std::string> to_keyWord_or_indentif();
         std::tuple<token, std::string> to_comment();
         std::tuple<token, std::string> to_char();
-        std::tuple<token, std::string> to_string();
+        //std::tuple<token, std::string> to_string();
 
     public:
         std::fstream file;

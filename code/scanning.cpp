@@ -53,17 +53,17 @@ inline std::tuple<token, std::string> scanning::to_keyWord_or_indentif() {
     }
 }
 
-inline std::tuple<token, std::string> scanning::to_string() {
-    std::string re;
-    get_next_char();
-    while (c != '"') {
-        re += c;
-        get_next_char();
-    }
-    get_next_char();    //pass string end sign "
-    now_token = std::make_tuple(token::class_string, re);
-    return std::make_tuple(token::class_string, re);
-}
+//inline std::tuple<token, std::string> scanning::to_string() {
+//    std::string re;
+//    get_next_char();
+//    while (c != '"') {
+//        re += c;
+//        get_next_char();
+//    }
+//    get_next_char();    //pass string end sign "
+//    now_token = std::make_tuple(token::class_string, re);
+//    return std::make_tuple(token::class_string, re);
+//}
 
 inline std::tuple<token, std::string> scanning::to_comment() {
     std::string re;
@@ -268,7 +268,7 @@ std::tuple<token, std::string> scanning::next_token() {
 
         case '#': return to_comment();
 
-        case '"': return to_string();
+        //case '"': return to_string();
 
         case '\'': return to_char();
 

@@ -11,7 +11,6 @@ namespace worng {
 
         {token::class_int,     "int"},
         {token::class_double,  "double"},
-        {token::class_string,  "string"},
         {token::class_char,    "char"},
 
         {token::bit_and, "&"},

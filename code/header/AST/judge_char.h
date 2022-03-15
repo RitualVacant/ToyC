@@ -20,7 +20,6 @@ std::unordered_map<token, std::string> const trans_output_token_to_string {
 
     {token::class_int,     "int"},
     {token::class_double,  "double"},
-    {token::class_string,  "string"},
     {token::class_char,    "char"},
 
     {token::bit_and, "&"},
@@ -151,7 +150,6 @@ inline bool is_primary_operator(token token_) {
         token_ == token::r_mid_par ||
         token_ == token::class_int ||
         token_ == token::class_char ||
-        token_ == token::class_string ||
         token_ == token::class_double ||
         token_ == token::class_bool
     ) return true;
@@ -164,8 +162,6 @@ inline bool is_basic_type(token token_) {
         case token::class_bool:
             return true;
         case token::class_double:
-            return true;
-        case token::class_string:
             return true;
         case token::class_char:
             return true;
