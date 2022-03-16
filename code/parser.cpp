@@ -13,40 +13,69 @@
 
 
 void parser::parser_if_statement() {
+    scan->next_token(); //if
+    scan->next_token(); //(
 
-    //return pointer rather than return a node struct to avoid copy cost
-    //memery leak? ^_^' just don't think about it
-    //auto* node = new ast::if_statement(line, column);
+    std::string value1 = parser_expression();
+    token symbol = scan->get_token();
+    std::string value2 = parser_expression();
+    //
+    switch (symbol) {
+        token::log_and,    //&&
+            code.push_back(statement(token::log_and, value1, value2, ""));
+            break;
+        token::log_or,     //||
+            code.push_back(statement(token::log_or, value1, value2, ""));
+            break;
+        token::equ,        //==
+            code.push_back(statement(token::equ, value1, value2, ""));
+            break;
+        token::not_equ,    //!=
+            code.push_back(statement(token::not_equ, value1, value2, ""));
+            break;
+        token::great_equ,  //>=
+            code.push_back(statement(token::great_equ, value1, value2, ""));
+            break;
+        token::less_equ,   //<=
+            code.push_back(statement(token::less_equ, value1, value2, ""));
+            break;
+        token::great,      //>
+            code.push_back(statement(token::great, value1, value2, ""));
+            break;
+        token::less,       //<
+            code.push_back(statement(token::less, value1, value2, ""));
+            break;
+    default:
+        break;
+    }
 
-    //吃掉并检查左括号 ^_^' 左括号没有什么用，语法错误怕死循环，
-    //now_token = scan->next_token();
-    //if (scan->get_token(now_token) != token::l_par)
-        //worng::lack_token(line, column, scan->get_token(now_token));
+    while (scan->get_token() != token::r_big_par) {
+        parser_statement();
+    }
 
-    //这里并没有取新的token，以后再改
-    //解析中间的表达式
-    //node->jugement_statement = parser_expression();
-
-    //右括号
-    //now_token = scan->next_token();
-    //if (scan->get_token(now_token) != token::r_par)
-        //worng::lack_token(line, column, scan->get_token(now_token));
-
-    //解析if的语句块
-    //node->if_block = parse_block();
+    std::string lable_1 = fmt::format("label{}", get_lable());
+    code.push_back(statement(token::lable, lable_1, "", ""));
 
     //else
-    //now_token = scan->next_token();
-    //if (scan->get_token(now_token) == token::key_else) {
-    //    now_token = scan->next_token();
-        //node->else_block = parse_block();
-    //}
+    scan->next_token();
+    if (scan->get_token() == token::key_else) {
+        while (scan->get_token() != token::r_big_par) {
+            parser_statement();
+        }
+    }
     return;
 }
 
 
 void parser::parser_while_statement() {
-    auto* node = new ast::while_statement(line, column);
+    scan->next_token();         // while
+    std::string 
+    switch () {
+    case :
+        break;
+    default:
+        break;
+    }
     return;
 }
 
@@ -60,7 +89,7 @@ parser::parser_return_statement() {
         return;
     }
 
-    std::string return_value = parser_expression();
+    std::string return_value = parser_expression()您对下列文件的本地修改将被合并操作覆盖
     code.push_back(statement(token::func_return, return_value, "", ""));
     return;
 }
@@ -289,6 +318,16 @@ parser::parser_expression() {
                 num_stack.push_back(ans);
                 break;
             }
+            //
+            case token::equ:        //==
+            case token::not_equ:    //!=
+            case token::great_equ:  //>=
+            case token::less_equ:   //<=
+            case token::great:      //>
+            case token::less:       //<
+            case token::log_and: //&&
+            case token::log_or:  //||
+                return;
 
             default: {
                 fmt::print("\na unknow error at parser::parser_expression()\n");
@@ -853,6 +892,10 @@ parser::parser_func_call(std::string name_func) {
 
 std::size_t parser::get_var_time() {
     return ++var_time;
+}
+
+std::size_t parser::get_lable() {
+    return ++lable;
 }
 
 //解析数组元素

@@ -52,6 +52,7 @@ class parser {
         std::vector<std::tuple<token, std::string>> parser_pre_to_pos();
 
         std::size_t get_var_time();
+        std::size_t get_lable();
 
 
     public:
