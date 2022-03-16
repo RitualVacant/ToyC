@@ -6,7 +6,7 @@
 enum class mode : char {
     lexical_analysis_output = 's',
     yes   = 'y',
-
+    mid   = 'm',
     quit  = 'q',
     help  = 'h',
     debug = 'd',
@@ -55,6 +55,11 @@ inline void choose_mode_run() {
                 s.token_output();
                 break;
             }
+            case mode::mid : {
+                parser p{file_path, output_file_path};
+                p.print_mid_code();
+                break;
+            }
             case mode::yes : {
                 parser p{file_path, output_file_path};
                 break;
@@ -72,7 +77,8 @@ inline void choose_mode_run() {
 inline void output_help_information() {
     fmt::print("\n");
     fmt::print("(s) scan    --lexical analysis and output the token\n");
-    fmt::print("(y) yes     --get the asm file");
+    fmt::print("(y) yes     --get the asm file\n");
+    fmt::print("(m) mid     --get transfrom code\n");
     fmt::print("(b)\n");
     fmt::print("(c) create  --ctreate the\n");
     fmt::print("(h) help\n");

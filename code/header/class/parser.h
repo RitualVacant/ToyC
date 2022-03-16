@@ -12,14 +12,6 @@
 #include "./../../sign_map.cpp"
 #include "./../../worng.cpp"
 
-struct statement {
-    token symbol;
-    std::string arg1;
-    std::string arg2;
-    std::string result;
-    statement(token symbol_, std::string arg1_, std::string arg2_, std::string result_) :
-        symbol(symbol_), arg1(arg1_), arg2(arg2_), result(result_) {};
-};
 
 
 class parser {
@@ -48,16 +40,19 @@ class parser {
         void parser_function();
         void parser_expression_(std::string l_value);
         //TODO这两个函数
-        void parser_expression(std::string l_value);
+        std::string parser_expression();
+        std::string parser_unit(std::string name_array);
         void parser_unary_expression();
         void parser_primary_expression();
         void parser_lvalue();
         void parser_declare();
         void parser_expression_unit();
+        void parser_func_call(std::string name_func);
 
         std::vector<std::tuple<token, std::string>> parser_pre_to_pos();
 
         std::size_t get_var_time();
+
 
     public:
         explicit parser(std::string &file_path_, std::string &output_file_path_);
@@ -66,6 +61,8 @@ class parser {
         parser(parser&&)            = delete;
         parser& operator=(parser&)  = delete;
         parser& operator=(parser&&) = delete;
+
+        void print_mid_code();
 };
 
 

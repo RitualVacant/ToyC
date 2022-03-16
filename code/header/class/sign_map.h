@@ -32,28 +32,39 @@ std::unordered_map<std::size_t, std::string> register_name {
     {5, "r9"},
 };
 
+struct statement {
+    token symbol;
+    std::string arg1;
+    std::string arg2;
+    std::string result;
+    statement(token symbol_, std::string arg1_, std::string arg2_, std::string result_) :
+        symbol(symbol_), arg1(arg1_), arg2(arg2_), result(result_) {};
+};
+
+struct arg_info {
+    token arg_class;
+    std::string name;
+    std::string location;
+    arg_info(token arg_class_, std::string name_, std::string location_) :
+        arg_class(arg_class_), name(name_), location(location_) {};
+};
+
 //栈帧
 struct frame {
-    token Token;
+    token var_class;
     std::string name;
-    std::size_t offset;
-    explicit frame(token Token_, std::string name_, std::size_t offset_) :
-        Token(Token_),
-        name(name_),
-        offset(offset_)
-    {};
+    explicit frame(token var_class_, std::string name_) :
+        var_class(var_class_), name(name_) {};
 };
+
 //函数表
 struct func {
     std::string name;
-    std::vector<std::tuple<token, std::string>> argu;
+    std::vector<arg_info> argu;
     token class_reture;
 
-    func(std::string &name_, std::vector<std::tuple<token, std::string>> &argu_, token &class_reture_) :
-        name(name_),
-        argu(argu_),
-        class_reture(class_reture_)
-        {};
+    func(std::string &name_, std::vector<arg_info> &argu_, token &class_reture_) :
+        name(name_), argu(argu_), class_reture(class_reture_) {};
 };
 
 class sign_map {
@@ -70,14 +81,11 @@ class sign_map {
         std::size_t colume;
         token now_token;
 
-        //std::vector<std::tuple<token, std::string>> sign_stack;
         std::vector<frame> sign_stack;
-        //TODO 这里必须带token不然没有办法搞清楚空间
         std::unordered_set<std::string> global_sign;
-        //std::unordered_set<std::string> func_set;
+
         std::vector<func> func_table;
-        //函数现在的参数
-        std::vector<std::tuple<token, std::string>> argu_table;
+        std::vector<std::tuple<token, std::string>> symbol_stack;//符号表
 
     public:
         std::fstream file;
@@ -99,46 +107,20 @@ class sign_map {
         bool find_func(std::string& name);
         bool find_argu(std::string name);
         std::string find_local(std::string &name);
+
+        void push_var(std::tuple<token, std::string> x);
+        void clear_symbol_stack();
         token find_var_class(std::string name);
 
-        void push_token(std::tuple<token, std::string> x);
         void push_global_sign(std::string &x);
 
         void insert_func(func);
         void push_func();
         void pop_func();
-
-    //asm文件读写
-        void asm_init();
-        void asm_argu_push();
-        void asm_tem_var_push(std::size_t size);
-        void asm_func_head(std::string func_name);
-        void asm_func_end();
-
-        std::string asm_ptr_size(std::size_t size);
-        void asm_any_auto_r__(token which, std::size_t size, std::string source, std::string option);
-        void asm_any_auto___r(token which, std::size_t size, std::string source, std::string option);
-
-        void asm_mov(std::size_t size, std::string source, std::string option);
-        void asm_mov(std::string source, std::string option);
-        void asm_mov_auto_r__(std::size_t size, std::string source, std::string option);
-        void asm_mov_auto___r(std::size_t size, std::string source, std::string option);
-
-        void asm_add(std::size_t size, std::string source, std::string option);
-        void asm_add_auto_r__(std::size_t size, std::string source, std::string option);
-        void asm_add_auto___r(std::size_t size, std::string source, std::string option);
-
-        void asm_sub(std::size_t size, std::string source, std::string option);
-        void asm_sub_auto_r__(std::size_t size, std::string source, std::string option);
-        void asm_sub_auto___r(std::size_t size, std::string source, std::string option);
-
-        void asm_mul(std::size_t size, std::string source, std::string option);
-        void asm_div(std::size_t size, std::string source, std::string option);
-        char asm_register_pre(std::size_t size);
 };
 
 sign_map::sign_map(std::string &file_path_) : file_path(file_path_) {
-    file.open(file_path);
+    file.open(file_path, std::ofstream::out);
     if (!file.is_open()) {
             fmt::print(fg(fmt::color::red), "\nfail to open the file!\n");
             fmt::print(fg(fmt::color::red), "please check the output file's path\n");

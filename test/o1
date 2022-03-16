@@ -1,25 +1,11 @@
-test1:
-   push rbp
-   mov  rsp rbp
-   sub  rsp 4
-   mov  rax 0
-   mov  eax 1
-   mov  [rbp - 0] eax
-   sub  rsp 4
-   mov  rax 0
-   mov  eax 18
-   mov  [rbp - 4] eax
-   sub  rsp 1
-   mov  rax 0
-   mov  eax 1
-   mov  [rbp - 8] lax
-   mov  rbp rsp
-   pop  rbp
-   ret
-test2:
-   push rbp
-   mov  rsp rbp
-   sub  rsp 4
-   mov  rbp rsp
-   pop  rbp
-   ret
+|symbol            |arg1      |arg2      |result    |
+|dec_func          |add       |          |          |
+|dec_int_arrary    |array1    |4         |          |
+|dec_char_arrary   |array2    |3         |          |
+|dec_int           |a         |          |          |
+|plus              |array1[3] |array1[0] |#t1       |
+|assign            |#t1       |          |a         |
+|dec_int           |c         |          |          |
+|plus              |c         |a         |#t2       |
+|assign            |#t2       |          |c         |
+|func_return       |c         |          |          |

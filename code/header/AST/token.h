@@ -4,7 +4,7 @@ enum class token {
     invalid = 0,
 
 
-    jmp,     //*jmp
+    jmp,     //*jmp 用于while if 的
     lable,   //*
 
     //声明
@@ -18,12 +18,38 @@ enum class token {
     dec_char_arrary,    //*
     dec_bool_arrary,    //*
 
-    //
+    dec_func,           //*
+    call_func,          //*
+    call_func_end,      //*
+    func_return,        //*
+
+
+    arg_r_int,            //*函数参数调用立即数
+    arg_r_double,         //*函数参数调用立即数
+    arg_r_char,           //*函数参数调用立即数
+    arg_r_bool,           //*函数参数调用立即数
+
+    arg_int_class,      //*函数参数调用
+    arg_double_class,   //*函数参数调用
+    arg_char_class,     //*函数参数调用
+    arg_bool_class,     //*函数参数调用
 
     class_int,     //int
     class_double,  //double
     class_char,    //char
     class_bool,    //bool
+
+    class_int_array,     //int array
+    class_double_array,  //double array
+    class_char_array,    //char array
+    class_bool_array,
+
+    class_int_array_unit,
+    class_double_array_unit,
+    class_char_array_unit,
+    class_bool_array_unit,
+
+    arrary_unit, //TODO 数组运算到底要不要分出类型， 这里暂时不分用这个代替
 
     key_void,
     key_int,

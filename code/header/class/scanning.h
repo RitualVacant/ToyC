@@ -9,14 +9,15 @@
 #include "./../AST/ast.h"
 #include "fmt/core.h"
 #include "fmt/color.h"
-unsigned int line = 0;
-unsigned int column = 0;
+unsigned int line = 1;
+unsigned int column = 1;
 
 class scanning {
     private:
         char c;
         std::size_t num_token = 0;  //the number of token in this script file
         std::string file_path;
+        bool really_next_token = true;
 
         void get_next_char();
 
@@ -55,6 +56,7 @@ class scanning {
         //-----------------------------------------------------------------------------------
 
         std::tuple<token, std::string> next_token();
+        token                          get_pre_token();
         token                          get_token();
         token                          get_token(std::tuple<token, std::string> &tuple_);
         std::string                    get_value();

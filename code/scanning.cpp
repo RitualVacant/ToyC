@@ -11,9 +11,7 @@ inline void scanning::get_next_char() {
     c = static_cast<char>(file.get());
     return;
 }
-//inline char scanning::peek_next_char() {
-//    return static_cast<char>(file.peek());
-//}
+
 inline std::tuple<token, std::string> scanning::to_number() {
     std::string re;
     bool is_double = false;
@@ -25,12 +23,12 @@ inline std::tuple<token, std::string> scanning::to_number() {
         get_next_char();
     }
     if (is_double) {
-        now_token = std::make_tuple(token::class_double, re);
-        return std::make_tuple(token::class_double, re);
+        now_token = std::make_tuple(token::r_double, re);
+        return std::make_tuple(token::r_double, re);
     }
     else {
-        now_token = std::make_tuple(token::class_int, re);
-        return std::make_tuple(token::class_int, re);
+        now_token = std::make_tuple(token::r_int, re);
+        return std::make_tuple(token::r_int, re);
     }
 }
 
@@ -81,10 +79,23 @@ inline std::tuple<token, std::string> scanning::to_char() {
     std::string re;
     re += c;
     get_next_char();
-    now_token = std::make_tuple(token::class_char, re);
-    return std::make_tuple(token::class_char, re);
+    now_token = std::make_tuple(token::r_char, re);
+    return std::make_tuple(token::r_char, re);
 }
-std::tuple<token, std::string> scanning::next_token() {
+
+token
+scanning::get_pre_token() {
+    std::tuple<token, std::string> re = next_token();
+    really_next_token = false;
+    return std::get<0>(re);
+}
+
+std::tuple<token, std::string>
+scanning::next_token() {
+    if (!really_next_token) {
+        really_next_token = true;
+        return now_token;
+    }
     //
     last_token = now_token;
     std::string re;

@@ -1,10 +1,7 @@
-func test2(int c) -> void {
-    int d = 3;
-    return;
-}
-func test3(int a, int b, int c) -> void {
-    a = 3;
-    b = 3;
-    c = 234;
-    return;
+func add (int a, int b) -> int {
+    int[4] array1;
+    char[3] array2;
+    int a = array1[0] + array1[3];
+    int c = a + c;
+    return c;
 }
