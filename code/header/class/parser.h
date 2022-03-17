@@ -11,6 +11,7 @@
 #include "./../../scanning.cpp"
 #include "./../../sign_map.cpp"
 #include "./../../worng.cpp"
+#include "./../../asm_file.cpp"
 
 
 
@@ -26,6 +27,8 @@ class parser {
         sign_map* sign;
         //词法分析 RAII
         scanning* scan;
+        //asm
+        asm_file* asm_code;
 
         //临时变量的个数, 会累加的闭包
         std::size_t var_time = 0;
@@ -62,6 +65,7 @@ class parser {
         parser& operator=(parser&&) = delete;
 
         void print_mid_code();
+        void print_asm_code();
 };
 
 
@@ -70,10 +74,12 @@ parser::parser(std::string &file_path_, std::string &output_file_path_)
 {
     scan = new scanning(file_path);
     sign = new sign_map(output_file_path);
+    asm_code = new asm_file(output_file_path);
     //TODO 这里要调用
     while (!scan->file.eof()) {
         parser_statement();
     }
+
 };
 
 parser::~parser() {

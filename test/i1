@@ -18,21 +18,8 @@ func add (int a, int b) -> int {
     array2[1] = 3 + array1[0] + array2[3] / 3;
     return yes + c / 3 * array2[0];
 }
-func sum() -> void {
-    int aaa = 0;
-    while (aaa < 100) {
-        aaa += 2;
-    }
-
-
-
-    return;
-}
 func main() -> void {
-    sum();
-    int ss = add(1, 3);
-
-
-
+    int a = 1;
+    int ss = add(a, 3);
     return;
 }

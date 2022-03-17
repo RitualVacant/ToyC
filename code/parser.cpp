@@ -185,7 +185,7 @@ parser::parser_pre_to_pos() {
             case token::r_double:  //double
             case token::r_char:    //char
             case token::r_bool:    //bool
-                res.push_back(scan->now_token);
+                res.push_back({scan->get_token(), fmt::format("${}", scan->get_value())});
                 break;
 
             case token::bit_and: //&
@@ -965,7 +965,7 @@ parser::parser_unit(std::string name_array) {
     scan->next_token();                         //[
     std::string index = parser_expression();
     //scan->next_token();  //]
-    return fmt::format("{}[{}]",name_array, index);
+    return fmt::format("&{}[{}]",name_array, index);
 }
 
 void
@@ -974,22 +974,22 @@ parser::print_mid_code() {
     char c;
     std::cin >> c;
     if (c == 'f') {
-        sign->file << fmt::format("+------------------+----------+----------+----------+\n");
-        sign->file << fmt::format("|{:18}|{:10}|{:10}|{:10}|\n", "symbol", "arg1", "arg2", "result");
-        sign->file << fmt::format("+------------------+----------+----------+----------+\n");
+        sign->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
+        sign->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", "symbol", "arg1", "arg2", "result");
+        sign->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
         for (std::size_t i = 0; i < code.size(); ++i) {
-            sign->file << fmt::format("|{:18}|{:10}|{:10}|{:10}|\n", trans_output_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
+            sign->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", trans_output_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
         }
-        sign->file << fmt::format("+------------------+----------+----------+----------+\n");
+        sign->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
     }
     else {
-        fmt::print("+------------------+----------+----------+----------+\n");
-        fmt::print("|{:18}|{:10}|{:10}|{:10}|\n", "symbol", "arg1", "arg2", "result");
-        fmt::print("+------------------+----------+----------+----------+\n");
+        fmt::print("+------------------+------------------+------------------+------------------+\n");
+        fmt::print("|{:18}|{:18}|{:18}|{:18}|\n", "symbol", "arg1", "arg2", "result");
+        fmt::print("+------------------+------------------+------------------+------------------+\n");
         for (std::size_t i = 0; i < code.size(); ++i) {
-            fmt::print("|{:18}|{:10}|{:10}|{:10}|\n", trans_output_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
+            fmt::print("|{:18}|{:18}|{:18}|{:18}|\n", trans_output_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
         }
-        fmt::print("+------------------+----------+----------+----------+\n");
+        fmt::print("+------------------+------------------+------------------+------------------+\n");
     }
     return;
 }
