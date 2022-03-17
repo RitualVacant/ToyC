@@ -30,7 +30,8 @@ class asm_file {
         std::fstream file;
         std::vector<statement> &&code;
 
-        std::vector<frame> symbol_stack;
+        std::vector<stack_frame> symbol_stack;
+        std::size_t offset = 0;
     public:
         asm_file(std::string file_path);
         ~asm_file();
@@ -42,6 +43,8 @@ class asm_file {
         void get_code(std::vector<statement> &code);
         void read_code();
         void push(frame);
+        void asm_write_code(std::string &symbol, std::string &arg1, std::string &arg2);
+        void asm_write_lable(std::string &lable);
 };
 
 asm_file::asm_file(std::string file_path_) :

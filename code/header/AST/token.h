@@ -44,7 +44,7 @@ enum class token {
     class_char_array,    //char array
     class_bool_array,
 
-    class_int_array_unit,
+    class_int_array_unit,   // + - * /
     class_double_array_unit,
     class_char_array_unit,
     class_bool_array_unit,

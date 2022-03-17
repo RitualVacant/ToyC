@@ -3,17 +3,28 @@
 
 #pragma once
 #include "./header/class/asm_file.h"
+#include <sstream>
 
 void asm_file::get_code(std::vector<frame> &code_) {
     code = std::move(code_);
     return;
 }
 
-void asm_file::push(frame x) {
+void asm_file::push(stack_frame x) {
+    offset += x.size_total;
     symbol_stack.push_back(x);
     return;
 }
 
+void asm_file::asm_write(std::sting &symbol, std::string &arg1, std::string &arg2) {
+    file << fmt::format({:6} {:6} {:6}, symbol, arg1, arg2);
+    return;
+}
+
+void asm_write_lable(std::string &lable) {
+    file << fmt::format("{}:", lable);
+    return;
+}
 void asm_file::read_code() {
     for (std::size_t i = 0; i < code.size(); ++i) {
         switch (code[i].symbol) {
@@ -22,42 +33,60 @@ void asm_file::read_code() {
                 exit(0);
             }
             token::jmp: {
-                file << fmt::format("   jmp {}", code[i].arg1);
+                asm_write_code("jmp", code[i].arg1, "");
                 continue;
             }
             token::lable: {
-                file << fmt::format("   {}:", code[i].arg1);
+                asm_write_lable(code[i].arg1);
                 continue;
             }
             token::dec_int: {
-                push(frame(token::int_class, code[i].arg1));
-                file << fmt::format("   sp - 4")
+                push(stack_frame(code[i].arg1, token::int_class, offset, 4, 4));
+                asm_write_code("sub", "sp", "4");
                 continue;
             }
             token::dec_double: {
-
+                push(frame(code[i].arg1, token::double_class, offset, 4, 4));
+                asm_write_code("sub", "sp", "4");
                 continue;
             }
             token::dec_char: {
-
+                push(frame(code[i].arg1, token::char_class, offset, 1, 1));
+                asm_write_code("sub", "sp", "1");
                 continue;
             }
             token::dec_bool: {
-
+                push(frame(code[i].arg1, token::bool_class, offset, 1, 1));
+                asm_write_code("sub", "sp", "1");
                 continue;
             }
             token::dec_int_arrary: {
-
+                std::size_t size_array = std::stoul(code[i].arg1) * 4;
+                push(frame(code[i].arg1, token::class_int_arrary, offset, size_array, 4));
+                asm_write_code("sub", "sp", std::to_string(size_array));
                 continue;
             }
             token::dec_double_arrary: {
-
+                std::size_t size_array = std::stoul(code[i].arg1) * 4;
+                push(frame(code[i].arg1, token::class_int_arrary, offset, size_array, 4));
+                asm_write_code("sub", "sp", std::to_string(size_array));
                 continue;
             }
-            token::dec_char_arrary:
-            token::dec_bool_arrary:
-
-            token::dec_func:
+            token::dec_char_arrary: {
+                std::size_t size_array = std::stoul(code[i].arg1) * 1;
+                push(frame(code[i].arg1, token::class_char_arrary, offset, size_array, 1));
+                asm_write_code("sub", "sp", std::to_string(size_array));
+                continue;
+            }
+            token::dec_bool_arrary: {
+                std::size_t size_array = std::stoul(code[i].arg1) * 1;
+                push(frame(code[i].arg1, token::class_bool_arrary, offset, size_array, 1));
+                asm_write_code("sub", "sp", std::to_string(size_array));
+                continue;
+            }
+            token::dec_func: {
+                continue;
+            }
             token::call_func:
             token::call_func_end:
             token::func_return:
