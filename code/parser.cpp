@@ -6,59 +6,58 @@
 #include "./header/AST/token.h"
 #include "./header/class/parser.h"
 
-//+---------------------------------------
-//|function of create node
-//|parser statement to node pointer
-//+---------------------------------------
 
-
-void parser::parser_if_statement() {
+void
+parser::parser_if_statement() {
     scan->next_token(); //if
     scan->next_token(); //(
 
     std::string value1 = parser_expression();
     token symbol = scan->get_token();
+    scan->next_token();   //symbol
     std::string value2 = parser_expression();
     //
     switch (symbol) {
-        token::log_and,    //&&
+        case token::log_and:    //&&
             code.push_back(statement(token::log_and, value1, value2, ""));
             break;
-        token::log_or,     //||
+        case token::log_or:     //||
             code.push_back(statement(token::log_or, value1, value2, ""));
             break;
-        token::equ,        //==
+        case token::equ:        //==
             code.push_back(statement(token::equ, value1, value2, ""));
             break;
-        token::not_equ,    //!=
+        case token::not_equ:    //!=
             code.push_back(statement(token::not_equ, value1, value2, ""));
             break;
-        token::great_equ,  //>=
+        case token::great_equ:  //>=
             code.push_back(statement(token::great_equ, value1, value2, ""));
             break;
-        token::less_equ,   //<=
+        case token::less_equ:   //<=
             code.push_back(statement(token::less_equ, value1, value2, ""));
             break;
-        token::great,      //>
+        case token::great:      //>
             code.push_back(statement(token::great, value1, value2, ""));
             break;
-        token::less,       //<
+        case token::less:       //<
             code.push_back(statement(token::less, value1, value2, ""));
             break;
     default:
         break;
     }
 
+    scan->next_token();  // )
+    // 不用 } statement里面会跳过
+
     while (scan->get_token() != token::r_big_par) {
         parser_statement();
     }
 
-    std::string lable_1 = fmt::format("label{}", get_lable());
+    std::string lable_1 = get_lable();
     code.push_back(statement(token::lable, lable_1, "", ""));
 
     //else
-    scan->next_token();
-    if (scan->get_token() == token::key_else) {
+    if (scan->get_pre_token() == token::key_else) {
         while (scan->get_token() != token::r_big_par) {
             parser_statement();
         }
@@ -67,57 +66,93 @@ void parser::parser_if_statement() {
 }
 
 
-void parser::parser_while_statement() {
-    scan->next_token();         // while
-    std::string 
-    switch () {
-    case :
-        break;
-    default:
-        break;
+void
+parser::parser_while_statement() {
+    scan->next_token(); //while
+    scan->next_token(); // (
+    std::string while_head = get_lable();
+    code.push_back(statement(token::lable, while_head, "", ""));
+
+    std::string value1 = parser_expression();
+    token symbol = scan->get_token();
+    scan->next_token();
+    std::string value2 = parser_expression();
+    //
+    switch (symbol) {
+        case token::log_and:    //&&
+            code.push_back(statement(token::log_and, value1, value2, ""));
+            break;
+        case token::log_or:     //||
+            code.push_back(statement(token::log_or, value1, value2, ""));
+            break;
+        case token::equ:        //==
+            code.push_back(statement(token::equ, value1, value2, ""));
+            break;
+        case token::not_equ:    //!=
+            code.push_back(statement(token::not_equ, value1, value2, ""));
+            break;
+        case token::great_equ:  //>=
+            code.push_back(statement(token::great_equ, value1, value2, ""));
+            break;
+        case token::less_equ:   //<=
+            code.push_back(statement(token::less_equ, value1, value2, ""));
+            break;
+        case token::great:      //>
+            code.push_back(statement(token::great, value1, value2, ""));
+            break;
+        case token::less:       //<
+            code.push_back(statement(token::less, value1, value2, ""));
+            break;
+        default:
+            fmt::print("\na unknow error at parser::parser_while_statement()\n");
+            exit(0);
+            break;
     }
+
+    scan->next_token();
+
+    while (scan->get_token() != token::r_big_par) {
+        parser_statement();
+    }
+
+    code.push_back(statement(token::jmp, while_head, "", ""));
     return;
 }
 
 
 //return
-void
+std::string
 parser::parser_return_statement() {
     //没有返回值
-    if (scan->get_pre_token() == token::end) {
+  //if (scan->get_pre_token() == token::end) {
+  //    code.push_back(statement(token::func_return, "", "", ""));
+  //    return "";
+  //}
+    scan->next_token();
+    if (scan->get_token() == token::end) {
         code.push_back(statement(token::func_return, "", "", ""));
-        return;
+        return "";
     }
 
-    std::string return_value = parser_expression()您对下列文件的本地修改将被合并操作覆盖
+    std::string return_value = parser_expression();
     code.push_back(statement(token::func_return, return_value, "", ""));
-    return;
+    return return_value;
 }
 
 //+------------------------------------------
 //|function parser expression or statement
 //+------------------------------------------
 //TODO暂时不支持一元表达式
-void parser::parser_unary_expression() {
-    token token_ = scan->get_token();
-    //一元表达式
-    //
-    if (token_ ==  token::bit_and || token_ == token::bit_not || token_ == token::bit_or) {
-        return;
-    }
-    else if (is_primary_operator(token_)) {
-        parser_primary_expression();
-    }
+
+void
+parser::parser_primary_expression() {
     return;
 }
 
-void parser::parser_primary_expression() {
-
-}
-
-void parser::parser_expression_unit() {
-
-}
+std::unordered_set<token> end_expresion = {
+    token::end, token::r_mid_par, token::r_par, token::log_and, token::log_not, token::log_or, token::equ,
+    token::not_equ, token::great_equ, token::less_equ, token::great, token::less
+};
 
 //转换成后缀表达式
 std::vector<std::tuple<token, std::string>>
@@ -125,15 +160,21 @@ parser::parser_pre_to_pos() {
     std::vector<std::tuple<token, std::string>> symbol_stack;
     std::vector<std::tuple<token, std::string>> res;//后缀表达式
 
-    while (scan->get_token() != token::end && scan->get_token() != token::r_mid_par) {
+    while (end_expresion.find(scan->get_token()) == end_expresion.end()) {
         //TODO 这个next_token的位置
         switch (scan->get_token()) {
             case token::indentif: {//indentif or arrary unit
                 std::string name_indentif = scan->get_value();
-                if (scan->get_pre_token() == token::l_mid_par) {
-                    scan->next_token();    //这里取下一个是因为[ 会在下一次不动
+                token pre_token = scan->get_pre_token();  //预取了
+                if (pre_token == token::l_mid_par) {
+                    scan->next_token();                   //这里取下一个是因为[ 会在下一次不动
                     std::string array_unit = parser_unit(name_indentif);
                     res.push_back({token::arrary_unit, array_unit});
+                }
+                else if (pre_token == token::l_par) {
+                    scan->next_token();                   //这里也是
+                    std::string return_value = parser_func_call(name_indentif);
+                    res.push_back({token::indentif, return_value});
                 }
                 else {
                     res.push_back({token::indentif, name_indentif});
@@ -159,10 +200,11 @@ parser::parser_pre_to_pos() {
                 if (symbol_stack.empty() || preceden(token::plus) > preceden(std::get<0>(symbol_stack.back())))
                     symbol_stack.push_back(scan->now_token);
                 else {
-                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                    while (preceden(token::plus) <= preceden(std::get<0>(symbol_stack.back()))) {
                         res.push_back(symbol_stack.back());
                         symbol_stack.pop_back();
                     }
+                    symbol_stack.push_back(scan->now_token);
                 }
                 break;
 
@@ -174,6 +216,7 @@ parser::parser_pre_to_pos() {
                         res.push_back(symbol_stack.back());
                         symbol_stack.pop_back();
                     }
+                    symbol_stack.push_back(scan->now_token);
                 }
                 break;
 
@@ -181,10 +224,11 @@ parser::parser_pre_to_pos() {
                 if (symbol_stack.empty() || preceden(token::times) > preceden(std::get<0>(symbol_stack.back())))
                     symbol_stack.push_back(scan->now_token);
                 else {
-                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                    while (preceden(token::times) <= preceden(std::get<0>(symbol_stack.back()))) {
                         res.push_back(symbol_stack.back());
                         symbol_stack.pop_back();
                     }
+                    symbol_stack.push_back(scan->now_token);
                 }
                 break;
 
@@ -192,21 +236,23 @@ parser::parser_pre_to_pos() {
                 if (symbol_stack.empty() || preceden(token::div) > preceden(std::get<0>(symbol_stack.back())))
                     symbol_stack.push_back(scan->now_token);
                 else {
-                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                    while (preceden(token::div) <= preceden(std::get<0>(symbol_stack.back()))) {
                         res.push_back(symbol_stack.back());
                         symbol_stack.pop_back();
                     }
+                    symbol_stack.push_back(scan->now_token);
                 }
                 break;
 
             case token::mod:    //%
-                if (symbol_stack.empty() || preceden(token::minus) > preceden(std::get<0>(symbol_stack.back())))
+                if (symbol_stack.empty() || preceden(token::mod) > preceden(std::get<0>(symbol_stack.back())))
                     symbol_stack.push_back(scan->now_token);
                 else {
-                    while (preceden(token::minus) <= preceden(std::get<0>(symbol_stack.back()))) {
+                    while (preceden(token::mod) <= preceden(std::get<0>(symbol_stack.back()))) {
                         res.push_back(symbol_stack.back());
                         symbol_stack.pop_back();
                     }
+                    symbol_stack.push_back(scan->now_token);
                 }
                 break;
 
@@ -265,7 +311,7 @@ parser::parser_expression() {
                 arg2 = num_stack.back();
                 num_stack.pop_back();
                 //运算
-                std::string ans = fmt::format("#t{}", get_var_time());
+                std::string ans = get_var_time();
                 code.push_back(statement(token::plus, arg1, arg2, ans));
                 num_stack.push_back(ans);
                 break;
@@ -277,7 +323,7 @@ parser::parser_expression() {
                 arg2 = num_stack.back();
                 num_stack.pop_back();
                 //运算
-                std::string ans = fmt::format("#t{}", get_var_time());
+                std::string ans = get_var_time();
                 code.push_back(statement(token::minus, arg1, arg2, ans));
                 num_stack.push_back(ans);
                 break;
@@ -289,7 +335,7 @@ parser::parser_expression() {
                 arg2 = num_stack.back();
                 num_stack.pop_back();
                 //运算
-                std::string ans = fmt::format("#t{}", get_var_time());
+                std::string ans = get_var_time();
                 code.push_back(statement(token::div, arg1, arg2, ans));
                 num_stack.push_back(ans);
                 break;
@@ -301,7 +347,7 @@ parser::parser_expression() {
                 arg2 = num_stack.back();
                 num_stack.pop_back();
                 //运算
-                std::string ans = fmt::format("#t{}", get_var_time());
+                std::string ans = get_var_time();
                 code.push_back(statement(token::mod, arg1, arg2, ans));
                 num_stack.push_back(ans);
                 break;
@@ -313,7 +359,7 @@ parser::parser_expression() {
                 arg2 = num_stack.back();
                 num_stack.pop_back();
                 //运算
-                std::string ans = fmt::format("#t{}", get_var_time());
+                std::string ans = get_var_time();
                 code.push_back(statement(token::times, arg1, arg2, ans));
                 num_stack.push_back(ans);
                 break;
@@ -327,7 +373,6 @@ parser::parser_expression() {
             case token::less:       //<
             case token::log_and: //&&
             case token::log_or:  //||
-                return;
 
             default: {
                 fmt::print("\na unknow error at parser::parser_expression()\n");
@@ -339,7 +384,8 @@ parser::parser_expression() {
     }
     return num_stack[0];
 }
-void parser::parser_expression_(std::string name_indentif) {
+void
+parser::parser_expression_(std::string name_indentif) {
     std::vector<token> symbol_stack;
     std::vector<std::string> num_stack;
     //符号队列 和 数字队列 近似于后缀表达式的正确运算顺序
@@ -573,7 +619,8 @@ void parser::parser_expression_(std::string name_indentif) {
     return;
 }
 
-void parser::parser_lvalue() {
+void
+parser::parser_lvalue() {
     token token_class = scan->get_token();
     scan->next_token(); //标识符
     scan->next_token(); //
@@ -602,25 +649,25 @@ parser::parser_declare() {
             case token::key_int: {
                 scan->next_token();
                 code.push_back(statement(token::dec_int_arrary, name_array, size_array, ""));
-                sign->push_var({token::class_int_array, name_array});
+                sign->push_var(frame(token::class_int_array, name_array));
                 break;
             }
             case token::key_char: {
                 scan->next_token();
                 code.push_back(statement(token::dec_char_arrary, name_array, size_array, ""));
-                sign->push_var({token::class_char_array, name_array});
+                sign->push_var(frame(token::class_char_array, name_array));
                 break;
             }
             case token::key_bool: {
                 scan->next_token();
                 code.push_back(statement(token::dec_bool_arrary, name_array, size_array, ""));
-                sign->push_var({token::class_bool_array, name_array});
+                sign->push_var(frame(token::class_bool_array, name_array));
                 break;
             }
             case token::key_double: {
                 scan->next_token();
                 code.push_back(statement(token::dec_double_arrary, name_array, size_array, ""));
-                sign->push_var({token::class_double_array, name_array});
+                sign->push_var(frame(token::class_double_array, name_array));
                 break;
             }
             default:
@@ -637,22 +684,22 @@ parser::parser_declare() {
     switch (class_indentfi) {
         case token::key_int: {
             code.push_back(statement(token::dec_int, name_indentfi, "", ""));
-            sign->push_var({token::class_int, name_indentfi});
+            sign->push_var(frame(token::class_int, name_indentfi));
             break;
         }
         case token::key_char: {
             code.push_back(statement(token::dec_char, name_indentfi, "", ""));
-            sign->push_var({token::class_char, name_indentfi});
+            sign->push_var(frame(token::class_char, name_indentfi));
             break;
         }
         case token::key_bool: {
             code.push_back(statement(token::dec_bool, name_indentfi, "", ""));
-            sign->push_var({token::class_bool, name_indentfi});
+            sign->push_var(frame(token::class_bool, name_indentfi));
             break;
         }
         case token::key_double:{
             code.push_back(statement(token::dec_double, name_indentfi, "", ""));
-            sign->push_var({token::class_double, name_indentfi});
+            sign->push_var(frame(token::class_double, name_indentfi));
             break;
         }
     }
@@ -675,7 +722,8 @@ parser::parser_declare() {
 //解析函数,包括参数和函数体
 //
 
-void parser::parser_function() {
+void
+parser::parser_function() {
     //函数
     std::vector<arg_info> argu_table; //记录参数
     std::string name_func;                            //函数名
@@ -701,21 +749,21 @@ void parser::parser_function() {
     scan->next_token(); //->
     scan->next_token(); //返回类型
     class_return = scan->get_token();
-    //向函数表中插入函数
-    //TODO 改写
-    sign->insert_func(func(name_func, argu_table, class_return));
     // {
-    scan->next_token();
+    //scan->next_token();
     //函数体
     while (scan->get_token() != token::key_return) {
         parser_statement();
     }
     //函数返回
-    parser_return_statement();
+    std::string return_name = parser_return_statement();
     // }
     scan->next_token();
     //把函数栈清空
     sign->clear_symbol_stack();
+
+    //向函数表中插入函数
+    sign->insert_func(func(name_func, argu_table, class_return, return_name));
     return;
 }
 
@@ -735,6 +783,7 @@ parser::parser_statement() {
                 //提前判断处理数组元素
                 if (scan->get_token() == token::l_mid_par) {
                     name_indentif = parser_unit(name_indentif);
+                    scan->next_token();
                 }
                 switch (scan->get_token()) {
                     case token::l_par: {    //函数 call
@@ -820,13 +869,17 @@ parser::parser_statement() {
             case token::assign:     //=
 
             case token::comment:        //#
-            case token::key_if:         //if
-            case token::key_else:       //else
-
+            case token::key_if: {       //if
+                parser_if_statement();
+                return;
+            }
             case token::key_true:       //true
             case token::key_false:      //false
 
-            case token::key_while:      //while
+            case token::key_while: {    //while
+                parser_while_statement();
+                return;
+            }
             case token::key_for:        //for
             case token::key_null:       //null
             case token::key_return:     //return
@@ -838,7 +891,7 @@ parser::parser_statement() {
     }
 }
 
-void
+std::string
 parser::parser_func_call(std::string name_func) {
     code.push_back(statement(token::call_func, name_func, "", ""));
     scan->next_token(); // (
@@ -880,22 +933,30 @@ parser::parser_func_call(std::string name_func) {
                 break;
             }
             default: {
-                fmt::print("\na unknow error at parser::parser_func_call\n");
+                fmt::print("\na unknow error at parser::parser_func_call() line:{} colume:{}\n", line, column);
                 exit(0);
             }
         }
         scan->next_token();
     }
+
+    std::string return_value = sign->find_func_return_var_value(name_func);
     code.push_back(statement(token::call_func_end, "", "", ""));
-    return;
+    return return_value;
 }
 
-std::size_t parser::get_var_time() {
-    return ++var_time;
+std::string
+parser::get_var_time() {
+    std::string re = fmt::format("#{}", var_time);
+    ++var_time;
+    return re;
 }
 
-std::size_t parser::get_lable() {
-    return ++lable;
+std::string
+parser::get_lable() {
+    std::string re = fmt::format("lable{}", lable);
+    ++lable;
+    return re;
 }
 
 //解析数组元素
@@ -909,20 +970,26 @@ parser::parser_unit(std::string name_array) {
 
 void
 parser::print_mid_code() {
-    fmt::print("to file(f) or on ther teriminal(t):");
+    fmt::print("to print in file(f) or on the teriminal(t):");
     char c;
     std::cin >> c;
     if (c == 'f') {
+        sign->file << fmt::format("+------------------+----------+----------+----------+\n");
         sign->file << fmt::format("|{:18}|{:10}|{:10}|{:10}|\n", "symbol", "arg1", "arg2", "result");
+        sign->file << fmt::format("+------------------+----------+----------+----------+\n");
         for (std::size_t i = 0; i < code.size(); ++i) {
             sign->file << fmt::format("|{:18}|{:10}|{:10}|{:10}|\n", trans_output_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
         }
+        sign->file << fmt::format("+------------------+----------+----------+----------+\n");
     }
     else {
+        fmt::print("+------------------+----------+----------+----------+\n");
         fmt::print("|{:18}|{:10}|{:10}|{:10}|\n", "symbol", "arg1", "arg2", "result");
+        fmt::print("+------------------+----------+----------+----------+\n");
         for (std::size_t i = 0; i < code.size(); ++i) {
             fmt::print("|{:18}|{:10}|{:10}|{:10}|\n", trans_output_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
         }
+        fmt::print("+------------------+----------+----------+----------+\n");
     }
     return;
 }

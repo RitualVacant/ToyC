@@ -1,5 +1,6 @@
 #ifndef SCANNING_H
 #define SCANNING_H
+
 #pragma once
 #include <string>
 #include <fstream>

@@ -62,9 +62,10 @@ struct func {
     std::string name;
     std::vector<arg_info> argu;
     token class_reture;
+    std::string name_return;
 
-    func(std::string &name_, std::vector<arg_info> &argu_, token &class_reture_) :
-        name(name_), argu(argu_), class_reture(class_reture_) {};
+    func(std::string &name_, std::vector<arg_info> &argu_, token &class_reture_, std::string &name_return_) :
+        name(name_), argu(argu_), class_reture(class_reture_), name_return(name_return_) {};
 };
 
 class sign_map {
@@ -85,7 +86,7 @@ class sign_map {
         std::unordered_set<std::string> global_sign;
 
         std::vector<func> func_table;
-        std::vector<std::tuple<token, std::string>> symbol_stack;//符号表
+        std::vector<frame> symbol_stack;//符号表
 
     public:
         std::fstream file;
@@ -108,7 +109,7 @@ class sign_map {
         bool find_argu(std::string name);
         std::string find_local(std::string &name);
 
-        void push_var(std::tuple<token, std::string> x);
+        void push_var(frame x);
         void clear_symbol_stack();
         token find_var_class(std::string name);
 
@@ -117,6 +118,7 @@ class sign_map {
         void insert_func(func);
         void push_func();
         void pop_func();
+        std::string find_func_return_var_value(std::string func_name);
 };
 
 sign_map::sign_map(std::string &file_path_) : file_path(file_path_) {

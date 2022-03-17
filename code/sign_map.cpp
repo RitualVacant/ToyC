@@ -17,7 +17,7 @@ void sign_map::insert_func(func func_) {
 //
 //压入一个临时变量
 //
-void sign_map::push_var(std::tuple<token, std::string> x) {
+void sign_map::push_var(frame x) {
     symbol_stack.push_back(x);
     return;
 }
@@ -33,8 +33,8 @@ void sign_map::clear_symbol_stack() {
 
 token sign_map::find_var_class(std::string name) {
     for (int i = 0; i < symbol_stack.size(); ++i) {
-        if (name == std::get<1>(symbol_stack[i]))
-            return std::get<0>(symbol_stack[i]);
+        if (name == symbol_stack[i].name)
+            return symbol_stack[i].var_class;
     }
     return token::invalid;
 }
@@ -149,4 +149,15 @@ std::string sign_map::find_local(std::string &name) {
     return "";
 }
 
+std::string sign_map::find_func_return_var_value(std::string func_name) {
+    for (int i = 0; i < func_table.size(); ++i) {
+        if (func_name == func_table[i].name)
+            return func_table[i].name_return;
+    }
+
+    fmt::print("can't find func in func_table\n");
+    fmt::print("at sign_map::fund_func_return_var_value()\n");
+    exit(0);
+    return "";
+}
 #endif
