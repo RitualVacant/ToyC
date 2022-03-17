@@ -144,7 +144,7 @@ std::string sign_map::find_local(std::string &name) {
       //        break;
       //    }
       //}
-        return register_name.at(num);
+        //return register_name.at(num);
     }
     return "";
 }

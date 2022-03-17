@@ -31,7 +31,9 @@ class asm_file {
         std::vector<statement> &&code;
 
         std::vector<stack_frame> symbol_stack;
-        std::size_t offset = 0;
+        std::vector<func> func_table;
+        std::size_t sp = 0;
+
     public:
         asm_file(std::string file_path);
         ~asm_file();
@@ -43,8 +45,10 @@ class asm_file {
         void get_code(std::vector<statement> &code);
         void read_code();
         void push(frame);
+        func& find_func(std::string name);
         void asm_write_code(std::string &symbol, std::string &arg1, std::string &arg2);
         void asm_write_lable(std::string &lable);
+        void asm_write_mov(std::size_t size, std::string &arg1, std::string &arg2);
 };
 
 asm_file::asm_file(std::string file_path_) :

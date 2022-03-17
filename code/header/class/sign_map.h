@@ -22,16 +22,6 @@ std::unordered_map<token, std::size_t> size_class{
 
 };
 
-//寄存器号数
-std::unordered_map<std::size_t, std::string> register_name {
-    {0, "rdi"},
-    {1, "rsi"},
-    {2, "rdx"},
-    {3, "rcx"},
-    {4, "r8"},
-    {5, "r9"},
-};
-
 struct statement {
     token symbol;
     std::string arg1;
