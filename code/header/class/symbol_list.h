@@ -58,7 +58,7 @@ struct func {
         name(name_), argu(argu_), class_reture(class_reture_), name_return(name_return_) {};
 };
 
-class sign_map {
+class symbol_list {
     private:
     //
     //符号表部分
@@ -75,29 +75,42 @@ class sign_map {
         std::vector<frame> sign_stack;
         std::unordered_set<std::string> global_sign;
 
-        std::vector<func> func_table;
+        //貌似已经被弃用，符号表
         std::vector<frame> symbol_stack;//符号表
+        //传参时在寄存器中的参数的寄存器列表
+        std::vector<std::string> argu_register_loc = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
     public:
+        //函数表
+        std::vector<func> func_table;
+
         std::fstream file;
         std::string file_path;
 
 
-        explicit sign_map(std::string &file_path_);
-        ~sign_map();
-        sign_map(sign_map&)             = delete;
-        sign_map(sign_map&&)            = delete;
-        sign_map& operator=(sign_map&)  = delete;
-        sign_map& operator=(sign_map&&) = delete;
+        explicit symbol_list(std::string &file_path_, bool really_output_asm_code_);
+        ~symbol_list();
+        symbol_list(symbol_list&)             = delete;
+        symbol_list(symbol_list&&)            = delete;
+        symbol_list& operator=(symbol_list&)  = delete;
+        symbol_list& operator=(symbol_list&&) = delete;
 
     //符号表
+        //DROP在栈中寻找
         bool find(std::tuple<token, std::string> &x);
+        //DROP在栈中寻找
         bool find(std::string &x);
+        //DROP返回在栈中的偏移量
         std::size_t at(std::tuple<token, std::string> &x);
+        //DROP返回在栈中的偏移量
         std::size_t at(std::string &x);
-        bool find_func(std::string& name);
+        //DROP在函数参数表中寻找
         bool find_argu(std::string name);
+        //DROP返回变量，或者是函数参数在汇编中的字符串表达
         std::string find_local(std::string &name);
+
+        //在函数表中寻找函数
+        bool find_func(std::string& name);
 
         void push_var(frame x);
         void clear_symbol_stack();
@@ -105,24 +118,31 @@ class sign_map {
 
         void push_global_sign(std::string &x);
 
+        //把函数插入函数表,TODO并把now_arge替换成这个函数的参数表
         void insert_func(func);
-        void push_func();
+
+        //void push_func();
+        //DROP把这个函数的所有东西出栈，包括参数
         void pop_func();
         std::string find_func_return_var_value(std::string func_name);
+        //初始化函数传参的位置的位置 parser.cpp
+        void init_loc_argu();
 };
 
-sign_map::sign_map(std::string &file_path_) : file_path(file_path_) {
+symbol_list::symbol_list(std::string &file_path_, bool really_output_asm_code_)
+: file_path(file_path_) {
+    if (really_output_asm_code_) return;
+
     file.open(file_path, std::ofstream::out);
     if (!file.is_open()) {
-            fmt::print(fg(fmt::color::red), "\nfail to open the file!\n");
-            fmt::print(fg(fmt::color::red), "please check the output file's path\n");
-            fmt::print(fg(fmt::color::red), "--end--\n");
-            exit(1);
+        fmt::print(fg(fmt::color::red), "\nfail to open the file!\n");
+        fmt::print(fg(fmt::color::red), "please check the output file's path\n");
+        fmt::print(fg(fmt::color::red), "--end--\n");
+        exit(1);
     }
-    //初始化
 }
 
-sign_map::~sign_map() {
+symbol_list::~symbol_list() {
     file.close();
 }
 

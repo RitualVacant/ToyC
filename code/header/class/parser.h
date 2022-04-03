@@ -9,14 +9,17 @@
 #include <stdlib.h>
 #include "./../AST/ast.h"
 #include "./../../scanning.cpp"
-#include "./../../sign_map.cpp"
+#include "./../../symbol_list.cpp"
 #include "./../../worng.cpp"
-#include "./../../asm_file.cpp"
+#include "./../../asm_code.cpp"
 
 
 
 class parser {
     private:
+        //yes or no
+        bool really_output_asm_code = false;
+
         std::string file_path;         //初始化scanning
         std::string output_file_path;
 
@@ -24,13 +27,13 @@ class parser {
         std::size_t lable = 0;
 
         //符号表 RAII
-        sign_map* sign;
+        symbol_list* list = nullptr;
         //词法分析 RAII
-        scanning* scan;
-        //asm
-        asm_file* asm_code;
+        scanning* scan = nullptr;
+        //asm_code
+        asm_code* asm_file = nullptr;
 
-        //临时变量的个数, 会累加的闭包
+        //临时变量的个数,类似会累加的闭包,parser::get_var_time()
         std::size_t var_time = 0;
 
         void parser_if_statement ();
@@ -50,6 +53,7 @@ class parser {
         void parser_expression_unit();
         std::string parser_func_call(std::string name_func);
 
+        //前缀表达式转后缀表达式
         std::vector<std::tuple<token, std::string>> parser_pre_to_pos();
 
         std::string get_var_time();
@@ -57,7 +61,7 @@ class parser {
 
 
     public:
-        explicit parser(std::string &file_path_, std::string &output_file_path_);
+        explicit parser(std::string &file_path_, std::string &output_file_path_, bool really_output_asm_code_);
         ~parser();
         parser(parser const&)       = delete;
         parser(parser&&)            = delete;
@@ -65,26 +69,27 @@ class parser {
         parser& operator=(parser&&) = delete;
 
         void print_mid_code();
-        void print_asm_code();
+        void print_asm_code_code();
 };
 
 
-parser::parser(std::string &file_path_, std::string &output_file_path_)
-   :file_path(file_path_), output_file_path(output_file_path_)
-{
+parser::parser(std::string &file_path_, std::string &output_file_path_, bool really_output_asm_code_)
+: file_path(file_path_), output_file_path(output_file_path_), really_output_asm_code(really_output_asm_code_) {
     scan = new scanning(file_path);
-    sign = new sign_map(output_file_path);
-    asm_code = new asm_file(output_file_path);
-    //TODO 这里要调用
+    list = new symbol_list(output_file_path, really_output_asm_code);
     while (!scan->file.eof()) {
         parser_statement();
     }
-
+    if (really_output_asm_code) {
+        list->init_loc_argu();
+        asm_file = new asm_code(output_file_path, std::move(code), list);
+    }
 };
 
 parser::~parser() {
     delete scan;
-    delete sign;
+    delete list;
+    delete asm_file;
 };
 
 #endif

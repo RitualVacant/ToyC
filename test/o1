@@ -1,40 +1,43 @@
-+------------------+------------------+------------------+------------------+
-|symbol            |arg1              |arg2              |result            |
-+------------------+------------------+------------------+------------------+
-|dec_func          |add               |                  |                  |
-|dec_int           |yes               |                  |                  |
-|assign            |$3                |                  |yes               |
-|great_equ         |yes               |$3                |                  |
-|assign            |$0                |                  |yes               |
-|equ               |yes               |$3                |                  |
-|assign            |$9                |                  |yes               |
-|lable             |lable0            |                  |                  |
-|lable             |lable1            |                  |                  |
-|assign            |$2                |                  |yes               |
-|dec_int           |sum               |                  |                  |
-|assign            |$0                |                  |sum               |
-|lable             |lable2            |                  |                  |
-|less_equ          |sum               |$34               |                  |
-|plus_agn          |$3                |                  |sum               |
-|jmp               |lable2            |                  |                  |
-|dec_int_arrary    |array1            |4                 |                  |
-|dec_char_arrary   |array2            |3                 |                  |
-|plus              |&array1[$0]       |$3                |#0                |
-|div               |$3                |&array2[$3]       |#1                |
-|plus              |#1                |#0                |#2                |
-|assign            |#2                |                  |&array2[$1]       |
-|div               |$3                |c                 |#3                |
-|times             |&array2[$0]       |#3                |#4                |
-|plus              |#4                |yes               |#5                |
-|func_return       |#5                |                  |                  |
-|dec_func          |main              |                  |                  |
-|dec_int           |a                 |                  |                  |
-|assign            |$1                |                  |a                 |
-|dec_int           |ss                |                  |                  |
-|call_func         |add               |                  |                  |
-|arg_int_class     |a                 |                  |                  |
-|arg_r_int         |3                 |                  |                  |
-|call_func_end     |                  |                  |                  |
-|assign            |#5                |                  |ss                |
-|func_return       |                  |                  |                  |
-+------------------+------------------+------------------+------------------+
+add:
+    push    rbp
+    mov     rbp,    rsp
+    sub     rsp,    27
+    sub     sp,     4
+    mov     dword   yes,    $3
+    cmp     yes,    $3
+    jge     lable0
+    mov     dword   yes,    $0
+    cmp     yes,    $3
+    je      lable1
+    mov     dword   yes,    $9
+lable1:
+lable0:
+    mov     dword   yes,    $2
+    sub     sp,     4
+    mov     dword   sum,    $0
+lable2:
+    cmp     sum,    $34
+    jle     lable4
+lable4:
+    add     $3
+    jmp     lable2
+lable3:
+    sub     sp,     16
+    sub     sp,     3
+    mov     dword   &array2[$1],#2
+    mov     rsp,    rbp
+    pop     rbp
+    ret
+main:
+    push    rbp
+    mov     rbp,    rsp
+    sub     rsp,    8
+    sub     sp,     4
+    mov     dword   a,      $1
+    sub     sp,     4
+    mov     dword   [bp - 0],[bp-31]
+    mov     dword   [bp - 4],3
+    mov     dword   ss,     #5
+    mov     rsp,    rbp
+    pop     rbp
+    ret

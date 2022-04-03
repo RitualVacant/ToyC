@@ -22,26 +22,31 @@ void output_help_information();
 //-----------------------------------------------------------------------------------------------
 //main func
 //-----------------------------------------------------------------------------------------------
-//int main(int argc, char* argv[]) {
 
 std::string file_path = "/home/lzj/code/program/script/test/i1";
 std::string output_file_path = "/home/lzj/code/program/script/test/o1";
 
-int main() {
-    //cin.tie(0);
-    //std::ios::sync_with_stdio(false);
-    fmt::print("path of input file  : ");
-    //std::cin >> file_path;
-    fmt::print("path of output file : ");
-    //std::cin >> output_file_path;
-    choose_mode_run();
+int main(int argc, char* argv[]) {
+    if (argc == 1) {
+        fmt::print("path of input file  : ");
+        //std::cin >> file_path;
+        fmt::print("path of output file : ");
+        //std::cin >> output_file_path;
+        choose_mode_run();
+    }
+    else {
+        file_path = argv[1];
+        output_file_path = argv[2];
+        parser p{file_path, output_file_path, true};
+        fmt::print("\nMyScript {} {}\nDone\n", file_path, output_file_path);
+    }
     return 0;
 }
 
 //-----------------------------------------------------------------------------------------------
 //def
 //-----------------------------------------------------------------------------------------------
-inline void choose_mode_run() {
+void choose_mode_run() {
     output_help_information();
     mode choose_mode;
     char in;
@@ -56,12 +61,12 @@ inline void choose_mode_run() {
                 break;
             }
             case mode::mid : {
-                parser p{file_path, output_file_path};
+                parser p{file_path, output_file_path, false};
                 p.print_mid_code();
                 break;
             }
             case mode::yes : {
-                parser p{file_path, output_file_path};
+                parser p{file_path, output_file_path, true};
                 break;
             }
             case mode::help : {
@@ -74,14 +79,14 @@ inline void choose_mode_run() {
     return;
 }
 
-inline void output_help_information() {
+void output_help_information() {
     fmt::print("\n");
-    fmt::print("(s) scan    --lexical analysis and output the token\n");
-    fmt::print("(y) yes     --get the asm file\n");
-    fmt::print("(m) mid     --get transfrom code\n");
-    fmt::print("(b)\n");
-    fmt::print("(c) create  --ctreate the\n");
-    fmt::print("(h) help\n");
-    fmt::print("(q) quit\n");
+    fmt::print("(s) scan         --lexical analysis and output the token\n");
+    fmt::print("(y) yes          --get the asm_code file\n");
+    fmt::print("(m) mid_code     --get transfrom code\n");
+    fmt::print("(b) \n");
+    fmt::print("(c) create       --ctreate the\n");
+    fmt::print("(h) help         --print list\n");
+    fmt::print("(q) quit         --quit\n");
     return;
 }

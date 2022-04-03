@@ -58,7 +58,7 @@ inline std::tuple<token, std::string> scanning::to_keyWord_or_indentif() {
 //        re += c;
 //        get_next_char();
 //    }
-//    get_next_char();    //pass string end sign "
+//    get_next_char();    //pass string end list "
 //    now_token = std::make_tuple(token::class_string, re);
 //    return std::make_tuple(token::class_string, re);
 //}
