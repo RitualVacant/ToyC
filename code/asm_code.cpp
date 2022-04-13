@@ -56,38 +56,68 @@ func& asm_code::find_func(std::string name) {
     exit(0);
 }
 
+std::string asm_code::trans_to_loc(std::string name) {
+    if (name.size() == 0) return "";
+    if (name[0] == '$') {
+        auto res = std::string(name.begin() + 1, name.end());
+        return res;
+    }
+    //TODO
+    if (name[0] == '#') return std::string(name.begin() + 1, name.end());
+    if (name[0] == '&') {
+        int name_end;
+        for (name_end = 1; name[name_end] != '['; ++name_end);
+        std::string name_array(name.begin() + 1, name.begin() + name_end);
+
+        stack_frame array;
+        //array location
+        for (std::size_t i = 0; i < symbol_stack.size(); ++i) {
+            if (name_array == symbol_stack[i].name)
+                array = symbol_stack[i];
+        }
+        //
+        return fmt::format("[bp-{}-{}*{}]", array.offset, array.size_unit, trans_to_loc(std::string(name.begin() + name_end + 1, name.end() - 1)));
+    }
+    for (std::size_t i = 0; i < symbol_stack.size(); ++i) {
+        if (name == symbol_stack[i].name)
+            return symbol_stack[i].location;
+    }
+    fmt::print("\n can't find {} location in asm_code::trans_to_loc", name);
+    return "";
+}
+
 //TODO寄存器号数
 //已经弃用
 //std::vector<std::string> register_name {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
 void asm_code::get_code(std::vector<statement> &code_, std::vector<func> &func_table_) {
-    code = std::move(code_);
-    //list->func_table = std::move(func_table_);
+  //code = std::move(code_);
+  ////list->func_table = std::move(func_table_);
 
-    //offset of argu in stack
-    std::size_t offset = 0;
-    //init argu location
-    for (auto &i : list->func_table) {
-        for (std::size_t j = 0; j < i.argu.size(); ++j) {
-            if (j < 6) {
-                //i.argu[j].location = register_name[j];
-            }
-            //TODO
-            else {
-                switch (i.argu[j].arg_class) {
-                case token::class_int: {
-                }
-                case token::class_double:
-                case token::class_char:
-                case token::class_bool:
-                break;
-                default:
-                    fmt::print("\na unknow error at asm_code::get_code\n");
-                    break;
-                }
-            }
-        }
-    }
+  ////offset of argu in stack
+  //std::size_t offset = 0;
+  ////init argu location
+  //for (auto &i : list->func_table) {
+  //    for (std::size_t j = 0; j < i.argu.size(); ++j) {
+  //        if (j < 6) {
+  //            //i.argu[j].location = register_name[j];
+  //        }
+  //        //TODO
+  //        else {
+  //            switch (i.argu[j].arg_class) {
+  //            case token::class_int: {
+  //            }
+  //            case token::class_double:
+  //            case token::class_char:
+  //            case token::class_bool:
+  //            break;
+  //            default:
+  //                fmt::print("\na unknow error at asm_code::get_code\n");
+  //                break;
+  //            }
+  //        }
+  //    }
+  //}
     return;
 }
 
@@ -126,16 +156,16 @@ void asm_code::asm_code_write_lable(std::string lable) {
 void asm_code::asm_code_write_mov(std::size_t size, std::string arg1, std::string arg2) {
     switch (size) {
         case 1:
-            file << fmt::format("    {:8}{:8}{:8}{}\n", "mov", "byte", arg1 + ',', arg2);
+            file << fmt::format("    {:8}{:12}{:8}{}\n", "mov", "byte ptr", arg1 + ',', arg2);
             return;
         case 2:
-            file << fmt::format("    {:8}{:8}{:8}{}\n", "mov", "word", arg1 + ',', arg2);
+            file << fmt::format("    {:8}{:12}{:8}{}\n", "mov", "word ptr", arg1 + ',', arg2);
             return;
         case 4:
-            file << fmt::format("    {:8}{:8}{:8}{}\n", "mov", "dword", arg1 + ',', arg2);
+            file << fmt::format("    {:8}{:12}{:8}{}\n", "mov", "dword ptr", arg1 + ',', arg2);
             return;
         case 8:
-            file << fmt::format("    {:8}{:8}{:8}{}\n", "mov", "qword", arg1 + ',', arg2);
+            file << fmt::format("    {:8}{:12}{:8}{}\n", "mov", "qword ptr", arg1 + ',', arg2);
             return;
         default:
             fmt::print("\na unknow error at asm_code::asm_code_write_mov()\n");
@@ -257,7 +287,7 @@ void asm_code::read_code() {
                         default: {
                             fmt::print("\nan unknow error at asm_code::read_code()\n");
                             fmt::print("case token::call_func:\n");
-                            fmt::print("token: {}\n", trans_output_token_to_string.at(code[i].symbol));
+                            fmt::print("token: {}\n", hash_map_token_to_string.at(code[i].symbol));
                             exit(0);
                         }
                     }
@@ -277,7 +307,7 @@ void asm_code::read_code() {
             }
             case token::assign: {   //=
                 //TODO 没有指定大小
-                asm_code_write_mov(4, code[i].result, code[i].arg1);
+                asm_code_write_mov(4, trans_to_loc(code[i].result), trans_to_loc(code[i].arg1));
                 continue;
             }
 
@@ -335,55 +365,55 @@ void asm_code::read_code() {
 
             //case token::ver        //->
             case token::equ: {       //==
-                asm_code_write_code("cmp", code[i].arg1, code[i].arg2);
+                asm_code_write_code("cmp", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 asm_code_write_code("je", code[i].result, "");
                 continue;
             }
 
             case token::not_equ:{  //!=
-                asm_code_write_code("cmp", code[i].arg1, code[i].arg2);
+                asm_code_write_code("cmp", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 asm_code_write_code("jne", code[i].result, "");
                 continue;
             }
             case token::great_equ:  {//>=
-                asm_code_write_code("cmp", code[i].arg1, code[i].arg2);
+                asm_code_write_code("cmp", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 asm_code_write_code("jge", code[i].result, "");
                 continue;
             }
             case token::less_equ: {//<=
-                asm_code_write_code("cmp", code[i].arg1, code[i].arg2);
+                asm_code_write_code("cmp", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 asm_code_write_code("jle", code[i].result, "");
                 continue;
             }
             case token::great: {   //>
-                asm_code_write_code("cmp", code[i].arg1, code[i].arg2);
+                asm_code_write_code("cmp", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 asm_code_write_code("jg", code[i].result, "");
                 continue;
             }
             case token::less: {    //<
-                asm_code_write_code("cmp", code[i].arg1, code[i].arg2);
+                asm_code_write_code("cmp", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 asm_code_write_code("jl", code[i].result, "");
                 continue;
             }
             case token::plus_agn: {//+=
-                asm_code_write_code("add", code[i].arg1, code[i].arg2);
+                asm_code_write_code("add", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 continue;
             }
             case token::minus_agn: {//-=
-                asm_code_write_code("sub", code[i].arg1, code[i].arg2);
+                asm_code_write_code("sub", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 continue;
             }
             case token::times_agn: {//*=
-                asm_code_write_code("mul", code[i].arg1, code[i].arg2);
+                asm_code_write_code("mul", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 continue;
             }
             case token::div_agn: { ///=
-                asm_code_write_code("div", code[i].arg1, code[i].arg2);
+                asm_code_write_code("div", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 continue;
             }
             case token::mod_agn: { //%=
                 //TODO
-                asm_code_write_code("", code[i].arg1, code[i].arg2);
+                asm_code_write_code("", trans_to_loc(code[i].arg1), trans_to_loc(code[i].arg2));
                 continue;
             }
 
@@ -454,7 +484,7 @@ void asm_code::read_code() {
             default: {
                 fmt::print("\nan unknow error at asm_code::read_code()\n");
                 fmt::print("at end of read_code()\n");
-                fmt::print("token: {}\n", trans_output_token_to_string.at(code[i].symbol));
+                fmt::print("token: {}\n", hash_map_token_to_string.at(code[i].symbol));
                 exit(0);
             }
         }

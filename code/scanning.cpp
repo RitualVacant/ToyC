@@ -32,7 +32,7 @@ inline std::tuple<token, std::string> scanning::to_number() {
     }
 }
 
-inline std::tuple<token, std::string> scanning::to_keyWord_or_indentif() {
+inline std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
     std::string re;
     bool is_key_word = false;
     re += c;
@@ -83,6 +83,7 @@ inline std::tuple<token, std::string> scanning::to_char() {
     return std::make_tuple(token::r_char, re);
 }
 
+
 token
 scanning::get_pre_token() {
     std::tuple<token, std::string> re = next_token();
@@ -90,13 +91,13 @@ scanning::get_pre_token() {
     return std::get<0>(re);
 }
 
+
 std::tuple<token, std::string>
 scanning::next_token() {
     if (!really_next_token) {
         really_next_token = true;
         return now_token;
     }
-    //
     last_token = now_token;
     std::string re;
     while (is_useless(c)) {
@@ -285,18 +286,18 @@ scanning::next_token() {
 
         default:
             if (is_number(c)) return to_number();
-            if (is_char(c))   return to_keyWord_or_indentif();
+            if (is_char(c))   return to_keyword_or_indentif();
             break;
     }
     get_next_char();
     return std::make_tuple(token::invalid, "");
 }
 
-token scanning::get_token(std::tuple<token, std::string> &tuple_) {
+token scanning::get_now_token(std::tuple<token, std::string> &tuple_) {
     return std::get<0>(tuple_);
 }
 
-token scanning::get_token() {
+token scanning::get_now_token() {
     return std::get<0>(now_token);
 }
 

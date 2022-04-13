@@ -15,7 +15,7 @@ char const useless_char[] = {
 };
 
 //测试词法划分是否正确的输出转换
-std::unordered_map<token, std::string> const trans_output_token_to_string {
+std::unordered_map<token, std::string> const hash_map_token_to_string {
     {token::invalid, "invalid"},
     {token::jmp, "jmp"},
     {token::lable, "lable"},

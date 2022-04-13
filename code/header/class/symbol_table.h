@@ -9,6 +9,7 @@
 #include <string>
 #include "./../../parser.cpp"
 #include <unordered_map>
+
 //类型大小
 std::unordered_map<token, std::size_t> size_class{
     {token::key_int,    4},
@@ -19,7 +20,6 @@ std::unordered_map<token, std::size_t> size_class{
     {token::class_char,   1},
     {token::class_double, 4},
     {token::class_bool,   1}
-
 };
 
 struct statement {
@@ -58,7 +58,7 @@ struct func {
         name(name_), argu(argu_), class_reture(class_reture_), name_return(name_return_) {};
 };
 
-class symbol_list {
+class symbol_table {
     private:
     //
     //符号表部分
@@ -88,12 +88,12 @@ class symbol_list {
         std::string file_path;
 
 
-        explicit symbol_list(std::string &file_path_, bool really_output_asm_code_);
-        ~symbol_list();
-        symbol_list(symbol_list&)             = delete;
-        symbol_list(symbol_list&&)            = delete;
-        symbol_list& operator=(symbol_list&)  = delete;
-        symbol_list& operator=(symbol_list&&) = delete;
+        explicit symbol_table(std::string &file_path_, bool really_output_asm_code_);
+        ~symbol_table();
+        symbol_table(symbol_table&)             = delete;
+        symbol_table(symbol_table&&)            = delete;
+        symbol_table& operator=(symbol_table&)  = delete;
+        symbol_table& operator=(symbol_table&&) = delete;
 
     //符号表
         //DROP在栈中寻找
@@ -129,7 +129,7 @@ class symbol_list {
         void init_loc_argu();
 };
 
-symbol_list::symbol_list(std::string &file_path_, bool really_output_asm_code_)
+symbol_table::symbol_table(std::string &file_path_, bool really_output_asm_code_)
 : file_path(file_path_) {
     if (really_output_asm_code_) return;
 
@@ -142,7 +142,7 @@ symbol_list::symbol_list(std::string &file_path_, bool really_output_asm_code_)
     }
 }
 
-symbol_list::~symbol_list() {
+symbol_table::~symbol_table() {
     file.close();
 }
 

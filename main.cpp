@@ -25,7 +25,6 @@ void output_help_information();
 
 std::string file_path = "/home/lzj/code/program/script/test/i1";
 std::string output_file_path = "/home/lzj/code/program/script/test/o1";
-
 int main(int argc, char* argv[]) {
     if (argc == 1) {
         fmt::print("path of input file  : ");

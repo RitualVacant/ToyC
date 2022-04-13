@@ -16,6 +16,7 @@ struct stack_frame {
     std::size_t size_unit;
     std::string location;
 
+    stack_frame() = default;
     stack_frame (
         std::string name_,
         token class_var_,
@@ -23,11 +24,11 @@ struct stack_frame {
         std::size_t size_total_,
         std::size_t size_unit_
     ):
-    name(name_),
-    class_var(class_var_),
-    offset(offset_),
-    size_total(size_total_),
-    size_unit(size_unit_) {
+    name{name_},
+    class_var{class_var_},
+    offset{offset_},
+    size_total{size_total_},
+    size_unit{size_unit_} {
         location = fmt::format("[bp-{}]", offset);
     };
 };
@@ -46,7 +47,7 @@ class asm_code {
         std::vector<statement> code;
 
         //符号表，是parser中的拷贝
-        symbol_list* list {nullptr};
+        symbol_table* list {nullptr};
         //如果有符号表的拷贝，那么弃用
         std::vector<stack_frame> symbol_stack;
         //如果有符号表的拷贝，那么弃用
@@ -57,7 +58,7 @@ class asm_code {
         bool register_used[sizeof_register_used];
 
     public:
-        explicit asm_code(std::string &file_path, std::vector<statement> &&code,symbol_list* sign_);
+        explicit asm_code(std::string &file_path, std::vector<statement> &&code,symbol_table* sign_);
         ~asm_code();
         asm_code(std::string const &)       = delete;
         asm_code(std::string &&)            = delete;
@@ -79,6 +80,8 @@ class asm_code {
         func& find_func(std::string name);
         //找到变量的位置
         std::string find_var_location(std::string name);
+        //返回数组，立即数，变量的地址
+        std::string trans_to_loc(std::string name);
         //
         //DROP寄存器使用情况
         bool register_is_used(register_name);
@@ -88,7 +91,7 @@ class asm_code {
         void asm_code_write_mov(std::size_t size, std::string arg1, std::string arg2);
 };
 
-asm_code::asm_code(std::string &file_path_, std::vector<statement> &&code_, symbol_list* sign_)
+asm_code::asm_code(std::string &file_path_, std::vector<statement> &&code_, symbol_table* sign_)
 : file_path{file_path_}, code{code_} ,list{sign_} {
     file.open(file_path, std::ofstream::out);
     if (!file.is_open()) {

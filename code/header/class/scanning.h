@@ -10,7 +10,10 @@
 #include "./../AST/ast.h"
 #include "fmt/core.h"
 #include "fmt/color.h"
+
+//line in the source code    loc: script/code/header/class/scanning.h
 unsigned int line = 1;
+//column in the source code  loc: script/code/header/class/scanning.h
 unsigned int column = 1;
 
 class scanning {
@@ -23,7 +26,7 @@ class scanning {
         void get_next_char();
 
         std::tuple<token, std::string> to_number();
-        std::tuple<token, std::string> to_keyWord_or_indentif();
+        std::tuple<token, std::string> to_keyword_or_indentif();
         std::tuple<token, std::string> to_comment();
         std::tuple<token, std::string> to_char();
         //std::tuple<token, std::string> to_string();
@@ -52,14 +55,10 @@ class scanning {
         scanning& operator=(scanning&)  = delete;
         scanning& operator=(scanning&&) = delete;
 
-        //-----------------------------------------------------------------------------------
-        //
-        //-----------------------------------------------------------------------------------
-
         std::tuple<token, std::string> next_token();
         token                          get_pre_token();
-        token                          get_token();
-        token                          get_token(std::tuple<token, std::string> &tuple_);
+        token                          get_now_token();
+        token                          get_now_token(std::tuple<token, std::string> &tuple_);
         std::string                    get_value();
         std::string                    get_value(std::tuple<token, std::string> &tuple_);
 
@@ -67,10 +66,10 @@ class scanning {
         void token_output() {
             while (!file.eof()) {
                 auto &&a = next_token();
-                if (trans_output_token_to_string.find(std::get<0>(a)) == trans_output_token_to_string.end())
+                if (hash_map_token_to_string.find(std::get<0>(a)) == hash_map_token_to_string.end())
                     fmt::print("[token:] indentif   [string:] \"{}\"\n", std::get<1>(a));
                 else
-                    fmt::print("[token:] {:10} [string:] \"{}\"\n", trans_output_token_to_string.at(std::get<0>(a)), std::get<1>(a));
+                    fmt::print("[token:] {:10} [string:] \"{}\"\n", hash_map_token_to_string.at(std::get<0>(a)), std::get<1>(a));
             }
         }
 };

@@ -2,27 +2,27 @@
 #define SIGN_MAP_CPP
 
 #pragma once
-#include "./header/class/symbol_list.h"
+#include "./header/class/symbol_table.h"
 #include "./header/AST/token.h"
 #include "worng.cpp"
 
-void symbol_list::insert_func(func func_) {
+void symbol_table::insert_func(func func_) {
     func_table.push_back(func_);
 }
 
 //压入一个临时变量
-void symbol_list::push_var(frame x) {
+void symbol_table::push_var(frame x) {
     symbol_stack.push_back(x);
     return;
 }
 
-void symbol_list::clear_symbol_stack() {
+void symbol_table::clear_symbol_stack() {
     symbol_stack.clear();
 }
 
 //返回函数参数，或者函数临时变量的类型
 //TODO 要能返回函数参数的类型
-token symbol_list::find_var_class(std::string name) {
+token symbol_table::find_var_class(std::string name) {
     for (int i = 0; i < symbol_stack.size(); ++i) {
         if (name == symbol_stack[i].name)
             return symbol_stack[i].var_class;
@@ -32,7 +32,7 @@ token symbol_list::find_var_class(std::string name) {
 //
 //
 //
-void symbol_list::push_global_sign(std::string &x) {
+void symbol_table::push_global_sign(std::string &x) {
     if (global_sign.find(x) != global_sign.end()) {
         worng::redefine(line, colume, {token::indentif, x});
     }
@@ -45,7 +45,7 @@ void symbol_list::push_global_sign(std::string &x) {
 }
 
 
-void symbol_list::pop_func() {
+void symbol_table::pop_func() {
     //TODO:这里函数入栈的标志应该是
   //while (sign_stack.back().Token != token::invalid) {
   //    sign_stack.pop_back();
@@ -54,7 +54,7 @@ void symbol_list::pop_func() {
 }
 
 //在栈中寻找
-bool symbol_list::find(std::tuple<token, std::string> &x) {
+bool symbol_table::find(std::tuple<token, std::string> &x) {
   //for (std::size_t i = sign_stack.size() - 1; i >= 0 && sign_stack[i].Token != token::invalid; --i) {
   //    if (sign_stack[i].name == std::get<1>(x)) return true;
   //}
@@ -62,14 +62,14 @@ bool symbol_list::find(std::tuple<token, std::string> &x) {
 }
 
 //在栈中寻找
-bool symbol_list::find(std::string &x) {
+bool symbol_table::find(std::string &x) {
   //for (std::size_t i = sign_stack.size() - 1; i >= 0 && sign_stack[i].Token != token::invalid; --i) {
   //    if (sign_stack[i].name == x) return true;
   //}
     return false;
 }
 
-std::size_t symbol_list::at(std::tuple<token, std::string>& x) {
+std::size_t symbol_table::at(std::tuple<token, std::string>& x) {
     std::size_t re;
   //for (int i = sign_stack.size() - 1; i > 0 && sign_stack[i].Token != token::invalid; --i) {
   //    if (std::get<1>(x) == sign_stack[i].name) return sign_stack[i].offset;
@@ -79,7 +79,7 @@ std::size_t symbol_list::at(std::tuple<token, std::string>& x) {
     return 0;
 }
 
-std::size_t symbol_list::at(std::string &x) {
+std::size_t symbol_table::at(std::string &x) {
     std::size_t re;
   //for (int i = sign_stack.size() - 1; i > 0 && sign_stack[i].Token != token::invalid; --i) {
   //    if (x == sign_stack[i].name) return sign_stack[i].offset;
@@ -89,21 +89,21 @@ std::size_t symbol_list::at(std::string &x) {
     return 0;
 }
 
-bool symbol_list::find_argu(std::string name) {
+bool symbol_table::find_argu(std::string name) {
   //for (int i = 0; i < argu_table.size(); ++i) {
   //    if (std::get<1>(argu_table[i]) == name) return true;
   //}
     return false;
 }
 
-bool symbol_list::find_func(std::string &x) {
+bool symbol_table::find_func(std::string &x) {
     for (int i = 0; i < func_table.size(); ++i) {
         if (func_table[i].name == x) return true;
     }
     return false;
 }
 
-std::string symbol_list::find_local(std::string &name) {
+std::string symbol_table::find_local(std::string &name) {
     if (find(name)) {
         return fmt::format("[rbp - {}]", at(name));
     }
@@ -120,19 +120,19 @@ std::string symbol_list::find_local(std::string &name) {
     return "";
 }
 
-std::string symbol_list::find_func_return_var_value(std::string func_name) {
+std::string symbol_table::find_func_return_var_value(std::string func_name) {
     for (int i = 0; i < func_table.size(); ++i) {
         if (func_name == func_table[i].name)
             return func_table[i].name_return;
     }
 
     fmt::print("can't find func in func_table\n");
-    fmt::print("at symbol_list::fund_func_return_var_value()\n");
+    fmt::print("at symbol_table::fund_func_return_var_value()\n");
     exit(0);
     return "";
 }
 
-void symbol_list::init_loc_argu() {
+void symbol_table::init_loc_argu() {
     for (std::size_t i = 0; i < func_table.size(); i++) {
         //在寄存器中的传参
         for (std::size_t j = 0; j < 6 && j < func_table[i].argu.size(); ++j) {
@@ -145,22 +145,22 @@ void symbol_list::init_loc_argu() {
             switch (func_table[i].argu[j].arg_class) {
             case token::key_int : {
                 //TODO
-                func_table[i].argu[j].location = fmt::format("[bp - {}]", sp);
+                func_table[i].argu[j].location = fmt::format("[bp-{}]", sp);
                     sp += 4;
                     break;
             }
             case token::key_char: {
-                func_table[i].argu[j].location = fmt::format("[bp - {}]", sp);
+                func_table[i].argu[j].location = fmt::format("[bp-{}]", sp);
                     sp += 4;
                     break;
             }
             case token::key_bool: {
-                func_table[i].argu[j].location = fmt::format("[bp - {}]", sp);
+                func_table[i].argu[j].location = fmt::format("[bp-{}]", sp);
                     sp += 4;
                     break;
             }
             case token::key_double: {
-                func_table[i].argu[j].location = fmt::format("[bp - {}]", sp);
+                func_table[i].argu[j].location = fmt::format("[bp-{}]", sp);
                     sp += 4;
                     break;
             }
