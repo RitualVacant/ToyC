@@ -34,7 +34,7 @@ token symbol_table::find_var_class(std::string name) {
 //
 void symbol_table::push_global_sign(std::string &x) {
     if (global_sign.find(x) != global_sign.end()) {
-        worng::redefine(line, colume, {token::indentif, x});
+        worng::redefine(line, colume, {token::identif, x});
     }
     global_sign.insert(x);
     //if (global_sign.find(x) == global_sign.end()) {
@@ -150,11 +150,6 @@ void symbol_table::init_loc_argu() {
                     break;
             }
             case token::key_char: {
-                func_table[i].argu[j].location = fmt::format("[bp-{}]", sp);
-                    sp += 4;
-                    break;
-            }
-            case token::key_bool: {
                 func_table[i].argu[j].location = fmt::format("[bp-{}]", sp);
                     sp += 4;
                     break;

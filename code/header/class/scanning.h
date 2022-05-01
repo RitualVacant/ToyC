@@ -12,9 +12,9 @@
 #include "fmt/color.h"
 
 //line in the source code    loc: script/code/header/class/scanning.h
-unsigned int line = 1;
+static unsigned int line = 1;
 //column in the source code  loc: script/code/header/class/scanning.h
-unsigned int column = 1;
+static unsigned int column = 1;
 
 class scanning {
     private:
@@ -51,7 +51,7 @@ class scanning {
         };
 
         scanning(scanning const &)      = delete;
-        scanning(scanning&&)            = delete;
+        scanning(scanning&&)            = default;
         scanning& operator=(scanning&)  = delete;
         scanning& operator=(scanning&&) = delete;
 
@@ -62,12 +62,12 @@ class scanning {
         std::string                    get_value();
         std::string                    get_value(std::tuple<token, std::string> &tuple_);
 
-        //测试词义分析器函数
+        //测试词法分析器函数
         void token_output() {
             while (!file.eof()) {
                 auto &&a = next_token();
                 if (hash_map_token_to_string.find(std::get<0>(a)) == hash_map_token_to_string.end())
-                    fmt::print("[token:] indentif   [string:] \"{}\"\n", std::get<1>(a));
+                    fmt::print("[token:] identif   [string:] \"{}\"\n", std::get<1>(a));
                 else
                     fmt::print("[token:] {:10} [string:] \"{}\"\n", hash_map_token_to_string.at(std::get<0>(a)), std::get<1>(a));
             }

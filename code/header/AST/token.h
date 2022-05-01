@@ -1,6 +1,6 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-enum class token {
+enum class token : unsigned int{
     invalid = 0,
 
 
@@ -19,6 +19,7 @@ enum class token {
     dec_bool_arrary,    //*
 
     dec_func,           //*
+    def_func,
     call_func,          //*
     call_func_end,      //*
     func_return,        //*
@@ -51,12 +52,6 @@ enum class token {
 
     arrary_unit, //TODO 数组运算到底要不要分出类型， 这里暂时不分用这个代替
 
-    key_void,
-    key_int,
-    key_double,
-    key_string,
-    key_char,
-    key_bool,
 
     r_int,
     r_double,
@@ -105,7 +100,17 @@ enum class token {
     comment, //#
     end,     //;
 
-    indentif,  //标识符
+    identif,  //标识符
+    key_extern,     //extern
+    //key type
+    key_int,
+    key_long,
+    key_double,
+    key_flaot,
+    key_unsigned,
+    key_char,
+    key_void,
+
     key_if,         //if
     key_else,       //else
     key_true,       //true

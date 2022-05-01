@@ -5,6 +5,7 @@
 #include "./header/AST/judge_char.h"
 #include "./header/AST/token.h"
 #include "./header/class/parser.h"
+#include "./header/AST/declararor.h"
 
 
 void
@@ -127,6 +128,7 @@ parser::parser_while_statement() {
 
 
 //return
+/*
 std::string
 parser::parser_return_statement() {
     scan->next_token();
@@ -139,16 +141,13 @@ parser::parser_return_statement() {
     code.push_back(statement(token::func_return, return_value, "", ""));
     return return_value;
 }
+*/
 
 //+------------------------------------------
 //|function parser expression or statement
 //+------------------------------------------
 //TODO暂时不支持一元表达式
 
-void
-parser::parser_primary_expression() {
-    return;
-}
 
 std::unordered_set<token> end_expresion = {
     token::end, token::r_mid_par, token::r_par, token::log_and, token::log_not, token::log_or, token::equ,
@@ -164,7 +163,7 @@ parser::parser_pre_to_pos() {
     while (end_expresion.find(scan->get_now_token()) == end_expresion.end()) {
         //TODO 这个next_token的位置
         switch (scan->get_now_token()) {
-            case token::indentif: {//indentif or arrary unit
+            case token::identif: {//identif or arrary unit
                 std::string name_indentif = scan->get_value();
                 token pre_token = scan->get_pre_token();  //预取了
                 if (pre_token == token::l_mid_par) {
@@ -175,10 +174,10 @@ parser::parser_pre_to_pos() {
                 else if (pre_token == token::l_par) {
                     scan->next_token();                   //这里也是
                     std::string return_value = parser_func_call(name_indentif);
-                    res.push_back({token::indentif, return_value});
+                    res.push_back({token::identif, return_value});
                 }
                 else {
-                    res.push_back({token::indentif, name_indentif});
+                    res.push_back({token::identif, name_indentif});
                 }
                 break;
             }
@@ -301,7 +300,7 @@ parser::parser_expression() {
             case token::r_int:
             case token::r_double:
             case token::r_char:
-            case token::indentif:
+            case token::identif:
             case token::arrary_unit:
                 num_stack.push_back(std::get<1>(pos_experssion[i]));
                 break;
@@ -421,28 +420,28 @@ parser::parser_expression_(std::string name_indentif) {
                         symbol_stack.pop_back();
                         if (!rax_init) {
                             //是右值
-                            if (list->find_local(b) == "") {
+                            if (table->find_local(b) == "") {
 
                             }
                             //是左值
                             else {
-                                //list->asm_code_mov_auto_r__(size, "ax", list->find_local(a));
+                                //table->asm_code_mov_auto_r__(size, "ax", table->find_local(a));
                                 rax_init = true;
                             }
                         }
-                        //list->asm_code_any_auto_r__(symbol, size, "ax", b);
+                        //table->asm_code_any_auto_r__(symbol, size, "ax", b);
                         num_stack.push_back(b);
                     }
                 }
                 //可能没有运算符只有一个数字
                 //TODO
                 if (num_stack.size() == 1) {
-                    if (std::get<0>(scan->last_token) == token::indentif) {
-                        //list->asm_code_mov_auto_r__(size_class.at(std::get<0>(scan->last_token)), "ax", list->find_local(num_stack[0]));
+                    if (std::get<0>(scan->last_token) == token::identif) {
+                        //table->asm_code_mov_auto_r__(size_class.at(std::get<0>(scan->last_token)), "ax", table->find_local(num_stack[0]));
                         return;
                     }//是右值
                     else {
-                        //list->asm_code_mov_auto_r__(size_class.at(std::get<0>(scan->last_token)), "ax", num_stack[0]);
+                        //table->asm_code_mov_auto_r__(size_class.at(std::get<0>(scan->last_token)), "ax", num_stack[0]);
                     }
                     num_stack.pop_back();
                 }
@@ -451,10 +450,10 @@ parser::parser_expression_(std::string name_indentif) {
         //--------------------------------
         //是内存地址
             //TODO没有全局变量的支持
-            case token::indentif: {
+            case token::identif: {
                 //获得标识符的类型
                 std::string indentif_ = scan->get_value();               //第一个标识符
-                token indentif_token = list->find_var_class(indentif_);  //标识符类型
+                token indentif_token = table->find_var_class(indentif_);  //标识符类型
                 //size = size_class.at(indentif_token);                    //类型大小
 
                 scan->next_token();
@@ -548,7 +547,7 @@ parser::parser_expression_(std::string name_indentif) {
                         symbol_stack.pop_back();
                         //如果rax没有初始化
                         if (!rax_init) {
-                            //list->asm_code_mov_auto___r(size_class.at(list->find_var_class(a)), list->find_local(a), "ax");
+                            //table->asm_code_mov_auto___r(size_class.at(table->find_var_class(a)), table->find_local(a), "ax");
                             rax_init = true;
                         }
                         num_stack.push_back(b);
@@ -571,11 +570,11 @@ parser::parser_expression_(std::string name_indentif) {
                         symbol_stack.pop_back();
                         //如果rax没有初始化
                         if (!rax_init) {
-                            //list->asm_code_mov_auto___r(size_class.at(list->find_var_class(a)), list->find_local(a), "ax");
+                            //table->asm_code_mov_auto___r(size_class.at(table->find_var_class(a)), table->find_local(a), "ax");
                             rax_init = true;
                         }
                         //
-                        //list->asm_code_add_auto_r__(size_class.at(list->find_var_class(b)), "ax", list->find_local(b));
+                        //table->asm_code_add_auto_r__(size_class.at(table->find_var_class(b)), "ax", table->find_local(b));
                         //要把弹出的结果入栈，但是这里ax已经起了栈顶的作用，所有就假装 b 塞一个进去
                         num_stack.push_back(b);
                     }
@@ -632,8 +631,10 @@ parser::parser_lvalue() {
     return;
 }
 
+//DROP
+/*
 void
-parser::parser_declare() {
+parser_declare() {
     token class_indentfi = scan->get_now_token();       //左值类型
     scan->next_token();                             //标识符 | 数组[
 
@@ -649,25 +650,25 @@ parser::parser_declare() {
             case token::key_int: {
                 scan->next_token();
                 code.push_back(statement(token::dec_int_arrary, name_array, size_array, ""));
-                list->push_var(frame(token::class_int_array, name_array));
+                table->push_var(frame(token::class_int_array, name_array));
                 break;
             }
             case token::key_char: {
                 scan->next_token();
                 code.push_back(statement(token::dec_char_arrary, name_array, size_array, ""));
-                list->push_var(frame(token::class_char_array, name_array));
+                table->push_var(frame(token::class_char_array, name_array));
                 break;
             }
             case token::key_bool: {
                 scan->next_token();
                 code.push_back(statement(token::dec_bool_arrary, name_array, size_array, ""));
-                list->push_var(frame(token::class_bool_array, name_array));
+                table->push_var(frame(token::class_bool_array, name_array));
                 break;
             }
             case token::key_double: {
                 scan->next_token();
                 code.push_back(statement(token::dec_double_arrary, name_array, size_array, ""));
-                list->push_var(frame(token::class_double_array, name_array));
+                table->push_var(frame(token::class_double_array, name_array));
                 break;
             }
             default:
@@ -684,22 +685,22 @@ parser::parser_declare() {
     switch (class_indentfi) {
         case token::key_int: {
             code.push_back(statement(token::dec_int, name_indentfi, "", ""));
-            list->push_var(frame(token::class_int, name_indentfi));
+            table->push_var(frame(token::class_int, name_indentfi));
             break;
         }
         case token::key_char: {
             code.push_back(statement(token::dec_char, name_indentfi, "", ""));
-            list->push_var(frame(token::class_char, name_indentfi));
+            table->push_var(frame(token::class_char, name_indentfi));
             break;
         }
         case token::key_bool: {
             code.push_back(statement(token::dec_bool, name_indentfi, "", ""));
-            list->push_var(frame(token::class_bool, name_indentfi));
+            table->push_var(frame(token::class_bool, name_indentfi));
             break;
         }
         case token::key_double:{
             code.push_back(statement(token::dec_double, name_indentfi, "", ""));
-            list->push_var(frame(token::class_double, name_indentfi));
+            table->push_var(frame(token::class_double, name_indentfi));
             break;
         }
     }
@@ -717,63 +718,62 @@ parser::parser_declare() {
 
     return;
 }
+*/
 
 
 void
-parser::parser_function_define() {
-    //函数
-    std::vector<arg_info> argu_table; //记录参数
-    std::string name_func;                            //函数名
-    token class_return;                               //返回类型
-    //函数名 前面已经解析了func
+parser::parser_function_define_or_declare(std::string func_name, token func_return_type) {
+    std::vector<arg_info> argu_table;
+    std::string name_func = func_name;
+    token class_return    = func_return_type;
+    //if next token is ) , won't get into loop to avoid parser argument
     scan->next_token();
-    name_func = scan->get_value();
-    //函数头
-    code.push_back(statement(token::dec_func, name_func, "", ""));
-    scan->next_token();                    // (
-    //函数参数
-    scan->next_token();                            //这里是为了没有参数时直接跳出(.......)中的分析
     while (scan->get_now_token() != token::r_par) {
-        token class_argu = scan->get_now_token();      //函数参数类型
-        scan->next_token();                        //
-        std::string name_argu = scan->get_value(); //参数名字
-        argu_table.push_back(arg_info(class_argu, name_argu, ""));//参数暂时保存
-        scan->next_token();                        //下个参数
-        if (scan->get_now_token() == token::comma)     // ,
+        token argu_type = scan->get_now_token();
+        scan->next_token();
+        std::string name_argu = scan->get_value();
+        argu_table.push_back(arg_info(argu_type, name_argu, ""));
+        scan->next_token();
+        // ,
+        if (scan->get_now_token() == token::comma) {
             scan->next_token();
+        }
     }
-    //返回值
-    scan->next_token(); //->
-    scan->next_token(); //返回类型
-    class_return = scan->get_now_token();
-    // {
-    //scan->next_token();
-    //函数体
+    //eat { or ;
+    scan->next_token();
+    //func declare
+    if (scan->get_now_token() == token::end) {
+        code.push_back(statement(token::dec_func, name_func, "", ""));
+    }
+    //func define
+    else {
+        code.push_back(statement(token::def_func, name_func, "", ""));
+        return;
+    }
+    //func body
     while (scan->get_now_token() != token::key_return) {
         parser_statement();
     }
-    //函数返回
-    std::string return_name = parser_return_statement();
-    // }
+    //func return
+    //std::string return_name = parser_return_statement();
+    //eat }
     scan->next_token();
-    //把函数栈清空
-    list->clear_symbol_stack();
-
-    //向函数表中插入函数
-    list->insert_func(func(name_func, argu_table, class_return, return_name));
+    //clear temporary func symbol stack
+    table->clear_symbol_stack();
+    //insert func into func table
+    //table->insert_func(func(name_func, argu_table, class_return, return_name));
     return;
 }
 
-//
-//解析语句
-//
+
+
 void
 parser::parser_statement() {
     scan->next_token();
     switch (scan->get_now_token()) {
             case token::invalid:
-        //函数调用|表达式|数组
-            case token::indentif: {
+            //函数调用|表达式|数组
+            case token::identif: {
                 std::string name_indentif = scan->get_value();
                 std::string r_value;
                 scan->next_token();
@@ -835,15 +835,14 @@ parser::parser_statement() {
             case token::key_int:
             case token::key_double:
             case token::key_char:
-            case token::key_bool:
-                parser_declare();
+                //parser_declare();
                 return;
 
         //函数声明
-            case token::key_func: {
-                parser_function_define();
-                return;
-            }
+        //  case token::key_func: {
+        //      parser_function_define_or_declare();
+        //      return;
+        //  }
         //右值
             case token::r_char:
             case token::r_int:
@@ -908,8 +907,8 @@ parser::parser_func_call(std::string name_func) {
             case token::r_char:
                 code.push_back(statement(token::arg_r_char, scan->get_value(), "", ""));
                 break;
-            case token::indentif: {
-                token class_arg = list->find_var_class(scan->get_value());
+            case token::identif: {
+                token class_arg = table->find_var_class(scan->get_value());
                 switch (class_arg) {
                     case token::class_int:
                         code.push_back(statement(token::arg_int_class, scan->get_value(), "", ""));
@@ -937,7 +936,7 @@ parser::parser_func_call(std::string name_func) {
         scan->next_token();
     }
 
-    std::string return_value = list->find_func_return_var_value(name_func);
+    std::string return_value = table->find_func_return_var_value(name_func);
     code.push_back(statement(token::call_func_end, "", "", ""));
     return return_value;
 }
@@ -957,7 +956,8 @@ parser::get_lable() {
 }
 
 void
-parser::parser_declare_or_function_define() {
+parser::parser_declare_or_function_define_or_declare() {
+
     auto identifier_type = scan->next_token();
     auto identifier_name = scan->next_token();
     //switch
@@ -969,7 +969,7 @@ parser::parser_declare_or_function_define() {
     scan->next_token();
     switch (scan->get_now_token()) {
         case token::l_par: {
-            parser_function_define();
+            parser_function_define_or_declare(std::get<1>(identifier_name), std::get<0>(identifier_type));
             break;
         }
         //TODO
@@ -988,7 +988,7 @@ parser::parser_declare_or_function_define() {
 
         }
         default: {
-            fmt::print("\nparser::parser_declare_or_function_define()\n");
+            fmt::print("\nparser::parser_declare_or_function_define_or_declare()\n");
             fmt::print("the token is {}", hash_map_token_to_string.at(scan->get_now_token()));
             exit(0);
         }
@@ -1011,13 +1011,13 @@ parser::print_mid_code() {
     char c;
     std::cin >> c;
     if (c == 'f') {
-        list->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
-        list->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", "symbol", "arg1", "arg2", "result");
-        list->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
+        table->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
+        table->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", "symbol", "arg1", "arg2", "result");
+        table->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
         for (std::size_t i = 0; i < code.size(); ++i) {
-            list->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", hash_map_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
+            table->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", hash_map_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
         }
-        list->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
+        table->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
     }
     else if (c == 't') {
         fmt::print("+------------------+------------------+------------------+------------------+\n");
@@ -1033,6 +1033,200 @@ parser::print_mid_code() {
         fmt::print("can't output file");
     }
     return;
+}
+
+//NEW
+void
+parser::parser_declare_or_function_definition() {
+    is_func = false;
+    parser_declaration_declarator();
+    parser_initial_declarator();
+    scan->next_token();
+    //declare
+    if (scan->get_now_token() == token::end) {
+        if (is_func) {
+            ast::ptr last = tree.insert(ast::node_type::declare_function);
+        }
+        else {
+            tree.insert(ast::node_type::declare_varible);
+        }
+    }
+    //function definition
+    if (scan->get_now_token() == token::l_big_par) {
+        tree.insert(ast::node_type::definition_function);
+    }
+    return;
+}
+
+void
+parser::parser_declaration_declarator() {
+    //because the order of C's declarator is random
+    //this loop will eat token until get identifier or other token
+    declataror node_declataror;
+    while (scan->get_now_token() != token::identif && scan->get_now_token() != token::l_par) {
+        switch(scan->get_now_token()) {
+            //TODO:all type
+            case token::key_unsigned: {
+                node_declataror.sign = declatator_sign::sign_unsigned;
+                break;
+            }
+            case token::key_int: {
+                if (node_declataror.type == declatator_type::type_long_int || node_declataror.type == declatator_type::type_long_long_int) {
+                    break;
+                }
+                node_declataror.type == declatator_type::type_int;
+                break;
+            }
+            case token::key_double: {
+                node_declataror.type == declatator_type::type_double;
+                break;
+            }
+            case token::key_char: {
+                node_declataror.type == declatator_type::type_char;
+                break;
+            }
+            case token::key_long: {
+                if (node_declataror.type == declatator_type::type_int) {
+                    node_declataror.type = declatator_type::type_long_int;
+                    break;
+                }
+                if (node_declataror.type == declatator_type::type_long_int) {
+                    node_declataror.type = declatator_type::type_long_long_int;
+                    break;
+                }
+                node_declataror.type = declatator_type::type_long_int;
+                break;
+            }
+            case token::key_flaot: {
+                node_declataror.type = declatator_type::type_float;
+                break;
+            }
+            default: {
+                fmt::print("an unknow error at parser::parser_declaration_declarator()");
+                exit(0);
+            }
+        }
+        scan->next_token();
+    }
+}
+
+void
+parser::parser_initial_declarator_list() {
+    while (scan->get_now_token() != token::end || scan->get_now_token() != token::l_big_par) {
+        parser_initial_declarator();
+    }
+    return;
+}
+
+void
+parser::parser_initial_declarator() {
+    parser_declarator();
+    if (scan->get_now_token() == token::equ) {
+        parser_conditional_expression();
+    }
+    //until ,
+    return;
+}
+
+void
+parser::parser_declarator() {
+    if (scan->get_now_token() == token::times) {
+        //*指针
+    }
+    parser_direct_declarator();
+    return;
+}
+
+void
+parser::parser_direct_declarator() {
+    if (scan->get_now_token() == token::l_par) {
+        //eat (
+        scan->next_token();
+        parser_declarator();
+        //eat )
+        scan->next_token();
+        if (scan->get_now_token() == token::l_par) {
+            //eat (
+            parser_arguments_arguments_type_list();
+            //eat )
+            scan->next_token();
+        }
+        else {
+            parser_temporary_1();
+        }
+    }
+    else if (scan->get_now_token() == token::identif) {
+        //TODO idnetif name
+        //eat identif
+        scan->next_token();
+        if (scan->get_now_token() == token::l_par) {
+            //eat (
+            scan->next_token();
+            parser_arguments_arguments_type_list();
+            //eat )
+            scan->next_token();
+        }
+        else {
+            parser_temporary_1();
+        }
+    }
+    else {
+        fmt::print("an unknow erorr at parser::parser_direct_declatator()");
+        exit(0);
+    }
+}
+void
+parser::parser_arguments_arguments_type_list() {
+    while (scan->get_now_token() != token::r_par) {
+        parser_arguments_list();
+        //eat ,
+        scan->next_token();
+    }
+}
+void
+parser::parser_arguments_list() {
+
+}
+void
+parser::parser_arugments_declaration() {
+    parser_declaration_declarator();
+    parser_declarator();
+}
+void
+parser::parser_array_declarator() {
+    // eat [
+}
+void
+parser::parser_temporary_1() {
+
+}
+void
+parser::parser_assignment_expression() {
+
+}
+void
+parser::parser_conditional_expression() {
+
+}
+void
+parser::parser_binary_expression() {
+
+}
+void
+parser::parser_unary_expression() {
+
+}
+void
+parser::parser_postfix_expression() {
+
+}
+void
+parser::parser_postfix_operator() {
+
+}
+void
+parser::parser_primary_expression() {
+
 }
 
 #endif

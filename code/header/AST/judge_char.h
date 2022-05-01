@@ -3,7 +3,7 @@
 
 #pragma once
 #include <string>
-#include "./token.h"
+#include "token.h"
 #include <unordered_map>
 
 
@@ -57,9 +57,7 @@ std::unordered_map<token, std::string> const hash_map_token_to_string {
     {token::key_void,           "key_void"},
     {token::key_int,            "key_int"},
     {token::key_double,         "key_double"},
-    {token::key_string,         "key_string"},
     {token::key_char,           "key_char"},
-    {token::key_bool,           "key_bool"},
 
     {token::r_int,          "r_int"},
     {token::r_double,       "r_double"},
@@ -98,7 +96,7 @@ std::unordered_map<token, std::string> const hash_map_token_to_string {
     {token::comma,         "comma"},
     {token::comment,       "comment"},
     {token::end,           "end"},
-    {token::indentif,         "indentif"},
+    {token::identif,         "identif"},
     {token::key_if,           "key_if"},
     {token::key_else,         "key_else"},
     {token::key_true,         "key_true"},
@@ -128,9 +126,8 @@ std::unordered_map<std::string, token> const key_words {
     {"int",      token::key_int},
     {"double",   token::key_double},
     {"char",     token::key_char},
-    {"string",   token::key_string},
-    {"bool",     token::key_bool},
-    {"void",     token::key_void}
+    {"void",     token::key_void},
+    {"extern",   token::key_extern}
 };
 inline bool is_useless(char const c) {
     for (char i : useless_char) {

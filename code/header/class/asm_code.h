@@ -47,7 +47,7 @@ class asm_code {
         std::vector<statement> code;
 
         //符号表，是parser中的拷贝
-        symbol_table* list {nullptr};
+        symbol_table* table {nullptr};
         //如果有符号表的拷贝，那么弃用
         std::vector<stack_frame> symbol_stack;
         //如果有符号表的拷贝，那么弃用
@@ -92,7 +92,7 @@ class asm_code {
 };
 
 asm_code::asm_code(std::string &file_path_, std::vector<statement> &&code_, symbol_table* sign_)
-: file_path{file_path_}, code{code_} ,list{sign_} {
+: file_path{file_path_}, code{code_} ,table{sign_} {
     file.open(file_path, std::ofstream::out);
     if (!file.is_open()) {
         fmt::print("can't open file at {}", file_path);

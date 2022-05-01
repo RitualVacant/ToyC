@@ -85,7 +85,7 @@ void output_help_information() {
     fmt::print("(m) mid_code     --get transfrom code\n");
     fmt::print("(b) \n");
     fmt::print("(c) create       --ctreate the\n");
-    fmt::print("(h) help         --print list\n");
+    fmt::print("(h) help         --print table\n");
     fmt::print("(q) quit         --quit\n");
     return;
 }

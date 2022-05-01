@@ -6,148 +6,204 @@
 #include <string>
 #include <iostream>
 #include "token.h"
+#include "declararor.h"
+#include <variant>
 
 namespace ast {
-    //basic
-    struct node {
-        std::size_t line = 0;
-        std::size_t column = 0;
-
-        explicit node(std::size_t line,std::size_t colume) : line{line}, column{column} {};
-        virtual ~node() = default;
+    enum class node_type {
+            type,
+            expression,
+                assignment_expression,
+                conditional_expression,
+                binary_expression,
+                unary_expression,
+                postfix_expression,
+                primary_expression,
+            statement,
+            declare_varible,
+            declare_function,
+            definition_function,
+            constant,
+            operators
     };
-    //表达式
-    struct expression : public node {
+    using ptr = std::size_t;
+    ptr const null = 0;
 
-        explicit expression(std::size_t line,std::size_t colume) : node(line, column) {}; //委托构造
-    };
-    //语句
-    struct statement : public node {
+    //-------------------------------------------
 
-        explicit statement(std::size_t line,std::size_t colume) : node(line, column) {}; //委托构造
-    };
-
-    //expression node
-
-    //bool
-    struct bool_expr : public expression {
-        bool value;
-
-        explicit bool_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
-    };
-
-    //int
-    struct int_expr : public expression {
-        int value;
-
-        explicit int_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
-    };
-    //char
-    struct char_expr : public expression {
-        char value;
-
-        explicit char_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
-    };
-    //null
-    struct null_expr : public expression {
-
-        explicit null_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
-    };
-    //double
-    struct double_expr : public expression {
-        double value;
-
-        explicit double_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
-    };
-    //string
-    struct string_expr : public expression {
-        std::string value;
-
-        explicit string_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
-    };
-    //array
-    struct array_expr : public expression {
-        std::vector<expression*> value;
-
-        explicit array_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
+    //basic I
+    struct node_loction {
+        std::size_t line;
+        std::size_t column;
     };
 
-    //indentfi
-    //include var name and func name
-    struct indentfi_expr : public expression {
-        std::string indentfi_name;
-        explicit indentfi_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
+    //-------------------------------------------
+    struct declare_funcion {
+        node_loction loc;
+    };
+    struct declare_variable {
+        node_loction loc;
+    };
+    struct definition_function {
+        node_loction loc;
     };
 
-    //index []
-    struct index_expr : public expression {
-        std::string index_name;
-        expression* index;
-        explicit index_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
+
+    //basic II
+    //type
+    struct type {
+        bool is_volatile = false;
+        bool is_const = false;
+    };
+
+    //expression
+    struct expression {
+    };
+
+    //statement
+    struct statement {
+    };
+
+    //declare or definition
+    char const var_dec  = 0;
+    char const var_def  = 1;
+    char const func_def = 2;
+
+    //operator
+    struct operators {
 
     };
 
-    //二元表达式
-    struct binary_expr : public expression {
-        expression* l_expr = nullptr;
-        expression* r_expr = nullptr;
-        token expr_operator = token::invalid;
-        explicit binary_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
+    //constant
+    struct constant {
+
     };
 
-    struct func_call_expr : public expression {
-        //函数名称
-        std::string func_name;
-        //函数参数
-        std::vector<expression*> args;
 
-        explicit func_call_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
+    //-------------------------------------------
+
+    //constant
+    struct constant_int {
+    };
+    struct constant_flaot {
+    };
+    struct constant_string {
     };
 
-    struct assign_expr : public expression {
-        expression* l_expr = nullptr;
-        expression* r_expr = nullptr;
-        token expr_operator = token::invalid;
-        explicit assign_expr(std::size_t line, std::size_t colume) : expression(line, column) {};
+    //expression
+    struct assignment_expression {
+
     };
+
+    struct conditional_expression {
+
+    };
+
+    struct binary_expression {
+
+    };
+
+    struct unary_expression {
+
+    };
+
+    struct postfix_expression {
+
+    };
+
+    struct primary_expression {
+
+    };
+
+    //declare
+    struct declare_var {
+
+    };
+
+    //DROP
+    struct declaration_declarator {
+
+    };
+
+    struct initial_declatator_list {
+
+    };
+
+    struct initial_declatator {
+
+    };
+
+    struct declatator {
+
+    };
+
+    struct direct_declatator {
+
+    };
+
+    struct array_declatator {
+
+    };
+
+    struct arguments_type_list {
+
+    };
+
+    struct idnetifier_list {
+
+    };
+
+    struct arguments_list {
+
+    };
+
+    struct arguments_declaration {
+
+    };
+
 
     // statement node
 
     //break
-    struct break_statement : public statement {
+    struct break_statement {
 
-        explicit break_statement(std::size_t line,std::size_t colume) : statement(line, column) {}; //委托构造
     };
     //continue
-    struct continue_statement : public statement {
+    struct continue_statement {
 
-        explicit continue_statement(std::size_t line,std::size_t colume) : statement(line, column) {}; //委托构造
     };
     //expression
-    struct expr_statement : public statement {
+    struct expr_statement {
 
-        explicit expr_statement(std::size_t line,std::size_t colume) : statement(line, column) {}; //委托构造
     };
     //return
-    struct return_statement : public statement {
-        ast::expression* return_expression = nullptr;
-        explicit return_statement(std::size_t line,std::size_t colume) : statement(line, column) {}; //委托构造
+    union value {
+        ast::node_loction node_loction;
+        ast::type type;
+        ast::expression expression;
+        ast::statement statement;
+        ast::declare_funcion declare_funcion;
+        ast::declare_variable declare_variable;
+        ast::definition_function definition_function;
+        ast::operators operators;
+        ast::constant constant;
+        ast::constant_flaot constant_flaot;
+        ast::constant_string constant_string;
+        ast::assignment_expression assignment_expression;
+        ast::conditional_expression conditional_expression;
+        ast::binary_expression binary_expression;
+        ast::unary_expression unary_expression;
+        ast::postfix_expression postfix_expression;
+        ast::primary_expression primary_expression;
+        ast::declare_var declare_var;
     };
-    //if
-    struct if_statement : public statement {
-        ast::expression* jugement_statement = nullptr;
-        std::vector<ast::statement*> if_block;
-        std::vector<ast::statement*> else_block;
 
-        explicit if_statement(std::size_t line,std::size_t colume) : statement(line, column) {}; //委托构造
-    };
-    //while
-    struct while_statement : public statement {
-        ast::expression* jugement_statement = nullptr;
-        std::vector<ast::statement*> while_block;
-
-        explicit while_statement(std::size_t line,std::size_t colume) : statement(line, column) {}; //委托构造
+    struct node {
+        ast::value value;
+        ast::node_type node_type;
     };
 }
+
+
 
 #endif

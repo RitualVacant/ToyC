@@ -53,7 +53,7 @@ namespace worng {
         {token::comma,   ","},
         {token::comment, "#"},
 
-        //{token::indentif,  "标识符"},
+        //{token::identif,  "标识符"},
         {token::key_if,         "if"},
         {token::key_else,       "else"},
         {token::key_true,       "true"},
@@ -86,6 +86,10 @@ namespace worng {
         fmt::print(fg(fmt::color::red), "a worng at line : {} , colume : {}\n", line, colume);
         fmt::print(fg(fmt::color::red), "haven't defind \'{}\' {}\n", trans_token_to_string.at(std::get<0>(x)), std::get<1>(x));
         exit(0);
+        return;
+    }
+
+    void rewirte(std::size_t line, std::size_t column, std::tuple<token, std::string> x) {
         return;
     }
 }

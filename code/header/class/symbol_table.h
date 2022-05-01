@@ -15,7 +15,6 @@ std::unordered_map<token, std::size_t> size_class{
     {token::key_int,    4},
     {token::key_char,   1},
     {token::key_double, 4},
-    {token::key_bool,   1},
     {token::class_int,    4},
     {token::class_char,   1},
     {token::class_double, 4},
@@ -91,7 +90,7 @@ class symbol_table {
         explicit symbol_table(std::string &file_path_, bool really_output_asm_code_);
         ~symbol_table();
         symbol_table(symbol_table&)             = delete;
-        symbol_table(symbol_table&&)            = delete;
+        symbol_table(symbol_table&&)            = default;
         symbol_table& operator=(symbol_table&)  = delete;
         symbol_table& operator=(symbol_table&&) = delete;
 

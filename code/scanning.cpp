@@ -42,8 +42,8 @@ inline std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
         get_next_char();
     }
     if (key_words.find(re) == key_words.end()) {
-        now_token = std::make_tuple(token::indentif, re);
-        return std::make_tuple(token::indentif, re);
+        now_token = std::make_tuple(token::identif, re);
+        return std::make_tuple(token::identif, re);
     }
     else {
         now_token = std::make_tuple(key_words.at(re), re);
@@ -58,7 +58,7 @@ inline std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
 //        re += c;
 //        get_next_char();
 //    }
-//    get_next_char();    //pass string end list "
+//    get_next_char();    //pass string end table "
 //    now_token = std::make_tuple(token::class_string, re);
 //    return std::make_tuple(token::class_string, re);
 //}

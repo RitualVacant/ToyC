@@ -48,7 +48,7 @@ std::size_t asm_code::sizeof_all_var_in_func(std::size_t now_loc) {
 }
 
 func& asm_code::find_func(std::string name) {
-    for (auto &i : list->func_table) {
+    for (auto &i : table->func_table) {
         if (i.name == name)
             return i;
     }
@@ -92,12 +92,12 @@ std::string asm_code::trans_to_loc(std::string name) {
 
 void asm_code::get_code(std::vector<statement> &code_, std::vector<func> &func_table_) {
   //code = std::move(code_);
-  ////list->func_table = std::move(func_table_);
+  ////table->func_table = std::move(func_table_);
 
   ////offset of argu in stack
   //std::size_t offset = 0;
   ////init argu location
-  //for (auto &i : list->func_table) {
+  //for (auto &i : table->func_table) {
   //    for (std::size_t j = 0; j < i.argu.size(); ++j) {
   //        if (j < 6) {
   //            //i.argu[j].location = register_name[j];
@@ -330,9 +330,7 @@ void asm_code::read_code() {
             case token::key_void:
             case token::key_int:
             case token::key_double:
-            case token::key_string:
             case token::key_char:
-            case token::key_bool:
 
             case token::r_int:
             case token::r_double:
@@ -445,7 +443,7 @@ void asm_code::read_code() {
             case token::end: {  //;
                 continue;
             }
-            case token::indentif: {//标识符
+            case token::identif: {//标识符
                 continue;
             }
             case token::key_if: {      //if
