@@ -6,8 +6,9 @@
 #include <string>
 #include <iostream>
 #include "token.h"
-#include "declararor.h"
-#include <variant>
+//#include <variant>
+//#include <string_view>
+#include <array>
 
 namespace ast {
     enum class node_type {
@@ -23,8 +24,19 @@ namespace ast {
             declare_varible,
             declare_function,
             definition_function,
+            definition_struct,
             constant,
-            operators
+            operators,
+
+            initial_declarator,
+
+
+            //which class??
+            direct_declarator,
+            declarator,
+            declaration_declarator,
+            initial_declarator_list,
+            declaration_or_definition
     };
     using ptr = std::size_t;
     ptr const null = 0;
@@ -37,15 +49,37 @@ namespace ast {
         std::size_t column;
     };
 
+    struct ast_node {
+        node_loction loc;
+    };
+
+    struct declare : ast_node {
+        std::array<char, 25> name;
+    };
+
     //-------------------------------------------
-    struct declare_funcion {
-        node_loction loc;
+
+    struct declaration_or_definition : declare {
+        ast::ptr ptr_declaration_declarator = ast::null;
+        ast::ptr ptr_initial_declatator_list = ast::null;
     };
-    struct declare_variable {
-        node_loction loc;
+
+    struct declare_funcion : declare {
+        ast::ptr ptr_return_value_type;
+        ast::ptr ptr_funcion_arguments;
     };
-    struct definition_function {
-        node_loction loc;
+
+    struct declare_variable : ast_node {
+    };
+
+    struct definition_struct : ast_node {
+
+    };
+
+    struct definition_function : ast_node {
+        ast::ptr ptr_return_value_type;
+        ast::ptr ptr_funcion_arguments;
+        ast::ptr ptr_compound_statement;
     };
 
 
@@ -120,28 +154,32 @@ namespace ast {
 
     };
 
-    //DROP
-    struct declaration_declarator {
+    struct declarator {
+        bool is_ptr = false;
+        ast::ptr ptr_direct_declarator;
+    };
+
+
+    struct initial_declarator_list {
+        ast::ptr ptr_initial_declarator;
 
     };
 
-    struct initial_declatator_list {
-
+    struct initial_declarator : ast_node {
+        ast::ptr ptr_declarator = ast::null;
+        ast::ptr ptr_next_initial_declarator = ast::null;
+        ast::ptr ptr_initial_value = ast::null;
     };
 
-    struct initial_declatator {
+    #include "declataror.h"
 
+    struct direct_declarator {
+        ast::ptr ptr_i
+        ast::ptr 
+        ast::ptr 
     };
 
-    struct declatator {
-
-    };
-
-    struct direct_declatator {
-
-    };
-
-    struct array_declatator {
+    struct array_declarator {
 
     };
 
@@ -185,6 +223,8 @@ namespace ast {
         ast::declare_funcion declare_funcion;
         ast::declare_variable declare_variable;
         ast::definition_function definition_function;
+        ast::declaration_declarator declaration_declarator;
+        ast::declarator declarator;
         ast::operators operators;
         ast::constant constant;
         ast::constant_flaot constant_flaot;
@@ -196,11 +236,17 @@ namespace ast {
         ast::postfix_expression postfix_expression;
         ast::primary_expression primary_expression;
         ast::declare_var declare_var;
+        ast::initial_declarator initial_declarator;
+        ast::initial_declarator_list initial_declarator_list;
+        ast::declaration_or_definition declaration_or_definition;
+        ast::direct_declarator direct_declarator;
     };
 
     struct node {
         ast::value value;
-        ast::node_type node_type;
+        ast::node_type type;
+        ast::ptr loc;
+        ast::ptr next;
     };
 }
 

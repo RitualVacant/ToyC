@@ -42,6 +42,9 @@ std::size_t asm_code::sizeof_all_var_in_func(std::size_t now_loc) {
                 sizeof_all_var += std::stoul(code[i].arg2) * 1;
                 break;
             }
+            default: {
+                exit(0);
+            }
         }
     }
     return sizeof_all_var;
@@ -92,12 +95,12 @@ std::string asm_code::trans_to_loc(std::string name) {
 
 void asm_code::get_code(std::vector<statement> &code_, std::vector<func> &func_table_) {
   //code = std::move(code_);
-  ////table->func_table = std::move(func_table_);
+  ////table.func_table = std::move(func_table_);
 
   ////offset of argu in stack
   //std::size_t offset = 0;
   ////init argu location
-  //for (auto &i : table->func_table) {
+  //for (auto &i : table.func_table) {
   //    for (std::size_t j = 0; j < i.argu.size(); ++j) {
   //        if (j < 6) {
   //            //i.argu[j].location = register_name[j];

@@ -34,7 +34,7 @@ inline std::tuple<token, std::string> scanning::to_number() {
 
 inline std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
     std::string re;
-    bool is_key_word = false;
+    //bool is_key_word = false;
     re += c;
     get_next_char();
     while (is_number(c) || is_char(c) || c == '_') {
@@ -293,11 +293,11 @@ scanning::next_token() {
     return std::make_tuple(token::invalid, "");
 }
 
-token scanning::get_now_token(std::tuple<token, std::string> &tuple_) {
+token scanning::get_current_token(std::tuple<token, std::string> &tuple_) {
     return std::get<0>(tuple_);
 }
 
-token scanning::get_now_token() {
+token scanning::get_current_token() {
     return std::get<0>(now_token);
 }
 

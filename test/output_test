@@ -1,0 +1,43 @@
+add:
+    push    rbp
+    mov     rbp,    rsp
+    sub     rsp,    27
+    sub     sp,     4
+    mov     dword ptr   [bp-4], 3
+    cmp     [bp-4], 3
+    jge     lable0
+    mov     dword ptr   [bp-4], 0
+    cmp     [bp-4], 3
+    je      lable1
+    mov     dword ptr   [bp-4], 9
+lable1:
+lable0:
+    mov     dword ptr   [bp-4], 2
+    sub     sp,     4
+    mov     dword ptr   [bp-8], 0
+lable2:
+    cmp     [bp-8], 34
+    jle     lable4
+lable4:
+    add     3
+    jmp     lable2
+lable3:
+    sub     sp,     16
+    sub     sp,     3
+    mov     dword ptr   [bp-27-1*1],2
+    mov     rsp,    rbp
+    pop     rbp
+    ret
+main:
+    push    rbp
+    mov     rbp,    rsp
+    sub     rsp,    8
+    sub     sp,     4
+    mov     dword ptr   [bp-31],1
+    sub     sp,     4
+    mov     dword ptr   [bp-0], [bp-31]
+    mov     dword ptr   [bp-4], 3
+    mov     dword ptr   [bp-35],5
+    mov     rsp,    rbp
+    pop     rbp
+    ret

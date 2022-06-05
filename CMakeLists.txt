@@ -8,9 +8,11 @@ project(ToyC VERSION 0.1.0)
 enable_testing()
 
 add_executable(ToyC main.cpp)
+add_definitions("-Wall -g")
 
 set(CMAKE_BUILD_TYPE "Debug")
-#set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O1 -Wall -g")
+
 
 set(CXX_STANDARD 20)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

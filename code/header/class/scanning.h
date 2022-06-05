@@ -57,8 +57,8 @@ class scanning {
 
         std::tuple<token, std::string> next_token();
         token                          get_pre_token();
-        token                          get_now_token();
-        token                          get_now_token(std::tuple<token, std::string> &tuple_);
+        token                          get_current_token();
+        token                          get_current_token(std::tuple<token, std::string> &tuple_);
         std::string                    get_value();
         std::string                    get_value(std::tuple<token, std::string> &tuple_);
 

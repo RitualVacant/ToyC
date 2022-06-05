@@ -3,8 +3,9 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <fstream>
 
-#include "./../AST/declararor.h"
+#include "./../AST/declataror.h"
 #include "./../AST/ast.h"
 
 
@@ -17,18 +18,23 @@ class synctax_tree {
     private:
         bool reserve_tree = false;
 
-        std::size_t size = 0;
-        ast::ptr end = 1;
+        ast::ptr last_root_ptr = ast::null;
         std::vector<ast::node> tree;
-        std::vector<ast::node_type> type_list;
+        std::fstream file;
+        std::string output_file{"/home/lzj/code/program/script/test/o1"};
+        void dfs_tree_print_terminal(ast::ptr ptr);
 
     public:
         synctax_tree();
         ~synctax_tree() = default;
 
         ast::ptr insert(ast::node_type node_type);
+        ast::ptr creat_node(ast::node_type node_type);
+        void connect(ast::ptr ptr);
         void earse(ast::ptr idx);
-        ast::node& operator[] (ast::ptr ptr);
+        ast::node& operator [] (ast::ptr ptr);
+        void print_tree_terminal();
+        void to_json();
 };
 
 #endif

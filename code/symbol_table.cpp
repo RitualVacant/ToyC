@@ -23,7 +23,7 @@ void symbol_table::clear_symbol_stack() {
 //返回函数参数，或者函数临时变量的类型
 //TODO 要能返回函数参数的类型
 token symbol_table::find_var_class(std::string name) {
-    for (int i = 0; i < symbol_stack.size(); ++i) {
+    for (std::size_t i = 0; i < symbol_stack.size(); ++i) {
         if (name == symbol_stack[i].name)
             return symbol_stack[i].var_class;
     }
@@ -70,7 +70,7 @@ bool symbol_table::find(std::string &x) {
 }
 
 std::size_t symbol_table::at(std::tuple<token, std::string>& x) {
-    std::size_t re;
+    //std::size_t re;
   //for (int i = sign_stack.size() - 1; i > 0 && sign_stack[i].Token != token::invalid; --i) {
   //    if (std::get<1>(x) == sign_stack[i].name) return sign_stack[i].offset;
   //}
@@ -80,7 +80,7 @@ std::size_t symbol_table::at(std::tuple<token, std::string>& x) {
 }
 
 std::size_t symbol_table::at(std::string &x) {
-    std::size_t re;
+    //std::size_t re;
   //for (int i = sign_stack.size() - 1; i > 0 && sign_stack[i].Token != token::invalid; --i) {
   //    if (x == sign_stack[i].name) return sign_stack[i].offset;
   //}
@@ -97,9 +97,9 @@ bool symbol_table::find_argu(std::string name) {
 }
 
 bool symbol_table::find_func(std::string &x) {
-    for (int i = 0; i < func_table.size(); ++i) {
-        if (func_table[i].name == x) return true;
-    }
+    //for (int i = 0; i < func_table.size(); ++i) {
+    //    if (func_table[i].name == x) return true;
+    //}
     return false;
 }
 
@@ -107,7 +107,7 @@ std::string symbol_table::find_local(std::string &name) {
     if (find(name)) {
         return fmt::format("[rbp - {}]", at(name));
     }
-    std::size_t num;
+    //std::size_t num;
     if (find_argu(name)) {
       //for (std::size_t i = 0; i < argu_table.size(); ++i) {
       //    if (name == std::get<1>(argu_table[i])) {
@@ -121,7 +121,7 @@ std::string symbol_table::find_local(std::string &name) {
 }
 
 std::string symbol_table::find_func_return_var_value(std::string func_name) {
-    for (int i = 0; i < func_table.size(); ++i) {
+    for (std::size_t i = 0; i < func_table.size(); ++i) {
         if (func_name == func_table[i].name)
             return func_table[i].name_return;
     }

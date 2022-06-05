@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             //"program": "${fileDirname}/${fileBasenameNoExtension}",
-            "program": "${workspaceFolder}/build/MyScript",
+            "program": "${workspaceFolder}/build/ToyC",
             //"program": "/home/lzj/code/program/script/build/MyScirpt",
             "args": [],
             "stopAtEntry": false,

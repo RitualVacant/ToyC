@@ -4,12 +4,13 @@
 //run mode
 //for debug
 enum class mode : char {
-    lexical_analysis_output = 's',
+    scan  = 's',
     yes   = 'y',
     mid   = 'm',
     quit  = 'q',
     help  = 'h',
     debug = 'd',
+    tree  = 't'
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -47,25 +48,30 @@ int main(int argc, char* argv[]) {
 //-----------------------------------------------------------------------------------------------
 void choose_mode_run() {
     output_help_information();
-    mode choose_mode;
+    mode choose_mode = mode::help;
     char in;
     while (choose_mode != mode::quit) {
         fmt::print("(help -h)enter to continue: ");
         std::cin >> in;
         choose_mode = static_cast<mode>(in);
         switch (choose_mode) {
-            case mode::lexical_analysis_output : {
-                scanning s{file_path};
+            case mode::scan: {
+                scanning s(file_path);
                 s.token_output();
                 break;
             }
+            case mode::tree: {
+                parser p(file_path, output_file_path, false);
+                p.print_synctax_tree();
+                break;
+            }
             case mode::mid : {
-                parser p{file_path, output_file_path, false};
+                parser p(file_path, output_file_path, false);
                 p.print_mid_code();
                 break;
             }
             case mode::yes : {
-                parser p{file_path, output_file_path, true};
+                parser p(file_path, output_file_path, true);
                 break;
             }
             case mode::help : {
@@ -83,6 +89,7 @@ void output_help_information() {
     fmt::print("(s) scan         --lexical analysis and output the token\n");
     fmt::print("(y) yes          --get the asm_code file\n");
     fmt::print("(m) mid_code     --get transfrom code\n");
+    fmt::print("(t) tree         --print synctax tree\n");
     fmt::print("(b) \n");
     fmt::print("(c) create       --ctreate the\n");
     fmt::print("(h) help         --print table\n");
