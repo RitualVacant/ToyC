@@ -114,6 +114,7 @@ void synctax_tree::print_tree_terminal() {
 
 void synctax_tree::dfs_tree_print_terminal(ast::ptr ptr) {
     if (ptr == ast::null) return;
+    auto &node = tree[ptr].value;
     switch (tree[ptr].type) {
         case ast::node_type::type:
             break;
@@ -179,6 +180,13 @@ void synctax_tree::dfs_tree_print_terminal(ast::ptr ptr) {
                 std::cout << "is_ptr : false\n";
             }
             dfs_tree_print_terminal(tree[ptr].value.declarator.ptr_direct_declarator);
+            std::cout << "}\n";
+            break;
+
+        case ast::node_type::declaration_or_definition:
+            std::cout << "\"declaration_or_definition\":{\n";
+            dfs_tree_print_terminal(node.declaration_or_definition.ptr_declaration_declarator);
+            dfs_tree_print_terminal(node.declaration_or_definition.ptr_initial_declatator_list);
             std::cout << "}\n";
             break;
 

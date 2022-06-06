@@ -31,7 +31,7 @@ class parser {
         //symbol_table table = symbol_table(output_file_path, really_output_asm_code);
         symbol_table* table;
         scanning     scan  = scanning(file_path);
-        synctax_tree tree  = synctax_tree();
+        synctax_tree tree;
         //std::unique_ptr<asm_code> asm_file  = std::make_unique<asm_code>(asm_code(fil))
         asm_code* asm_file = nullptr;
         //
@@ -110,6 +110,8 @@ class parser {
         ast::ptr parser_goto_statement();
         ast::ptr parser_continue_statement();
         ast::ptr parser_return_statement();
+        
+        ast::ptr parser_identifier();
 
     public:
         explicit parser(std::string &file_path_, std::string &output_file_path_, bool really_output_asm_code_);

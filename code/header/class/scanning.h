@@ -59,8 +59,8 @@ class scanning {
         token                          get_pre_token();
         token                          get_current_token();
         token                          get_current_token(std::tuple<token, std::string> &tuple_);
-        std::string                    get_value();
-        std::string                    get_value(std::tuple<token, std::string> &tuple_);
+        std::string                    get_current_value();
+        std::string                    get_current_value(std::tuple<token, std::string> &tuple_);
 
         //测试词法分析器函数
         void token_output() {

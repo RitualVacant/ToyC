@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.0.0)
 
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++-12")
+set(CMAKE_C_COMPILER "/usr/bin/clang-12")
+
+
 #set(VCPKG_ROOT "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
 #set(DCMAKE_TOOLCHAIN_FILE ${VCPKG_ROOT})
-
 project(ToyC VERSION 0.1.0)
 
 enable_testing()

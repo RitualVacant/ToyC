@@ -36,7 +36,8 @@ namespace ast {
             declarator,
             declaration_declarator,
             initial_declarator_list,
-            declaration_or_definition
+            declaration_or_definition,
+            identifier
     };
     using ptr = std::size_t;
     ptr const null = 0;
@@ -54,6 +55,10 @@ namespace ast {
     };
 
     struct declare : ast_node {
+        std::array<char, 25> name;
+    };
+
+    struct identifier {
         std::array<char, 25> name;
     };
 
@@ -174,9 +179,8 @@ namespace ast {
     #include "declataror.h"
 
     struct direct_declarator {
-        ast::ptr ptr_i
-        ast::ptr 
-        ast::ptr 
+        ast::ptr ptr_identifier = ast::null;
+        ast::ptr ptr_declarator = ast::null;
     };
 
     struct array_declarator {
@@ -240,6 +244,7 @@ namespace ast {
         ast::initial_declarator_list initial_declarator_list;
         ast::declaration_or_definition declaration_or_definition;
         ast::direct_declarator direct_declarator;
+        ast::identifier identifier;
     };
 
     struct node {

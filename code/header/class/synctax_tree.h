@@ -19,12 +19,12 @@ class synctax_tree {
         bool reserve_tree = false;
 
         ast::ptr last_root_ptr = ast::null;
-        std::vector<ast::node> tree;
         std::fstream file;
         std::string output_file{"/home/lzj/code/program/script/test/o1"};
         void dfs_tree_print_terminal(ast::ptr ptr);
 
     public:
+        std::vector<ast::node> tree;
         synctax_tree();
         ~synctax_tree() = default;
 

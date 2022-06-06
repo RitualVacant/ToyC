@@ -167,7 +167,7 @@ parser::parser_pre_to_pos() {
         //TODO 这个next_token的位置
         switch (scan.get_current_token()) {
             case token::identif: {//identif or arrary unit
-                std::string name_indentif = scan.get_value();
+                std::string name_indentif = scan.get_current_value();
                 token pre_token = scan.get_pre_token();  //预取了
                 if (pre_token == token::l_mid_par) {
                     scan.next_token();                   //这里取下一个是因为[ 会在下一次不动
@@ -188,7 +188,7 @@ parser::parser_pre_to_pos() {
             case token::r_double:  //double
             case token::r_char:    //char
             case token::r_bool:    //bool
-                res.push_back({scan.get_current_token(), fmt::format("${}", scan.get_value())});
+                res.push_back({scan.get_current_token(), fmt::format("${}", scan.get_current_value())});
                 break;
 
             case token::bit_and: //&
@@ -457,7 +457,7 @@ parser::parser_expression_(std::string name_indentif) {
             //TODO没有全局变量的支持
             case token::identif: {
                 //获得标识符的类型
-                std::string indentif_ = scan.get_value();               //第一个标识符
+                std::string indentif_ = scan.get_current_value();               //第一个标识符
                 token indentif_token = table->find_var_class(indentif_);  //标识符类型
                 //size = size_class.at(indentif_token);                    //类型大小
 
@@ -498,23 +498,23 @@ parser::parser_expression_(std::string name_indentif) {
             }
         //数值
             case token::class_int: {
-                num_stack.push_back(scan.get_value());
+                num_stack.push_back(scan.get_current_value());
                 scan.next_token();
                 continue;
             }
             case token::class_double: {
-                num_stack.push_back(scan.get_value());
+                num_stack.push_back(scan.get_current_value());
                 scan.next_token();
                 continue;
             }
             case token::class_char: {
-                num_stack.push_back(scan.get_value());
+                num_stack.push_back(scan.get_current_value());
                 scan.next_token();
                 continue;
             }
             case token::class_bool: {
                 //TODO
-                num_stack.push_back(scan.get_value());
+                num_stack.push_back(scan.get_current_value());
                 scan.next_token();
                 continue;
             }
@@ -651,10 +651,10 @@ parser_declare() {
     //case: 数组声明 [
     if (scan.get_current_token() == token::l_mid_par) {
         scan.next_token();                           //
-        std::string size_array = scan.get_value();   //数组大小
+        std::string size_array = scan.get_current_value();   //数组大小
         scan.next_token();                           //]
         scan.next_token();
-        std::string name_array = scan.get_value();                       //数组名
+        std::string name_array = scan.get_current_value();                       //数组名
         switch (class_indentfi) {
             case token::key_int: {
                 scan.next_token();
@@ -689,7 +689,7 @@ parser_declare() {
 
     //--------------------------------
     //case: 标识符
-    std::string name_indentfi = scan.get_value();     //标识符名字
+    std::string name_indentfi = scan.get_current_value();     //标识符名字
 
     switch (class_indentfi) {
         case token::key_int: {
@@ -740,7 +740,7 @@ parser::parser_function_define_or_declare(std::string func_name, token func_retu
     while (scan.get_current_token() != token::r_par) {
         token argu_type = scan.get_current_token();
         scan.next_token();
-        std::string name_argu = scan.get_value();
+        std::string name_argu = scan.get_current_value();
         argu_table.push_back(arg_info(argu_type, name_argu, ""));
         scan.next_token();
         // ,
@@ -783,7 +783,7 @@ parser::parser_statement() {
             case token::invalid:
             //函数调用|表达式|数组
             case token::identif: {
-                std::string name_indentif = scan.get_value();
+                std::string name_indentif = scan.get_current_value();
                 std::string r_value;
                 scan.next_token();
                 //提前判断处理数组元素
@@ -906,31 +906,31 @@ parser::parser_func_call(std::string name_func) {
             case token::comma:
                 break;
             case token::r_int:
-                code.push_back(statement(token::arg_r_int, scan.get_value(), "", ""));
+                code.push_back(statement(token::arg_r_int, scan.get_current_value(), "", ""));
                 break;
             case token::r_double:
-                code.push_back(statement(token::arg_r_double, scan.get_value(), "", ""));
+                code.push_back(statement(token::arg_r_double, scan.get_current_value(), "", ""));
                 break;
             case token::r_bool:
-                code.push_back(statement(token::arg_r_bool, scan.get_value(), "", ""));
+                code.push_back(statement(token::arg_r_bool, scan.get_current_value(), "", ""));
                 break;
             case token::r_char:
-                code.push_back(statement(token::arg_r_char, scan.get_value(), "", ""));
+                code.push_back(statement(token::arg_r_char, scan.get_current_value(), "", ""));
                 break;
             case token::identif: {
-                token class_arg = table->find_var_class(scan.get_value());
+                token class_arg = table->find_var_class(scan.get_current_value());
                 switch (class_arg) {
                     case token::class_int:
-                        code.push_back(statement(token::arg_int_class, scan.get_value(), "", ""));
+                        code.push_back(statement(token::arg_int_class, scan.get_current_value(), "", ""));
                         break;
                     case token::class_double:
-                        code.push_back(statement(token::arg_double_class, scan.get_value(), "", ""));
+                        code.push_back(statement(token::arg_double_class, scan.get_current_value(), "", ""));
                         break;
                     case token::class_char:
-                        code.push_back(statement(token::arg_char_class, scan.get_value(), "", ""));
+                        code.push_back(statement(token::arg_char_class, scan.get_current_value(), "", ""));
                         break;
                     case token::class_bool:
-                        code.push_back(statement(token::arg_bool_class, scan.get_value(), "", ""));
+                        code.push_back(statement(token::arg_bool_class, scan.get_current_value(), "", ""));
                         break;
                     default:
                         fmt::print("\na unknow error at parser::parser_func_call\n");
@@ -1057,9 +1057,9 @@ parser::print_synctax_tree() {
 ast::ptr
 parser::parser_declare_or_definition() {
     ast::ptr ptr_root = tree.creat_node(ast::node_type::declaration_or_definition);
-    auto &node = tree[ptr_root].value.declaration_or_definition;
-    node.ptr_declaration_declarator = parser_declaration_declarator();
-    node.ptr_initial_declatator_list = parser_initial_declarator();
+    //auto &node = tree[ptr_root].value.declaration_or_definition;
+    tree[ptr_root].value.declaration_or_definition.ptr_declaration_declarator = parser_declaration_declarator();
+    tree[ptr_root].value.declaration_or_definition.ptr_initial_declatator_list = parser_initial_declarator();
 
     //ast::ptr ptr_declaration_declarator = parser_declaration_declarator();
     //ast::ptr ptr_initial_declatator = parser_initial_declarator();

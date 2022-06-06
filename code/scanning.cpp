@@ -301,11 +301,11 @@ token scanning::get_current_token() {
     return std::get<0>(now_token);
 }
 
-std::string scanning::get_value(std::tuple<token, std::string> &tuple_) {
+std::string scanning::get_current_value(std::tuple<token, std::string> &tuple_) {
     return std::get<1>(tuple_);
 }
 
-std::string scanning::get_value() {
+std::string scanning::get_current_value() {
     return std::get<1>(now_token);
 }
 
