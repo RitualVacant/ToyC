@@ -1,4 +1,4 @@
-/home/lzj/code/program/script/build/CMakeFiles/rebuild_cache.dir
-/home/lzj/code/program/script/build/CMakeFiles/edit_cache.dir
+/home/lzj/code/program/script/build/CMakeFiles/ToyC.dir
 /home/lzj/code/program/script/build/CMakeFiles/test.dir
-/home/lzj/code/program/script/build/CMakeFiles/MyScirpt.dir
+/home/lzj/code/program/script/build/CMakeFiles/edit_cache.dir
+/home/lzj/code/program/script/build/CMakeFiles/rebuild_cache.dir
