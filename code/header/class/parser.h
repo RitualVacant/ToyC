@@ -76,9 +76,9 @@ class parser {
         ast::ptr parser_initial_declarator();
         ast::ptr parser_declarator();
         ast::ptr parser_direct_declarator();
-        ast::ptr parser_arguments_arguments_type_list();
+        ast::ptr parser_arguments_type_list();
         ast::ptr parser_arguments_list();
-        ast::ptr parser_arugments_declaration();
+        ast::ptr parser_arguments_declaration();
         ast::ptr parser_array_declarator();
         ast::ptr parser_temporary_1();
         //NEW

@@ -5,10 +5,29 @@
 #include <fmt/core.h>
 #include "./error/inner.cpp"
 #include "./header/AST/declataror.h"
+#include <stdlib.h>
 
 synctax_tree::synctax_tree() {
     //if (reserve_tree) tree.reserve(sizeof_synctax_tree_init);
+    if (to_file) {
+        file.open(file_path, std::fstream::out);
+        if (!file.is_open()) {
+            fmt::print("can't open file in synctax_tree");
+            exit(0);
+        }
+    }
     tree.push_back({});
+}
+
+synctax_tree::~synctax_tree() {
+    file.close();
+    int done = system("pytm-cli -i ~/code/program/script/test/tree.json");
+    if (done == 127) {
+        fmt::print("output json tree");
+    }
+    if (done == -1) {
+        fmt::print("output json tree");
+    }
 }
 
 /*
@@ -101,167 +120,277 @@ void synctax_tree::connect(ast::ptr ptr) {
     return;
 }
 
-void synctax_tree::print_tree_terminal() {
-    file.open(output_file);
-    if (!file.is_open()) {
-        fmt::print("can't open file in synctax_tree");
-        exit(0);
-    }
-    dfs_tree_print_terminal(last_root_ptr);
+void synctax_tree::print_tree() {
+
+    if (to_file) file << "{\n";
+    else std::cout << "{\n";
+
+    dfs_print_tree(last_root_ptr);
+
+    if (to_file) file << "}\n";
+    else std::cout << "}\n";
     file.close();
     return;
 }
 
-void synctax_tree::dfs_tree_print_terminal(ast::ptr ptr) {
+void synctax_tree::dfs_print_tree(ast::ptr ptr) {
     if (ptr == ast::null) return;
     auto &node = tree[ptr].value;
     switch (tree[ptr].type) {
         case ast::node_type::type:
+            print_json_class_head("type");
+            print_json_class_end();
             break;
         case ast::node_type::expression:
+            print_json_class_head("expression");
+            print_json_class_end();
             break;
         case ast::node_type::assignment_expression:
+            print_json_class_head("assignment_expression");
+            print_json_class_end();
             break;
         case ast::node_type::conditional_expression:
+            print_json_class_head("conditional_expression");
+            print_json_class_end();
             break;
         case ast::node_type::binary_expression:
+            print_json_class_head("binary_expression");
+            print_json_class_end();
             break;
         case ast::node_type::unary_expression:
+            print_json_class_head("unary_expression");
+            print_json_class_end();
             break;
         case ast::node_type::postfix_expression:
+            print_json_class_head("postfix_expression");
+            print_json_class_end();
             break;
         case ast::node_type::primary_expression:
+            print_json_class_head("primary_expression");
+            print_json_class_end();
             break;
         case ast::node_type::statement:
+            print_json_class_head("statement");
+            print_json_class_end();
             break;
         case ast::node_type::declare_varible:
+            print_json_class_head("declare_varible");
+            print_json_class_end();
             break;
         case ast::node_type::declare_function:
-            std::cout << "\"declare_function\":{\n";
-            dfs_tree_print_terminal(tree[ptr].value.declare_funcion.ptr_funcion_arguments);
-            dfs_tree_print_terminal(tree[ptr].value.declare_funcion.ptr_return_value_type);
-            std::cout << "}\n";
+            print_json_class_head("declare_function");
+            dfs_print_tree(tree[ptr].value.declare_funcion.ptr_funcion_arguments);
+            dfs_print_tree(tree[ptr].value.declare_funcion.ptr_return_value_type);
+            print_json_class_end();
             break;
         case ast::node_type::definition_function:
-            std::cout << "\"definition_function\":{\n";
-            dfs_tree_print_terminal(tree[ptr].value.definition_function.ptr_funcion_arguments);
-            dfs_tree_print_terminal(tree[ptr].value.definition_function.ptr_return_value_type);
-            dfs_tree_print_terminal(tree[ptr].value.definition_function.ptr_compound_statement);
-            std::cout << "}\n";
+            print_json_class_head("definition_function");
+            dfs_print_tree(tree[ptr].value.definition_function.ptr_funcion_arguments);
+            dfs_print_tree(tree[ptr].value.definition_function.ptr_return_value_type);
+            dfs_print_tree(tree[ptr].value.definition_function.ptr_compound_statement);
+            print_json_class_end();
             break;
         case ast::node_type::initial_declarator_list:
-            std::cout << "\"initial_declarator_list\":{\n";
-            dfs_tree_print_terminal(tree[ptr].value.initial_declarator_list.ptr_initial_declarator);
-            std::cout << "}\n";
+            print_json_class_head("initial_declarator_list");
+            dfs_print_tree(tree[ptr].value.initial_declarator_list.ptr_initial_declarator);
+            print_json_class_end();
             break;
 
         case ast::node_type::definition_struct:
+            print_json_class_head("definition_struct");
+            print_json_class_end();
             break;
         case ast::node_type::constant:
+            print_json_class_head("constant");
+            print_json_class_end();
             break;
         case ast::node_type::operators:
+            print_json_class_head("operators");
+            print_json_class_end();
             break;
         case ast::node_type::initial_declarator:
-            std::cout << "\"initial_declatator\":{\n";
-            dfs_tree_print_terminal(tree[ptr].value.initial_declarator.ptr_declarator);
-            dfs_tree_print_terminal(tree[ptr].value.initial_declarator.ptr_initial_value);
-            std::cout << "}\n";
+            print_json_class_head("initial_declarator");
+            dfs_print_tree(tree[ptr].value.initial_declarator.ptr_declarator);
+            dfs_print_tree(tree[ptr].value.initial_declarator.ptr_initial_value);
+            dfs_print_tree(tree[ptr].value.initial_declarator.ptr_next_initial_declarator);
+            print_json_class_end();
             break;
 
         case ast::node_type::direct_declarator:
+            print_json_class_head("direct_declarator");
+            dfs_print_tree(tree[ptr].value.direct_declarator.ptr_identifier);
+            dfs_print_tree(tree[ptr].value.direct_declarator.ptr_declarator);
+            dfs_print_tree(tree[ptr].value.direct_declarator.ptr_arguments_type_list);
+            print_json_class_end();
             break;
 
         case ast::node_type::declarator:
-            std::cout << "\"declarator\":{\n";
+            print_json_class_head("declarator");
             if (tree[ptr].value.declarator.is_ptr) {
-                std::cout << "is_ptr : true\n";
+                print_json_key_value("is_ptr", "true");
             }
             else {
-                std::cout << "is_ptr : false\n";
+                print_json_key_value("is_ptr", "false");
             }
-            dfs_tree_print_terminal(tree[ptr].value.declarator.ptr_direct_declarator);
-            std::cout << "}\n";
+            dfs_print_tree(tree[ptr].value.declarator.ptr_direct_declarator);
+            print_json_class_end();
             break;
 
         case ast::node_type::declaration_or_definition:
-            std::cout << "\"declaration_or_definition\":{\n";
-            dfs_tree_print_terminal(node.declaration_or_definition.ptr_declaration_declarator);
-            dfs_tree_print_terminal(node.declaration_or_definition.ptr_initial_declatator_list);
-            std::cout << "}\n";
+            print_json_class_head("declaration_or_definition");
+            dfs_print_tree(tree[ptr].value.declaration_or_definition.ptr_declaration_declarator);
+            dfs_print_tree(tree[ptr].value.declaration_or_definition.ptr_initial_declatator_list);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::identifier:
+            print_json_class_head("indentifier");
+            print_json_key_value("name", tree[ptr].value.identifier.name);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::arguments_type_list:
+            print_json_class_head("arguments_type_list");
+            dfs_print_tree(tree[ptr].value.arguments_type_list.ptr_argument_declaration);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::arguments_declaration:
+            print_json_class_head("arguments_declaration");
+            dfs_print_tree(tree[ptr].value.arguments_declaration.ptr_declararion_declarator);
+            dfs_print_tree(tree[ptr].value.arguments_declaration.ptr_declarator);
+            dfs_print_tree(tree[ptr].value.arguments_declaration.ptr_next_arguments_declatation);
+            print_json_class_end();
             break;
 
         case ast::node_type::declaration_declarator: {
-            std::cout << "\"declaration_declarator\":{\n";
+            print_json_class_head("declaration_declarator");
             auto &decl = tree[ptr].value.declaration_declarator;
             if (decl.sign == ast::declarator_sign::sign_signed) {
-                std::cout << "\"sign\":true\n";
+                print_json_key_value("sign", "true");
             }
             else {
-                std::cout << "\"sign\":false\n";
+                print_json_key_value("sign", "false");
             }
 
-            std::cout << "\"type\":";
+            print_json_key("type");
             switch (decl.type) {
                 case ast::declarator_type::type_char:
-                    std::cout << "\"char\"";
+                    print_json_value("char");
                     break;
                 case ast::declarator_type::type_double:
-                    std::cout << "\"double\"";
+                    print_json_value("double");
                     break;
                 case ast::declarator_type::type_float:
-                    std::cout << "\"float\"";
+                    print_json_value("float");
                     break;
                 case ast::declarator_type::type_int:
-                    std::cout << "\"int\"";
+                    print_json_value("int");
                     break;
                 case ast::declarator_type::type_long_int:
-                    std::cout << "\"long_int\"";
+                    print_json_value("long_int");
                     break;
                 case ast::declarator_type::type_long_long_int:
-                    std::cout << "\"long_long_int\"";
+                    print_json_value("long_long_int");
                     break;
                 case ast::declarator_type::type_short_int:
-                    std::cout << "\"short_int\"";
+                    print_json_value("short_int");
                     break;
                 case ast::declarator_type::type_void:
-                    std::cout << "\"void\"";
+                    print_json_value("void");
                     break;
                 default:
                     break;
             }
 
-            std::cout << "\n\"limit\":";
+            print_json_key("limit");
             if (decl.limit == ast::declarator_limit::limit_Alignas) {
-                std::cout << "\"Alignas\"\n";
+                print_json_value("Alignas");
             }
             else {
-                std::cout << "\"empty\"\n";
+                print_json_value("empty");
             }
 
-            std::cout << "\"store\":";
+            print_json_key("store");
             switch (decl.store) {
                 case ast::declarator_store::store_empty:
-                    std::cout << "\"empty\"";
+                    print_json_value("empty");
                     break;
                 case ast::declarator_store::store_extern:
-                    std::cout << "\"extern\"";
+                    print_json_value("extern");
                     break;
                 case ast::declarator_store::store_static:
-                    std::cout << "\"static\"";
+                    print_json_value("static");
                     break;
                 case ast::declarator_store::store_typedef:
-                    std::cout << "\"typedef\"";
+                    print_json_value("typedef");
                     break;
                 default:
                     break;
             }
-            std::cout << "\n}\n";
+            print_json_class_end();
             break;
         }
         default: {
             fmt::print("{} {} {} {}", inner::switch_error, __FILE__, __FUNCTION__, __LINE__);
             exit(0);
         }
+    }
+    return;
+}
+
+void
+synctax_tree::print_json_key_value(char const *key, char const *value) {
+    if (to_file) {
+        file << "\"" << key << "\":\"" << value << "\",\n";
+    }
+    else {
+        printf("\"%s\":\"%s\",\n", key, value);
+    }
+
+    return;
+}
+
+void
+synctax_tree::print_json_class_head(char const *value) {
+    if (to_file) {
+        file << "\"" <<  value << "\":{\n";
+    }
+    else {
+        printf("\"%s\":{\n", value);
+    }
+    return;
+}
+
+void
+synctax_tree::print_json_class_end() {
+    if (to_file) {
+        file << "},\n";
+    }
+    else {
+        printf("},\n");
+    }
+    return;
+}
+
+void
+synctax_tree::print_json_key(char const *key) {
+    if (to_file) {
+        file << "\"" << key << "\":";
+    }
+    else {
+        printf("\"%s\":", key);
+    }
+    return;
+}
+
+void
+synctax_tree::print_json_value(char const *value) {
+    if (to_file) {
+        file << "\"" << value << "\",\n";
+    }
+    else {
+        printf("\"%s\",\n", value);
     }
     return;
 }

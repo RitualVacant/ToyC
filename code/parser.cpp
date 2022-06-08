@@ -7,6 +7,7 @@
 #include "./header/AST/declataror.h"
 #include "./synctax_tree.cpp"
 #include "./error/inner.cpp"
+#include "algorithm"
 
 
 /*
@@ -1051,18 +1052,15 @@ parser::print_mid_code() {
 
 void
 parser::print_synctax_tree() {
-    tree.print_tree_terminal();
+    tree.print_tree();
 }
 
 ast::ptr
 parser::parser_declare_or_definition() {
     ast::ptr ptr_root = tree.creat_node(ast::node_type::declaration_or_definition);
-    //auto &node = tree[ptr_root].value.declaration_or_definition;
+
     tree[ptr_root].value.declaration_or_definition.ptr_declaration_declarator = parser_declaration_declarator();
     tree[ptr_root].value.declaration_or_definition.ptr_initial_declatator_list = parser_initial_declarator();
-
-    //ast::ptr ptr_declaration_declarator = parser_declaration_declarator();
-    //ast::ptr ptr_initial_declatator = parser_initial_declarator();
     //declare
     //ast::ptr ptr_root;
     switch(scan.get_current_token()) {
@@ -1159,18 +1157,13 @@ parser::parser_declaration_declarator() {
 ast::ptr
 parser::parser_initial_declarator_list() {
     ast::ptr ptr_root = tree.creat_node(ast::node_type::initial_declarator);
-    auto &node = tree[ptr_root].value.initial_declarator;
-    node.ptr_declarator = parser_declarator();
-    if (scan.get_current_token() == token::equ) {
-        node.ptr_initial_value = parser_conditional_expression();
-    }
+    tree[ptr_root].value.initial_declarator_list.ptr_initial_declarator = parser_initial_declarator();
     if (scan.get_current_token() == token::comma) {
-        node.ptr_next_initial_declarator = parser_initial_declarator_list();
+        tree[ptr_root].value.initial_declarator.ptr_next_initial_declarator = parser_initial_declarator_list();
     }
     return ptr_root;
 }
 
-//DROP
 ast::ptr
 parser::parser_initial_declarator() {
 
@@ -1185,19 +1178,17 @@ parser::parser_initial_declarator() {
 ast::ptr
 parser::parser_declarator() {
     ast::ptr ptr_root = tree.creat_node(ast::node_type::declarator);
-    auto &node = tree[ptr_root].value.declarator;
     if (scan.get_current_token() == token::times) {
-        node.is_ptr = true;
+        tree[ptr_root].value.declarator.is_ptr = true;
         scan.next_token();
     }
-    node.ptr_direct_declarator = parser_direct_declarator();
-    return ast::null;
+    tree[ptr_root].value.declarator.ptr_direct_declarator = parser_direct_declarator();
+    return ptr_root;
 }
 
 ast::ptr
 parser::parser_direct_declarator() {
     ast::ptr ptr_root = tree.creat_node(ast::node_type::direct_declarator);
-    auto &node = tree[ptr_root].value.direct_declarator;
 
     if (scan.get_current_token() == token::l_par) {
         //eat (
@@ -1207,7 +1198,7 @@ parser::parser_direct_declarator() {
         scan.next_token();
         if (scan.get_current_token() == token::l_par) {
             //eat (
-            parser_arguments_arguments_type_list();
+            parser_arguments_type_list();
             //eat )
             scan.next_token();
         }
@@ -1217,14 +1208,15 @@ parser::parser_direct_declarator() {
     }
     else if (scan.get_current_token() == token::identif) {
         is_func = true;
-        //TODO idnetif name
-        //eat identif
+        tree[ptr_root].value.direct_declarator.ptr_identifier
+        = parser_identifier();
         scan.next_token();
-        // (
+        // if (
         if (scan.get_current_token() == token::l_par) {
             //eat (
             scan.next_token();
-            parser_arguments_arguments_type_list();
+            tree[ptr_root].value.direct_declarator.ptr_arguments_type_list
+            = parser_arguments_type_list();
             //eat )
             scan.next_token();
         }
@@ -1233,22 +1225,41 @@ parser::parser_direct_declarator() {
             parser_temporary_1();
         }
         else {
+            //error
         }
     }
     else {
         fmt::print("an unknow erorr at parser::parser_direct_declarator()");
         exit(0);
     }
-    return ast::null;
+    return ptr_root;
 }
+
 ast::ptr
-parser::parser_arguments_arguments_type_list() {
+parser::parser_identifier() {
+    ast::ptr ptr_root = tree.creat_node(ast::node_type::identifier);
+    auto str = scan.get_current_value();
+    for (std::size_t i = 0; i < std::min(static_cast<std::size_t>(25), str.size()); ++i) {
+        tree[ptr_root].value.identifier.name[i] = str[i];
+    }
+    return ptr_root;
+}
+
+ast::ptr
+parser::parser_arguments_type_list() {
+    ast::ptr ptr_root = tree.creat_node(ast::node_type::arguments_type_list);
+    tree[ptr_root].value.arguments_type_list.ptr_argument_declaration
+    = parser_arguments_declaration();
+    /*
+    if (scan.get_current_token() == token::comma) {
+    }
     while (scan.get_current_token() != token::r_par) {
         parser_arguments_list();
         //eat ,
         scan.next_token();
     }
-    return ast::null;
+    */
+    return ptr_root;
 }
 ast::ptr
 parser::parser_arguments_list() {
@@ -1256,10 +1267,18 @@ parser::parser_arguments_list() {
     return ast::null;
 }
 ast::ptr
-parser::parser_arugments_declaration() {
-    parser_declaration_declarator();
-    parser_declarator();
-    return ast::null;
+parser::parser_arguments_declaration() {
+    ast::ptr ptr_root = tree.creat_node(ast::node_type::arguments_declaration);
+    tree[ptr_root].value.arguments_declaration.ptr_declararion_declarator
+    = parser_declaration_declarator();
+    tree[ptr_root].value.arguments_declaration.ptr_declarator
+    = parser_declarator();
+    if (scan.get_current_token() == token::comma) {
+        scan.next_token();
+        tree[ptr_root].value.arguments_declaration.ptr_next_arguments_declatation
+        = parser_arguments_declaration();
+    }
+    return ptr_root;
 }
 ast::ptr
 parser::parser_array_declarator() {

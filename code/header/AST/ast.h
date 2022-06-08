@@ -37,7 +37,9 @@ namespace ast {
             declaration_declarator,
             initial_declarator_list,
             declaration_or_definition,
-            identifier
+            identifier,
+            arguments_declaration,
+            arguments_type_list
     };
     using ptr = std::size_t;
     ptr const null = 0;
@@ -59,7 +61,7 @@ namespace ast {
     };
 
     struct identifier {
-        std::array<char, 25> name;
+        char name[25] = {};
     };
 
     //-------------------------------------------
@@ -70,8 +72,8 @@ namespace ast {
     };
 
     struct declare_funcion : declare {
-        ast::ptr ptr_return_value_type;
-        ast::ptr ptr_funcion_arguments;
+        ast::ptr ptr_return_value_type = ast::null;
+        ast::ptr ptr_funcion_arguments = ast::null;
     };
 
     struct declare_variable : ast_node {
@@ -82,9 +84,9 @@ namespace ast {
     };
 
     struct definition_function : ast_node {
-        ast::ptr ptr_return_value_type;
-        ast::ptr ptr_funcion_arguments;
-        ast::ptr ptr_compound_statement;
+        ast::ptr ptr_return_value_type = ast::null;
+        ast::ptr ptr_funcion_arguments = ast::null;
+        ast::ptr ptr_compound_statement = ast::null;
     };
 
 
@@ -161,12 +163,12 @@ namespace ast {
 
     struct declarator {
         bool is_ptr = false;
-        ast::ptr ptr_direct_declarator;
+        ast::ptr ptr_direct_declarator = ast::null;
     };
 
 
     struct initial_declarator_list {
-        ast::ptr ptr_initial_declarator;
+        ast::ptr ptr_initial_declarator = ast::null;
 
     };
 
@@ -181,6 +183,7 @@ namespace ast {
     struct direct_declarator {
         ast::ptr ptr_identifier = ast::null;
         ast::ptr ptr_declarator = ast::null;
+        ast::ptr ptr_arguments_type_list = ast::null;
     };
 
     struct array_declarator {
@@ -188,19 +191,25 @@ namespace ast {
     };
 
     struct arguments_type_list {
+        ast::ptr ptr_argument_declaration = ast::null;
+    };
 
+    //DROP
+    struct arguments_list {
+        //ast::ptr ptr_arugments_declaration = ast::null;
+        //ast::ptr ptr_arguments_list_next = ast::null;
+        //ast::ptr ptr_
     };
 
     struct idnetifier_list {
 
     };
 
-    struct arguments_list {
-
-    };
 
     struct arguments_declaration {
-
+        ast::ptr ptr_declararion_declarator = ast::null;
+        ast::ptr ptr_declarator = ast::null;
+        ast::ptr ptr_next_arguments_declatation = ast::null;
     };
 
 
@@ -245,6 +254,8 @@ namespace ast {
         ast::declaration_or_definition declaration_or_definition;
         ast::direct_declarator direct_declarator;
         ast::identifier identifier;
+        ast::arguments_declaration arguments_declaration;
+        ast::arguments_type_list arguments_type_list;
     };
 
     struct node {
