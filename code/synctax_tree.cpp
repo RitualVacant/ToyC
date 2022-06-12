@@ -21,7 +21,7 @@ synctax_tree::synctax_tree() {
 
 synctax_tree::~synctax_tree() {
     file.close();
-    int done = system("pytm-cli -i ~/code/program/script/test/tree.json");
+    int done = system("pytm-cli -i ~/code/program/script/test/tree.json -t 3");
     if (done == 127) {
         fmt::print("output json tree");
     }
@@ -31,7 +31,7 @@ synctax_tree::~synctax_tree() {
 }
 
 /*
-ast::ptr
+ast::idx
 synctax_tree::insert(ast::node_type node_type) {
     //type_list.push_back(node_type);
     tree.push_back({});
@@ -73,7 +73,7 @@ synctax_tree::insert(ast::node_type node_type) {
 */
 
 ast::node&
-synctax_tree::operator [] (ast::ptr ptr) {
+synctax_tree::operator [] (ast::idx ptr) {
     return tree[ptr];
     /*
     switch (tree[ptr].type) {
@@ -102,15 +102,104 @@ synctax_tree::operator [] (ast::ptr ptr) {
 
 
 //TODO
-ast::ptr synctax_tree::creat_node(ast::node_type node_type) {
+ast::idx synctax_tree::creat_node(ast::node_type node_type) {
     tree.push_back({});
     tree.back().type = node_type;
-    tree.back().loc = tree.size() - 1;
+    /*
+    switch (node_type) {
+        case ast::node_type::type:
+            tree.back().value.type.is_init = true;
+            break;
+        case ast::node_type::expression:
+            tree.back().value.expression.is_init = true
+            break;
+        case ast::node_type::assignment_expression:
+            tree.back().
+            break;
+        case ast::node_type::conditional_expression:
+            tree.back().
+            break;
+        case ast::node_type::binary_expression:
+            tree.back().
+            break;
+        case ast::node_type::unary_expression:
+            tree.back().
+            break;
+        case ast::node_type::postfix_expression:
+            tree.back().
+            break;
+        case ast::node_type::primary_expression:
+            tree.back().
+            break;
+        case ast::node_type::statement:
+            tree.back().
+            break;
+        case ast::node_type::declare_varible:
+            tree.back().
+            break;
+        case ast::node_type::declare_function:
+            tree.back().
+            break;
+        case ast::node_type::definition_function:
+            tree.back().
+            break;
+        case ast::node_type::definition_struct:
+            tree.back().
+            break;
+        case ast::node_type::constant:
+            tree.back().
+            break;
+        case ast::node_type::operators:
+            tree.back().
+            break;
+        case ast::node_type::initial_declarator:
+            tree.back().
+            break;
+        case ast::node_type::direct_declarator:
+            tree.back().
+            break;
+        case ast::node_type::declarator:
+            tree.back().
+            break;
+        case ast::node_type::declaration_declarator:
+            tree.back().
+            break;
+        case ast::node_type::initial_declarator_list:
+            tree.back().
+            break;
+        case ast::node_type::declaration_or_definition:
+            tree.back().
+            break;
+        case ast::node_type::identifier:
+            tree.back().
+            break;
+        case ast::node_type::arguments_declaration:
+            tree.back().
+            break;
+        case ast::node_type::arguments_type_list:
+            tree.back().
+            break;
+        case ast::node_type::compound_statement:
+            tree.back().
+            break;
+        case ast::node_type::block_list:
+            tree.back().
+            break;
+        case ast::node_type::block:
+            tree.back().
+            break;
+        case ast::node_type::mark_statement:
+            tree.back().
+            break;
+        default:
+            switch_error
+    }
+    */
     return tree.size() - 1;
 }
 
 
-void synctax_tree::connect(ast::ptr ptr) {
+void synctax_tree::connect(ast::idx ptr) {
     if (last_root_ptr != ast::null) {
         tree[last_root_ptr].next = ptr;
     }
@@ -133,9 +222,8 @@ void synctax_tree::print_tree() {
     return;
 }
 
-void synctax_tree::dfs_print_tree(ast::ptr ptr) {
+void synctax_tree::dfs_print_tree(ast::idx ptr) {
     if (ptr == ast::null) return;
-    auto &node = tree[ptr].value;
     switch (tree[ptr].type) {
         case ast::node_type::type:
             print_json_class_head("type");
@@ -177,22 +265,28 @@ void synctax_tree::dfs_print_tree(ast::ptr ptr) {
             print_json_class_head("declare_varible");
             print_json_class_end();
             break;
+        case ast::node_type::initializer:
+            print_json_class_head("initializer");
+            dfs_print_tree(tree[ptr].value.initializer.idx_assignment_expression);
+            dfs_print_tree(tree[ptr].value.initializer.idx_initializer_list);
+            print_json_class_end();
+            break;
         case ast::node_type::declare_function:
             print_json_class_head("declare_function");
-            dfs_print_tree(tree[ptr].value.declare_funcion.ptr_funcion_arguments);
-            dfs_print_tree(tree[ptr].value.declare_funcion.ptr_return_value_type);
+            dfs_print_tree(tree[ptr].value.declare_funcion.idx_funcion_arguments);
+            dfs_print_tree(tree[ptr].value.declare_funcion.idx_return_value_type);
             print_json_class_end();
             break;
         case ast::node_type::definition_function:
             print_json_class_head("definition_function");
-            dfs_print_tree(tree[ptr].value.definition_function.ptr_funcion_arguments);
-            dfs_print_tree(tree[ptr].value.definition_function.ptr_return_value_type);
-            dfs_print_tree(tree[ptr].value.definition_function.ptr_compound_statement);
+            dfs_print_tree(tree[ptr].value.definition_function.idx_funcion_arguments);
+            dfs_print_tree(tree[ptr].value.definition_function.idx_return_value_type);
+            dfs_print_tree(tree[ptr].value.definition_function.idx_compound_statement);
             print_json_class_end();
             break;
         case ast::node_type::initial_declarator_list:
             print_json_class_head("initial_declarator_list");
-            dfs_print_tree(tree[ptr].value.initial_declarator_list.ptr_initial_declarator);
+            dfs_print_tree(tree[ptr].value.initial_declarator_list.idx_initial_declarator);
             print_json_class_end();
             break;
 
@@ -210,17 +304,19 @@ void synctax_tree::dfs_print_tree(ast::ptr ptr) {
             break;
         case ast::node_type::initial_declarator:
             print_json_class_head("initial_declarator");
-            dfs_print_tree(tree[ptr].value.initial_declarator.ptr_declarator);
-            dfs_print_tree(tree[ptr].value.initial_declarator.ptr_initial_value);
-            dfs_print_tree(tree[ptr].value.initial_declarator.ptr_next_initial_declarator);
+            dfs_print_tree(tree[ptr].value.initial_declarator.idx_declarator);
+            dfs_print_tree(tree[ptr].value.initial_declarator.idx_initial_value);
+            std::cout << tree[ptr].value.initial_declarator.idx_initial_value << std::endl;
+            dfs_print_tree(tree[ptr].value.initial_declarator.idx_next_initial_declarator);
+            std::cout << tree[ptr].value.initial_declarator.idx_next_initial_declarator << std::endl;
             print_json_class_end();
             break;
 
         case ast::node_type::direct_declarator:
             print_json_class_head("direct_declarator");
-            dfs_print_tree(tree[ptr].value.direct_declarator.ptr_identifier);
-            dfs_print_tree(tree[ptr].value.direct_declarator.ptr_declarator);
-            dfs_print_tree(tree[ptr].value.direct_declarator.ptr_arguments_type_list);
+            dfs_print_tree(tree[ptr].value.direct_declarator.idx_identifier);
+            dfs_print_tree(tree[ptr].value.direct_declarator.idx_declarator);
+            dfs_print_tree(tree[ptr].value.direct_declarator.idx_arguments_type_list);
             print_json_class_end();
             break;
 
@@ -232,14 +328,14 @@ void synctax_tree::dfs_print_tree(ast::ptr ptr) {
             else {
                 print_json_key_value("is_ptr", "false");
             }
-            dfs_print_tree(tree[ptr].value.declarator.ptr_direct_declarator);
+            dfs_print_tree(tree[ptr].value.declarator.idx_direct_declarator);
             print_json_class_end();
             break;
 
         case ast::node_type::declaration_or_definition:
             print_json_class_head("declaration_or_definition");
-            dfs_print_tree(tree[ptr].value.declaration_or_definition.ptr_declaration_declarator);
-            dfs_print_tree(tree[ptr].value.declaration_or_definition.ptr_initial_declatator_list);
+            dfs_print_tree(tree[ptr].value.declaration_or_definition.idx_declaration_declarator);
+            dfs_print_tree(tree[ptr].value.declaration_or_definition.idx_initial_declatator_list);
             print_json_class_end();
             break;
 
@@ -251,15 +347,15 @@ void synctax_tree::dfs_print_tree(ast::ptr ptr) {
 
         case ast::node_type::arguments_type_list:
             print_json_class_head("arguments_type_list");
-            dfs_print_tree(tree[ptr].value.arguments_type_list.ptr_argument_declaration);
+            dfs_print_tree(tree[ptr].value.arguments_type_list.idx_argument_declaration);
             print_json_class_end();
             break;
 
         case ast::node_type::arguments_declaration:
             print_json_class_head("arguments_declaration");
-            dfs_print_tree(tree[ptr].value.arguments_declaration.ptr_declararion_declarator);
-            dfs_print_tree(tree[ptr].value.arguments_declaration.ptr_declarator);
-            dfs_print_tree(tree[ptr].value.arguments_declaration.ptr_next_arguments_declatation);
+            dfs_print_tree(tree[ptr].value.arguments_declaration.idx_declararion_declarator);
+            dfs_print_tree(tree[ptr].value.arguments_declaration.idx_declarator);
+            dfs_print_tree(tree[ptr].value.arguments_declaration.idx_next_arguments_declatation);
             print_json_class_end();
             break;
 
@@ -332,8 +428,7 @@ void synctax_tree::dfs_print_tree(ast::ptr ptr) {
             break;
         }
         default: {
-            fmt::print("{} {} {} {}", inner::switch_error, __FILE__, __FUNCTION__, __LINE__);
-            exit(0);
+            switch_error
         }
     }
     return;

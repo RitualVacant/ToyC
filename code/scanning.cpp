@@ -108,6 +108,11 @@ scanning::next_token() {
         get_next_char();
     }
     switch (c) {
+        case '?':
+            get_next_char();
+            now_token = std::make_tuple(token::question_mark, "?");
+            return now_token;
+
         case '[':
             get_next_char();
             now_token = std::make_tuple(token::l_mid_par, "[");
@@ -160,6 +165,11 @@ scanning::next_token() {
                 now_token = std::make_tuple(token::plus_agn, "+=");
                 return std::make_tuple(token::plus_agn, "+=");
             }
+            else if (c == '+') {
+                get_next_char();
+                now_token = std::make_tuple(token::self_plus, "++");
+                return now_token;
+            }
             else {
                 now_token = std::make_tuple(token::plus, "+");
                 return std::make_tuple(token::plus, "+");
@@ -172,7 +182,12 @@ scanning::next_token() {
                 now_token = std::make_tuple(token::minus_agn, "-=");
                 return std::make_tuple(token::minus_agn, "-=");
             }
-            if (c == '>') {
+            else if (c == '-') {
+                get_next_char();
+                now_token = std::make_tuple(token::self_minus, "--");
+                return now_token;
+            }
+            else if (c == '>') {
                 get_next_char();
                 now_token = std::make_tuple(token::ver, "->");
                 return std::make_tuple(token::ver, "->");
@@ -249,6 +264,18 @@ scanning::next_token() {
                 now_token = std::make_tuple(token::great_equ, ">=");
                 return std::make_tuple(token::great_equ, ">=");
             }
+            else if (c == '>') {
+                get_next_char();
+                if (c == '=') {
+                    get_next_char();
+                    now_token = std::make_tuple(token::r_shift_agn, ">>=");
+                    return now_token;
+                }
+                else {
+                    now_token = std::make_tuple(token::r_shift, ">>");
+                    return now_token;
+                }
+            }
             else {
                 now_token = std::make_tuple(token::great, ">");
                 return std::make_tuple(token::great, ">");
@@ -260,6 +287,18 @@ scanning::next_token() {
                 get_next_char();
                 now_token = std::make_tuple(token::less_equ, "<=");
                 return std::make_tuple(token::less_equ, "<=");
+            }
+            else if (c == '<') {
+                get_next_char();
+                if (c == '=') {
+                    get_next_char();
+                    now_token = std::make_tuple(token::l_shift_agn, "<<=");
+                    return now_token;
+                }
+                else {
+                    now_token = std::make_tuple(token::l_shift, "<<");
+                    return now_token;
+                }
             }
             else {
                 now_token = std::make_tuple(token::less, "<");
@@ -273,12 +312,46 @@ scanning::next_token() {
                 now_token = std::make_tuple(token::log_and, "&&");
                 return std::make_tuple(token::log_and, "&&");
             }
+            else if (c == '=') {
+                get_next_char();
+                now_token = std::make_tuple(token::bit_and_agn, "&=");
+                return now_token;
+            }
             else {
                 now_token = std::make_tuple(token::bit_and, "&");
                 return std::make_tuple(token::bit_and, "&");
             }
 
-        case '#': return to_comment();
+        case '|':
+            get_next_char();
+            if (c == '|') {
+                get_next_char();
+                now_token = std::make_tuple(token::log_or, "||");
+                return now_token;
+            }
+            else if (c == '=') {
+                get_next_char();
+                now_token = std::make_tuple(token::bit_or_agn, "|=");
+                return now_token;
+            }
+            else {
+                now_token = std::make_tuple(token::bit_or, "|");
+                return std::make_tuple(token::bit_or, "|");
+            }
+
+        case '^':
+            get_next_char();
+            if (c == '=') {
+                get_next_char();
+                now_token = std::make_tuple(token::bit_xor_agn, "^=");
+                return now_token;
+            }
+            else {
+                now_token = std::make_tuple(token::bit_xor, "^");
+                return now_token;
+            }
+
+        //case '#': return to_comment();
 
         //case '"': return to_string();
 

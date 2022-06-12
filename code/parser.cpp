@@ -152,7 +152,7 @@ parser::parser_return_statement() {
 //+------------------------------------------
 //TODO暂时不支持一元表达式
 
-
+/*
 std::unordered_set<token> end_expresion = {
     token::end, token::r_mid_par, token::r_par, token::log_and, token::log_not, token::log_or, token::equ,
     token::not_equ, token::great_equ, token::less_equ, token::great, token::less
@@ -275,7 +275,7 @@ parser::parser_pre_to_pos() {
             case token::mod_agn:    //%=
             default:
                 fmt::print("\nan unknow error at parser::parser_pre_to_pos()\n");
-                fmt::print("the token is {} at line:{} colume:{}\n", hash_map_token_to_string.at(scan.get_current_token()), line, column);
+                fmt::print("the token is {} at line:{} colume:{}\n", token_to_string.at(scan.get_current_token()), line, column);
                 exit(0);
                 break;
         }
@@ -288,6 +288,7 @@ parser::parser_pre_to_pos() {
     }
     return res;
 }
+
 
 std::string
 parser::parser_expression() {
@@ -388,6 +389,7 @@ parser::parser_expression() {
     }
     return num_stack[0];
 }
+*/
 
 /*
 void
@@ -777,7 +779,7 @@ parser::parser_function_define_or_declare(std::string func_name, token func_retu
 */
 
 /*
-ast::ptr
+ast::idx
 parser::parser_statement() {
     scan.next_token();
     switch (scan.get_current_token()) {
@@ -835,7 +837,7 @@ parser::parser_statement() {
                     }
                     default: {
                         fmt::print("\na unknow error at parser::statement()\n");
-                        fmt::print("the token is {} line:{} column:{}\n", hash_map_token_to_string.at(scan.get_current_token()), line, column);
+                        fmt::print("the token is {} line:{} column:{}\n", token_to_string.at(scan.get_current_token()), line, column);
                         exit(0);
                     }
                 }
@@ -896,7 +898,7 @@ parser::parser_statement() {
             break;
     }
 }
-*/
+
 
 std::string
 parser::parser_func_call(std::string name_func) {
@@ -966,7 +968,7 @@ parser::get_lable() {
     return re;
 }
 
-/*
+
 void
 parser::parser_declare_or_function_define_or_declare() {
 
@@ -1001,7 +1003,7 @@ parser::parser_declare_or_function_define_or_declare() {
         }
         default: {
             fmt::print("\nparser::parser_declare_or_function_define_or_declare()\n");
-            fmt::print("the token is {}", hash_map_token_to_string.at(scan.get_current_token()));
+            fmt::print("the token is {}", token_to_string.at(scan.get_current_token()));
             exit(0);
         }
     }
@@ -1009,14 +1011,16 @@ parser::parser_declare_or_function_define_or_declare() {
 }
 */
 
+/*
 //解析数组元素
 std::string
 parser::parser_unit(std::string name_array) {
     scan.next_token();                         //[
-    std::string index = parser_expression();
+    //std::string index = parser_expression();
     //scan.next_token();  //]
-    return fmt::format("&{}[{}]",name_array, index);
+    //return fmt::format("&{}[{}]",name_array, index);
 }
+*/
 
 void
 parser::print_mid_code() {
@@ -1028,7 +1032,7 @@ parser::print_mid_code() {
         table->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", "symbol", "arg1", "arg2", "result");
         table->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
         for (std::size_t i = 0; i < code.size(); ++i) {
-            table->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", hash_map_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
+            table->file << fmt::format("|{:18}|{:18}|{:18}|{:18}|\n", token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
         }
         table->file << fmt::format("+------------------+------------------+------------------+------------------+\n");
     }
@@ -1037,7 +1041,7 @@ parser::print_mid_code() {
         fmt::print("|{:18}|{:18}|{:18}|{:18}|\n", "symbol", "arg1", "arg2", "result");
         fmt::print("+------------------+------------------+------------------+------------------+\n");
         for (std::size_t i = 0; i < code.size(); ++i) {
-            fmt::print("|{:18}|{:18}|{:18}|{:18}|\n", hash_map_token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
+            fmt::print("|{:18}|{:18}|{:18}|{:18}|\n", token_to_string.at(code[i].symbol), code[i].arg1, code[i].arg2, code[i].result);
         }
         fmt::print("+------------------+------------------+------------------+------------------+\n");
     }
@@ -1055,50 +1059,46 @@ parser::print_synctax_tree() {
     tree.print_tree();
 }
 
-ast::ptr
-parser::parser_declare_or_definition() {
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::declaration_or_definition);
+ast::idx
+parser::parser_declaration_or_definition() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::declaration_or_definition);
+    //auto &node = tree[idx_root].value;
+    //std::cout << &node << std::endl;
+    //std::cout << &tree[idx_root].value << std::endl;
 
-    tree[ptr_root].value.declaration_or_definition.ptr_declaration_declarator = parser_declaration_declarator();
-    tree[ptr_root].value.declaration_or_definition.ptr_initial_declatator_list = parser_initial_declarator();
+    tree[idx_root].value.declaration_or_definition.idx_declaration_declarator
+    = parser_declaration_declarator();
+    //std::cout << &node << std::endl;
+    //std::cout << &tree[idx_root].value << std::endl;
+    tree[idx_root].value.declaration_or_definition.idx_initial_declatator_list
+    = parser_initial_declarator();
+
     //declare
-    //ast::ptr ptr_root;
     switch(scan.get_current_token()) {
         //declare
         case token::end: {
-            if (is_func) {
-                //ptr_root = tree.creat_node(ast::node_type::declare_function);
-                //tree[ptr_root].value.declare_funcion.ptr_return_value_type = ptr_declaration_declarator ;
-                //tree[ptr_root].value.declare_funcion.ptr_funcion_arguments = 
-            } else {
-                //ptr_root = tree.creat_node(ast::node_type::declare_varible);
-            }
+            scan.next_token();
             break;
         }
         //define
         case token::l_big_par: {
-            if (is_struct) {
-                //ptr_root = tree.creat_node(ast::node_type::definition_struct);
-            }
-            else {
-                //ptr_root = tree.creat_node(ast::node_type::definition_function);
-                //tree[ptr_root].value.definition_function.ptr_compound_statement = parser_compound_statement();
-            }
+            tree[idx_root].value.declaration_or_definition.idx_compound_statement
+            = parser_compound_statement();
             break;
         }
         default: {
-            fmt::print("{} {} {}", inner::switch_error, __FILE__, __FUNCTION__, __LINE__);
-            exit(0);
+            print_token
+            switch_error
         }
     }
     scan.next_token();
     //reset signal
     is_struct = false;
     is_func = false;
-    return ptr_root;
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
 parser::parser_declaration_declarator() {
     //because the order of C's declarator is random
     //this loop will eat token until get identifier or other token
@@ -1142,60 +1142,80 @@ parser::parser_declaration_declarator() {
                 break;
             }
             default: {
-                fmt::print("{} {} {} {}", inner::switch_error, __FILE__, __FUNCTION__, __LINE__);
-                exit(0);
+                print_token
+                switch_error
             }
         }
         scan.next_token();
     }
 
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::declaration_declarator);
-    tree[ptr_root].value.declaration_declarator = node_declarator;
-    return ptr_root;
+    ast::idx idx_root = tree.creat_node(ast::node_type::declaration_declarator);
+    tree[idx_root].value.declaration_declarator = node_declarator;
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
 parser::parser_initial_declarator_list() {
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::initial_declarator);
-    tree[ptr_root].value.initial_declarator_list.ptr_initial_declarator = parser_initial_declarator();
+    ast::idx idx_root = tree.creat_node(ast::node_type::initial_declarator);
+    tree[idx_root].value.initial_declarator_list.idx_initial_declarator = parser_initial_declarator();
     if (scan.get_current_token() == token::comma) {
-        tree[ptr_root].value.initial_declarator.ptr_next_initial_declarator = parser_initial_declarator_list();
+        tree[idx_root].value.initial_declarator.idx_next_initial_declarator = parser_initial_declarator_list();
     }
-    return ptr_root;
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
 parser::parser_initial_declarator() {
 
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::initial_declarator);
-    tree[ptr_root].value.initial_declarator.ptr_declarator = parser_declarator();
-    if (scan.get_current_token() == token::equ) {
-        tree[ptr_root].value.initial_declarator.ptr_initial_value = parser_conditional_expression();
+    ast::idx idx_root = tree.creat_node(ast::node_type::initial_declarator);
+    tree[idx_root].value.initial_declarator.idx_declarator
+    = parser_declarator();
+    if (scan.get_current_token() == token::assign) {
+        scan.next_token();      //eat =
+        tree[idx_root].value.initial_declarator.idx_initial_value
+        = parser_initializer();
     }
-    return ptr_root;
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
+parser::parser_initializer() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::initializer);
+    if (scan.get_current_token() == token::l_big_par) {
+        tree[idx_root].value.initializer.idx_initializer_list
+        = parser_initializer_list();
+    }
+    else {
+        tree[idx_root].value.initializer.idx_assignment_expression
+        = parser_assignment_expression(ast::null);
+    }
+    return idx_root;
+}
+
+ast::idx
+parser::parser_initializer_list() {
+    return ast::null;
+}
+
+ast::idx
 parser::parser_declarator() {
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::declarator);
+    ast::idx idx_root = tree.creat_node(ast::node_type::declarator);
     if (scan.get_current_token() == token::times) {
-        tree[ptr_root].value.declarator.is_ptr = true;
+        tree[idx_root].value.declarator.is_ptr = true;
         scan.next_token();
     }
-    tree[ptr_root].value.declarator.ptr_direct_declarator = parser_direct_declarator();
-    return ptr_root;
+    tree[idx_root].value.declarator.idx_direct_declarator = parser_direct_declarator();
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
 parser::parser_direct_declarator() {
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::direct_declarator);
+    ast::idx idx_root = tree.creat_node(ast::node_type::direct_declarator);
 
     if (scan.get_current_token() == token::l_par) {
-        //eat (
-        scan.next_token();
+        scan.next_token();          //eat (
         parser_declarator();
-        //eat )
-        scan.next_token();
+        scan.next_token();          //eat )
         if (scan.get_current_token() == token::l_par) {
             //eat (
             parser_arguments_type_list();
@@ -1208,47 +1228,52 @@ parser::parser_direct_declarator() {
     }
     else if (scan.get_current_token() == token::identif) {
         is_func = true;
-        tree[ptr_root].value.direct_declarator.ptr_identifier
+        tree[idx_root].value.direct_declarator.idx_identifier
         = parser_identifier();
-        scan.next_token();
-        // if (
-        if (scan.get_current_token() == token::l_par) {
-            //eat (
-            scan.next_token();
-            tree[ptr_root].value.direct_declarator.ptr_arguments_type_list
-            = parser_arguments_type_list();
-            //eat )
-            scan.next_token();
-        }
-        // [
-        else if (scan.get_current_token() == token::l_mid_par) {
-            parser_temporary_1();
-        }
-        else {
-            //error
+        switch (scan.get_current_token()) {
+            case token::l_par: {
+                //eat (
+                scan.next_token();
+                tree[idx_root].value.direct_declarator.idx_arguments_type_list
+                = parser_arguments_type_list();
+                //eat )
+                scan.next_token();
+                break;
+            }
+            case token::l_mid_par: {
+                parser_temporary_1();
+                break;
+            }
+            case token::assign:
+            case token::r_par:
+                break;
+            default:
+                print_token
+                switch_error
         }
     }
     else {
         fmt::print("an unknow erorr at parser::parser_direct_declarator()");
         exit(0);
     }
-    return ptr_root;
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
 parser::parser_identifier() {
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::identifier);
+    ast::idx idx_root = tree.creat_node(ast::node_type::identifier);
     auto str = scan.get_current_value();
     for (std::size_t i = 0; i < std::min(static_cast<std::size_t>(25), str.size()); ++i) {
-        tree[ptr_root].value.identifier.name[i] = str[i];
+        tree[idx_root].value.identifier.name[i] = str[i];
     }
-    return ptr_root;
+    scan.next_token();
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
 parser::parser_arguments_type_list() {
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::arguments_type_list);
-    tree[ptr_root].value.arguments_type_list.ptr_argument_declaration
+    ast::idx idx_root = tree.creat_node(ast::node_type::arguments_type_list);
+    tree[idx_root].value.arguments_type_list.idx_argument_declaration
     = parser_arguments_declaration();
     /*
     if (scan.get_current_token() == token::comma) {
@@ -1259,83 +1284,532 @@ parser::parser_arguments_type_list() {
         scan.next_token();
     }
     */
-    return ptr_root;
+    return idx_root;
 }
-ast::ptr
+ast::idx
 parser::parser_arguments_list() {
 
     return ast::null;
 }
-ast::ptr
+ast::idx
 parser::parser_arguments_declaration() {
-    ast::ptr ptr_root = tree.creat_node(ast::node_type::arguments_declaration);
-    tree[ptr_root].value.arguments_declaration.ptr_declararion_declarator
+    ast::idx idx_root = tree.creat_node(ast::node_type::arguments_declaration);
+    tree[idx_root].value.arguments_declaration.idx_declararion_declarator
     = parser_declaration_declarator();
-    tree[ptr_root].value.arguments_declaration.ptr_declarator
+    tree[idx_root].value.arguments_declaration.idx_declarator
     = parser_declarator();
     if (scan.get_current_token() == token::comma) {
         scan.next_token();
-        tree[ptr_root].value.arguments_declaration.ptr_next_arguments_declatation
+        tree[idx_root].value.arguments_declaration.idx_next_arguments_declatation
         = parser_arguments_declaration();
     }
-    return ptr_root;
+    return idx_root;
 }
-ast::ptr
+ast::idx
 parser::parser_array_declarator() {
     // eat [
     return ast::null;
 }
-ast::ptr
+ast::idx
 parser::parser_temporary_1() {
 
     return ast::null;
 }
-ast::ptr
-parser::parser_assignment_expression() {
-    return ast::null;
-}
-ast::ptr
+
+//DROP
+ast::idx
 parser::parser_conditional_expression() {
-
-    return ast::null;
+    ast::idx idx_root = tree.creat_node(ast::node_type::conditional_expression);
+    tree[idx_root].value.conditional_expression.idx_binary_expression
+    = parser_binary_expression();
+    scan.next_token();      //eat ?
+    tree[idx_root].value.conditional_expression.idx_expression
+    = parser_expression();
+    tree[idx_root].value.conditional_expression.idx_conditional_expression
+    = parser_conditional_expression();
+    //TODO
+    return idx_root;
 }
-ast::ptr
+
+int parser::operator_priority(token t) {
+    switch (t) {
+        case token::end:
+            return -1;
+        case token::log_or:
+            return 4;
+        case token::log_and:
+            return 5;
+        case token::bit_or:
+            return 6;
+        case token::bit_xor:
+            return 7;
+        case token::bit_and:
+            return 8;
+        case token::equ:
+        case token::not_equ:
+            return 9;
+        case token::less:
+        case token::less_equ:
+        case token::great:
+        case token::great_equ:
+            return 10;
+        case token::l_shift:
+        case token::r_shift:
+            return 11;
+        case token::plus:
+        case token::minus:
+            return 12;
+        case token::div:
+        case token::mod:
+        case token::times:
+            return 13;
+        default:
+            print_token
+            switch_error
+    }
+}
+
+ast::idx
 parser::parser_binary_expression() {
-
-    return ast::null;
+    return parser_priority_binary_expression(start_priority);
 }
-ast::ptr
+
+ast::idx
+parser::parser_priority_binary_expression(int priority) {
+    if (priority == end_priority) {
+        return parser_unary_expression();
+    }
+
+    ast::idx idx_left_node
+    = parser_priority_binary_expression(priority - 1);
+
+    //creat node
+    while (operator_priority(scan.get_current_token()) == priority) {
+        scan.next_token();
+        ast::idx idx_root = tree.creat_node(ast::node_type::binary_expression);
+
+        tree[idx_root].value.binary_expression.idx_left_node
+        = idx_left_node;
+
+        tree[idx_root].value.binary_expression.idx_right_node
+        = parser_priority_binary_expression(priority - 1);
+    }
+    //not creat node
+    return idx_left_node;
+}
+
+ast::idx
 parser::parser_unary_expression() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::unary_expression);
+    switch (scan.get_current_token()) {
+        case token::identif:
+        case token::r_int:
+        case token::r_double: {
+        //TODO
+        //case token::string
+            tree[idx_root].value.unary_expression.idx_postfix_expression
+            = parser_postfix_expression();
+            break;
+        }
 
-    return ast::null;
+        case token::bit_and:
+        case token::times:
+        case token::bit_not:
+        case token::log_not: {
+            scan.next_token();
+            tree[idx_root].value.unary_expression.idx_declaration_declatator
+            = parser_unary_expression();
+            break;
+        }
+
+        case token::l_par: {
+            switch (scan.get_pre_token()) {
+                case token::key__Bool:
+                case token::key__Complex:
+                case token::key__Imaginary:
+                case token::key_int:
+                case token::key_long:
+                case token::key_short:
+                case token::key_flaot:
+                case token::key_double:
+                case token::key_unsigned:
+                case token::key_signed: {
+                    scan.next_token();  //eat (
+
+                    tree[idx_root].value.unary_expression.idx_declaration_declatator
+                    = parser_declaration_declarator();
+
+                    scan.next_token();  //eat )
+
+                    tree[idx_root].value.unary_expression.idx_unary_expression
+                    = parser_unary_expression();
+                }
+
+                default: {
+                    tree[idx_root].value.unary_expression.idx_postfix_expression
+                    = parser_postfix_expression();
+                    break;
+                }
+            }
+            break;
+        }
+
+        case token::key_sizeof: {
+            scan.next_token();
+            if (scan.get_current_token() == token::l_par) {
+                scan.next_token();
+                parser_declaration_declarator();
+            }
+            else {
+                parser_unary_expression();
+            }
+            break;
+        }
+        default:
+            print_token
+            switch_error
+    }
+    return idx_root;
 }
-ast::ptr
+
+ast::idx
 parser::parser_postfix_expression() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::postfix_expression);
 
-    return ast::null;
+    tree[idx_root].value.postfix_expression.idx_primary_expression
+    = parser_primary_expression();
+
+    tree[idx_root].value.postfix_expression.idx_postfix_operator
+    = parser_postfix_operator();
+
+    return idx_root;
 }
-ast::ptr
+
+ast::idx
+parser::parser_T1() {
+    parser_postfix_expression();
+}
+
+ast::idx
 parser::parser_postfix_operator() {
+    if (scan.get_current_token() == token::end) {
+        return ast::null;
+    }
 
-    return ast::null;
+    ast::idx idx_root = tree.creat_node(ast::node_type::postfix_operator);
+
+    tree[idx_root].value.postfix_operator.postfix_operator
+    = scan.get_current_token();
+
+    switch (scan.get_current_token()) {
+        case token::l_mid_par:
+            scan.next_token();  //eat [
+            tree[idx_root].value.postfix_operator.idx_expression
+            = parser_expression();
+            scan.next_token();  //eat ]
+            break;
+
+        case token::l_par:
+            scan.next_token();  //eat (
+            tree[idx_root].value.postfix_operator.idx_assignment_expression_list
+            = parser_assignment_expression_list();
+            scan.next_token();  //eat )
+            break;
+
+        case token::period:
+        case token::ver:
+            scan.next_token();
+            tree[idx_root].value.postfix_operator.idx_identifier
+            = parser_identifier();
+
+        case token::self_minus:
+        case token::self_plus:
+            break;
+        default:
+            print_token
+            switch_error
+    }
+
+    tree[idx_root].value.postfix_operator.idx_next_postfix_operator =
+    parser_postfix_operator();
+
+    return idx_root;
 }
-ast::ptr
+
+ast::idx
 parser::parser_primary_expression() {
+    switch (scan.get_current_token()) {
+        case token::identif:
+            return parser_identifier();
+        case token::r_int:
+        case token::r_double:
+            //TODO
+            return parser_constant();
+        //TODO
+        //case token::
+        case token::l_par: {
+            scan.next_token();
+            ast::idx idx_expression = parser_expression();
+            scan.next_token();
+            return idx_expression;
+        }
+        default:
+            print_token
+            switch_error
+    }
+}
 
+ast::idx
+parser::parser_assignment_expression_list() {
     return ast::null;
 }
 
-ast::ptr
+ast::idx
 parser::parser_compound_statement() {
-
-    return ast::null;
+    ast::idx idx_root = tree.creat_node(ast::node_type::compound_statement);
+    //est {
+    scan.next_token();
+    tree[idx_root].value.compound_statement.idx_block_list
+    = parser_block_list();
+    //eat }
+    scan.next_token();
+    return idx_root;
 }
 
-ast::ptr
+ast::idx
+parser::parser_block_list() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::block_list);
+    tree[idx_root].value.block_list.idx_block = parser_block();
+    return idx_root;
+}
+
+ast::idx
+parser::parser_block() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::block);
+    switch (scan.get_current_token()) {
+        case token::key_int:
+        case token::key_double:
+        case token::key_long:
+        case token::key_char:
+        case token::key_flaot:
+            tree[idx_root].value.block.idx_declaration
+            = parser_declaration_or_definition();
+            break;
+
+        case token::identif:
+            tree[idx_root].value.block.idx_statement
+            = parser_mark_statement();
+            break;
+
+        case token::key_if:
+            tree[idx_root].value.block.idx_statement
+            = parser_if_statement();
+            break;
+        case token::key_while:
+            tree[idx_root].value.block.idx_statement
+            = parser_while_statement();
+            break;
+        case token::key_switch:
+            tree[idx_root].value.block.idx_statement
+            = parser_swtich_statement();
+            break;
+        case token::key_do:
+            tree[idx_root].value.block.idx_statement
+            = parser_do_while_statement();
+            break;
+        case token::key_for:
+            tree[idx_root].value.block.idx_statement
+            = parser_for_statement();
+            break;
+
+        default:
+            print_token
+            switch_error
+    }
+
+    return idx_root;
+}
+
+
+ast::idx
+parser::parser_mark_statement() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::mark_statement);
+    switch (scan.get_current_token()) {
+        case token::identif:
+            tree[idx_root].value.mark_statement.is_identif = true;
+            tree[idx_root].value.mark_statement.idx_identifier
+            = parser_identifier();
+            break;
+        case token::key_case:
+            tree[idx_root].value.mark_statement.is_case = true;
+            //eat case
+            scan.next_token();
+            tree[idx_root].value.mark_statement.idx_constant_expression
+            = parser_constant();
+            //
+            break;
+
+        case token::key_default:
+            tree[idx_root].value.mark_statement.is_default = true;
+            scan.next_token();
+            break;
+        default: {
+
+        }
+    }
+    return idx_root;
+}
+
+ast::idx
+parser::parser_expression() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::expression);
+    tree[idx_root].value.expression.idx_assignment_expression
+    = parser_assignment_expression(ast::null);
+    return idx_root;
+}
+
+ast::idx
+parser::parser_assignment_expression(ast::idx last_assign) {
+    ast::idx idx_unary_or_binary_expression = parser_binary_expression();
+
+    switch (scan.get_current_token()) {
+        case token::assign:
+        case token::plus_agn:
+        case token::minus_agn:
+        case token::div_agn:
+        case token::mod_agn:
+        case token::times_agn:
+        case token::r_shift_agn:
+        case token::l_shift_agn:
+        case token::bit_and_agn:
+        case token::bit_or_agn:
+        case token::bit_xor_agn: {
+            scan.next_token();
+            ast::idx idx_root = tree.creat_node(ast::node_type::assignment_expression);
+
+            tree[idx_root].value.assignment_expression.idx_unary_or_binary_expression
+            = idx_unary_or_binary_expression;
+
+            tree[idx_root].value.assignment_expression.idx_next_assignment_expression
+            = last_assign;
+
+            tree[idx_root].value.assignment_expression.assignment_type
+            = scan.get_current_token();
+
+            return parser_assignment_expression(idx_root);
+        }
+
+        case token::question_mark: {
+            scan.next_token();
+            ast::idx idx_root = tree.creat_node(ast::node_type::conditional_expression);
+
+            tree[idx_root].value.conditional_expression.idx_binary_expression
+            = idx_unary_or_binary_expression;
+
+            tree[idx_root].value.conditional_expression.idx_expression
+            = parser_expression();
+
+            scan.next_token();  //eat :
+
+            tree[idx_root].value.conditional_expression.idx_conditional_expression
+            = parser_conditional_expression();
+
+            return idx_root;
+        }
+
+        case token::end:
+            return idx_unary_or_binary_expression;
+
+        default:
+            print_token
+            switch_error
+    }
+
+
+  //tree[idx_root].value.assignment_expression.idx_unary_expression
+  //= parser_unary_expression();
+
+  //tree[idx_root].value.assignment_expression.assignment_type
+  //= scan.get_current_token();
+
+  //return parser_assignment_expression(idx_root);
+}
+
+ast::idx
 parser::parser_statement() {
 
     return ast::null;
 }
+
+ast::idx
+parser::parser_mark() {
+
+    return ast::null;
+}
+
+ast::idx
+parser::parser_constant() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::constant);
+    std::string str = scan.get_current_value();
+    scan.next_token();
+    for (std::size_t i = 0; i < std::min(str.size() - 1, static_cast<std::size_t>(50)); ++i) {
+        tree[idx_root].value.constant.const_value[i] = str[i];
+    }
+    return idx_root;
+}
+
+ast::idx
+parser::parser_not_mark_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_if_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_swtich_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_while_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_do_while_statement() {
+
+    return ast::null;
+}
+
+ast::idx
+parser::parser_for_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_break_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_goto_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_continue_statement() {
+
+    return ast::null;
+}
+ast::idx
+parser::parser_return_statement() {
+
+    return ast::null;
+}
+
 #endif
 //⠄⠄⠄⠄⢠⣿⣿⣿⣿⣿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣯⢻⣿⣿⣿⣿⣆
 //⠄⠄⣼⢀⣿⣿⣿⣿⣏⡏⠄⠹⣿⣿⣿⣿⣿⣿⣿⣿⣧⢻⣿⣿⣿⣿

@@ -62,16 +62,23 @@ enum class token : unsigned int{
     bit_and, //&
     bit_or,  //|
     bit_not, //~
+    bit_xor, //^
 
     log_and, //&&
     log_or,  //||
-    log_not, //~
+    log_not, //!
 
     plus,   //+
     minus,  //-
     times,  //*
     div,    ///
     mod,    //%
+    period,   //.
+
+    self_plus, //++
+    self_minus,//--
+
+
 
     ver,        //->
     equ,        //==
@@ -80,7 +87,8 @@ enum class token : unsigned int{
     less_equ,   //<=
     great,      //>
     less,       //<
-
+    l_shift,    //<<
+    r_shift,    //>>
 
     assign,     //=
     plus_agn,   //+=
@@ -88,6 +96,14 @@ enum class token : unsigned int{
     times_agn,  //*=
     div_agn,    ///=
     mod_agn,    //%=
+    r_shift_agn,//>>=
+    l_shift_agn,//<<=
+    bit_and_agn,//&=
+    bit_or_agn, //|=
+    bit_xor_agn,//^=
+
+    question_mark,//?
+
 
     l_par,       //(
     r_par,       //)
@@ -101,6 +117,24 @@ enum class token : unsigned int{
     end,     //;
 
     identif,  //标识符
+    key_auto,
+    key_const,
+    key_enum,
+    key_inline,     //inline
+    key_register,   //register
+    key_restrict,   //restrict
+    key_signed,     //signed
+    key_short,      //short
+    key_sizeof,     //sizeof
+    key_static,     //static
+    key_typedef,    //typedef
+    key_union,      //union
+    key_void,       //void
+    key_volatile,   //volatile
+    key__Bool,      //Bool
+    key__Complex,   //Complex
+    key__Imaginary, //Imaginary
+
     key_extern,     //extern
     //key type
     key_int,
@@ -109,18 +143,23 @@ enum class token : unsigned int{
     key_flaot,
     key_unsigned,
     key_char,
-    key_void,
+    key_struct,
 
     key_if,         //if
     key_else,       //else
     key_true,       //true
     key_false,      //false
     key_while,      //while
+    key_goto,       //goto
     key_for,        //for
     key_null,       //null
     key_func,       //func
     key_return,     //return
     key_break,      //break
     key_continue,   //continue
+    key_switch,     //swtich
+    key_do,         //do
+    key_case,       //case
+    key_default     //default
 };
 #endif

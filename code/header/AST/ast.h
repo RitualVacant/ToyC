@@ -39,10 +39,17 @@ namespace ast {
             declaration_or_definition,
             identifier,
             arguments_declaration,
-            arguments_type_list
+            arguments_type_list,
+
+            compound_statement,
+            block_list,
+            block,
+            mark_statement,
+            initializer,
+            postfix_operator
     };
-    using ptr = std::size_t;
-    ptr const null = 0;
+    using idx = std::size_t;
+    idx const null = 0;
 
     //-------------------------------------------
 
@@ -53,11 +60,7 @@ namespace ast {
     };
 
     struct ast_node {
-        node_loction loc;
-    };
-
-    struct declare : ast_node {
-        std::array<char, 25> name;
+        bool is_init = false;
     };
 
     struct identifier {
@@ -66,27 +69,29 @@ namespace ast {
 
     //-------------------------------------------
 
-    struct declaration_or_definition : declare {
-        ast::ptr ptr_declaration_declarator = ast::null;
-        ast::ptr ptr_initial_declatator_list = ast::null;
-    };
-
-    struct declare_funcion : declare {
-        ast::ptr ptr_return_value_type = ast::null;
-        ast::ptr ptr_funcion_arguments = ast::null;
-    };
-
-    struct declare_variable : ast_node {
-    };
-
-    struct definition_struct : ast_node {
+    struct declaration_or_definition {
+        ast::idx idx_declaration_declarator = ast::null;
+        ast::idx idx_initial_declatator_list = ast::null;
+        ast::idx idx_compound_statement = ast::null;
 
     };
 
-    struct definition_function : ast_node {
-        ast::ptr ptr_return_value_type = ast::null;
-        ast::ptr ptr_funcion_arguments = ast::null;
-        ast::ptr ptr_compound_statement = ast::null;
+    struct declare_funcion {
+        ast::idx idx_return_value_type = ast::null;
+        ast::idx idx_funcion_arguments = ast::null;
+    };
+
+    struct declare_variable {
+    };
+
+    struct definition_struct {
+
+    };
+
+    struct definition_function {
+        ast::idx idx_return_value_type = ast::null;
+        ast::idx idx_funcion_arguments = ast::null;
+        ast::idx idx_compound_statement = ast::null;
     };
 
 
@@ -99,6 +104,14 @@ namespace ast {
 
     //expression
     struct expression {
+        ast::idx idx_assignment_expression = ast::null;
+    };
+
+    struct assignment_expression {
+        ast::idx idx_unary_or_binary_expression = ast::null;
+        ast::idx idx_unary_expression = ast::null;
+        ast::idx idx_next_assignment_expression = ast::null;
+        token assignment_type;
     };
 
     //statement
@@ -116,14 +129,20 @@ namespace ast {
     };
 
     //constant
-    struct constant {
 
+    struct initializer {
+        ast::idx idx_assignment_expression = ast::null;
+        ast::idx idx_initializer_list = ast::null;
     };
 
 
     //-------------------------------------------
 
     //constant
+    struct constant {
+        std::array<char, 50> const_value;
+    };
+
     struct constant_int {
     };
     struct constant_flaot {
@@ -132,24 +151,40 @@ namespace ast {
     };
 
     //expression
-    struct assignment_expression {
-
-    };
 
     struct conditional_expression {
+        ast::idx idx_binary_expression = ast::null;
+        ast::idx idx_expression = ast::null;
+        ast::idx idx_conditional_expression = ast::null;
 
     };
 
     struct binary_expression {
-
+        token token_operator = token::invalid;
+        ast::idx idx_left_node = ast::null;
+        ast::idx idx_right_node = ast::null;
     };
 
     struct unary_expression {
+        bool is_sizeof = false;
 
+        ast::idx idx_declaration_declatator = ast::null;
+        token unary_operator = token::invalid;
+        ast::idx idx_unary_expression = ast::null;
+
+        ast::idx idx_postfix_expression = ast::null;
     };
 
     struct postfix_expression {
-
+        ast::idx idx_primary_expression = ast::null;
+        ast::idx idx_postfix_operator = ast::null;
+    };
+    struct postfix_operator {
+        token postfix_operator = token::invalid;
+        ast::idx idx_expression = ast::null;
+        ast::idx idx_identifier = ast::null;
+        ast::idx idx_assignment_expression_list = ast::null;
+        ast::idx idx_next_postfix_operator = ast::null;
     };
 
     struct primary_expression {
@@ -163,27 +198,31 @@ namespace ast {
 
     struct declarator {
         bool is_ptr = false;
-        ast::ptr ptr_direct_declarator = ast::null;
+        ast::idx idx_direct_declarator = ast::null;
     };
 
 
     struct initial_declarator_list {
-        ast::ptr ptr_initial_declarator = ast::null;
+        ast::idx idx_initial_declarator = ast::null;
 
     };
 
-    struct initial_declarator : ast_node {
-        ast::ptr ptr_declarator = ast::null;
-        ast::ptr ptr_next_initial_declarator = ast::null;
-        ast::ptr ptr_initial_value = ast::null;
+    struct initial_declarator {
+        ast::idx idx_declarator = ast::null;
+        ast::idx idx_next_initial_declarator = ast::null;
+        ast::idx idx_initial_value = ast::null;
     };
 
     #include "declataror.h"
 
     struct direct_declarator {
-        ast::ptr ptr_identifier = ast::null;
-        ast::ptr ptr_declarator = ast::null;
-        ast::ptr ptr_arguments_type_list = ast::null;
+        ast::idx idx_identifier = ast::null;
+        ast::idx idx_declarator = ast::null;
+        ast::idx idx_arguments_type_list = ast::null;
+    };
+
+    struct compound_statement {
+        ast::idx idx_block_list = ast::null;
     };
 
     struct array_declarator {
@@ -191,27 +230,54 @@ namespace ast {
     };
 
     struct arguments_type_list {
-        ast::ptr ptr_argument_declaration = ast::null;
+        ast::idx idx_argument_declaration = ast::null;
     };
 
     //DROP
     struct arguments_list {
-        //ast::ptr ptr_arugments_declaration = ast::null;
-        //ast::ptr ptr_arguments_list_next = ast::null;
-        //ast::ptr ptr_
+        //ast::idx idx_arugments_declaration = ast::null;
+        //ast::idx idx_arguments_list_next = ast::null;
+        //ast::idx idx_
     };
 
     struct idnetifier_list {
 
     };
 
-
-    struct arguments_declaration {
-        ast::ptr ptr_declararion_declarator = ast::null;
-        ast::ptr ptr_declarator = ast::null;
-        ast::ptr ptr_next_arguments_declatation = ast::null;
+    struct block_list {
+        ast::idx idx_block = ast::null;
+    };
+    struct block {
+        token type_block_by_token = token::invalid;
+        ast::idx idx_statement = ast::null;
+        ast::idx idx_declaration = ast::null;
+      //ast::idx idx_if_statement = ast::null;
+      //ast::idx idx_while_statement = ast::null;
+      //ast::idx idx_do_while_statement = ast::null;
+      //ast::idx idx_swtich_statement = ast::null;
+      //ast::idx idx_for_statement = ast::null;
+      //ast::idx idx_next_block = ast::null;
     };
 
+    struct arguments_declaration {
+        ast::idx idx_declararion_declarator = ast::null;
+        ast::idx idx_declarator = ast::null;
+        ast::idx idx_next_arguments_declatation = ast::null;
+    };
+
+    struct mark_statement {
+        ast::idx idx_mark = ast::null;
+        ast::idx idx_statement = ast::null;
+        ast::idx idx_constant_expression = ast::null;
+        ast::idx idx_identifier = ast::null;
+        bool is_default = false;
+        bool is_case = false;
+        bool is_identif = false;
+    };
+
+    struct mark {
+
+    };
 
     // statement node
 
@@ -229,7 +295,6 @@ namespace ast {
     };
     //return
     union value {
-        ast::node_loction node_loction;
         ast::type type;
         ast::expression expression;
         ast::statement statement;
@@ -256,13 +321,20 @@ namespace ast {
         ast::identifier identifier;
         ast::arguments_declaration arguments_declaration;
         ast::arguments_type_list arguments_type_list;
+        ast::compound_statement compound_statement;
+        ast::block block;
+        ast::block_list block_list;
+        ast::mark_statement mark_statement;
+        ast::mark mark;
+        ast::initializer initializer;
+        ast::postfix_operator postfix_operator;
     };
 
     struct node {
         ast::value value;
         ast::node_type type;
-        ast::ptr loc;
-        ast::ptr next;
+        ast::node_loction node_loction;
+        ast::idx next;
     };
 }
 

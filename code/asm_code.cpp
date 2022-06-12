@@ -290,7 +290,7 @@ void asm_code::read_code() {
                         default: {
                             fmt::print("\nan unknow error at asm_code::read_code()\n");
                             fmt::print("case token::call_func:\n");
-                            fmt::print("token: {}\n", hash_map_token_to_string.at(code[i].symbol));
+                            fmt::print("token: {}\n", token_to_string.at(code[i].symbol));
                             exit(0);
                         }
                     }
@@ -485,7 +485,7 @@ void asm_code::read_code() {
             default: {
                 fmt::print("\nan unknow error at asm_code::read_code()\n");
                 fmt::print("at end of read_code()\n");
-                fmt::print("token: {}\n", hash_map_token_to_string.at(code[i].symbol));
+                fmt::print("token: {}\n", token_to_string.at(code[i].symbol));
                 exit(0);
             }
         }

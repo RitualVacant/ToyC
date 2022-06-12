@@ -35,8 +35,8 @@ class parser {
         //std::unique_ptr<asm_code> asm_file  = std::make_unique<asm_code>(asm_code(fil))
         asm_code* asm_file = nullptr;
         //
-        bool is_func;
-        bool is_struct;
+        bool is_func = false;
+        bool is_struct = false;
 
         //临时变量的个数,类似会累加的闭包,parser::get_var_time()
         std::size_t var_time = 0;
@@ -48,10 +48,10 @@ class parser {
         //解析----没有完工
         //void parser_statement();
         //void parser_function_define_or_declare(std::string func_name, token func_return_type);
-        void parser_expression_(std::string l_value);
+        //void parser_expression_(std::string l_value);
         //TODO这两个函数
-        std::string parser_expression();
-        std::string parser_unit(std::string name_array);
+        //std::string parser_expression();
+        //std::string parser_unit(std::string name_array);
         //void parser_primary_expression();
         void parser_lvalue();
         //TODO add support for pointer and array declare;
@@ -67,51 +67,60 @@ class parser {
         std::vector<std::tuple<token, std::string>> parser_pre_to_pos();
         //DROP
         void parser_declare_or_function_define_or_declare();
+        int const start_priority = 13;
+        int const end_priority = 3;
 
         //NEW
         //declare
-        ast::ptr parser_declare_or_definition();
-        ast::ptr parser_declaration_declarator();
-        ast::ptr parser_initial_declarator_list();
-        ast::ptr parser_initial_declarator();
-        ast::ptr parser_declarator();
-        ast::ptr parser_direct_declarator();
-        ast::ptr parser_arguments_type_list();
-        ast::ptr parser_arguments_list();
-        ast::ptr parser_arguments_declaration();
-        ast::ptr parser_array_declarator();
-        ast::ptr parser_temporary_1();
+        ast::idx parser_declaration_or_definition();
+        ast::idx parser_declaration_declarator();
+        ast::idx parser_initial_declarator_list();
+        ast::idx parser_initial_declarator();
+        ast::idx parser_declarator();
+        ast::idx parser_direct_declarator();
+        ast::idx parser_arguments_type_list();
+        ast::idx parser_arguments_list();
+        ast::idx parser_arguments_declaration();
+        ast::idx parser_array_declarator();
+        ast::idx parser_initializer();
+        ast::idx parser_initializer_list();
+        ast::idx parser_temporary_1();
         //NEW
         //expression
-        //void parser_expression();
-        ast::ptr parser_assignment_expression();
-        ast::ptr parser_conditional_expression();
-        ast::ptr parser_binary_expression();
-        ast::ptr parser_unary_expression();
-        ast::ptr parser_postfix_expression();
-        ast::ptr parser_postfix_operator();
-        ast::ptr parser_primary_expression();
+        ast::idx parser_priority_binary_expression(int priority);
+        ast::idx parser_expression();
+        ast::idx parser_assignment_expression(ast::idx last_assign);
+        ast::idx parser_assignment_expression_list();
+        ast::idx parser_conditional_expression();
+        ast::idx parser_binary_expression();
+        ast::idx parser_unary_expression();
+        ast::idx parser_postfix_expression();
+        ast::idx parser_postfix_operator();
+        ast::idx parser_T1();
+        ast::idx parser_primary_expression();
         //NEW
         //statement
-        ast::ptr parser_compound_statement();
-        ast::ptr parser_block_list();
-        ast::ptr parser_block();
-        ast::ptr parser_mark_statement();
-        ast::ptr parser_statement();
-        ast::ptr parser_mark();
-        ast::ptr parser_constant_expression();
-        ast::ptr parser_not_mark_statement();
-        ast::ptr parser_if_statement();
-        ast::ptr parser_swtich_statement();
-        ast::ptr parser_do_while_statement();
-        ast::ptr parser_while_statement();
-        ast::ptr parser_for_statement();
-        ast::ptr parser_break_statement();
-        ast::ptr parser_goto_statement();
-        ast::ptr parser_continue_statement();
-        ast::ptr parser_return_statement();
-        
-        ast::ptr parser_identifier();
+        ast::idx parser_compound_statement();
+        ast::idx parser_block_list();
+        ast::idx parser_block();
+        ast::idx parser_mark_statement();
+        ast::idx parser_statement();
+        ast::idx parser_mark();
+        ast::idx parser_constant();
+        ast::idx parser_not_mark_statement();
+        ast::idx parser_if_statement();
+        ast::idx parser_swtich_statement();
+        ast::idx parser_while_statement();
+        ast::idx parser_do_while_statement();
+        ast::idx parser_for_statement();
+        ast::idx parser_break_statement();
+        ast::idx parser_goto_statement();
+        ast::idx parser_continue_statement();
+        ast::idx parser_return_statement();
+
+        ast::idx parser_identifier();
+
+        int operator_priority(token t);
 
     public:
         explicit parser(std::string &file_path_, std::string &output_file_path_, bool really_output_asm_code_);
@@ -131,8 +140,8 @@ class parser {
 : file_path(file_path_), output_file_path(output_file_path_), really_output_asm_code(really_output_asm_code_) {
     scan.next_token();
     while (!scan.file.eof()) {
-        ast::ptr ptr_root = parser_declare_or_definition();
-        tree.connect(ptr_root);
+        ast::idx idx_root = parser_declaration_or_definition();
+        tree.connect(idx_root);
     }
 };
 

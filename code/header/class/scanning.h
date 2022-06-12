@@ -66,10 +66,10 @@ class scanning {
         void token_output() {
             while (!file.eof()) {
                 auto &&a = next_token();
-                if (hash_map_token_to_string.find(std::get<0>(a)) == hash_map_token_to_string.end())
+                if (token_to_string.find(std::get<0>(a)) == token_to_string.end())
                     fmt::print("[token:] identif   [string:] \"{}\"\n", std::get<1>(a));
                 else
-                    fmt::print("[token:] {:10} [string:] \"{}\"\n", hash_map_token_to_string.at(std::get<0>(a)), std::get<1>(a));
+                    fmt::print("[token:] {:10} [string:] \"{}\"\n", token_to_string.at(std::get<0>(a)), std::get<1>(a));
             }
         }
 };

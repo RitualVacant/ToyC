@@ -15,7 +15,7 @@ char const useless_char[] = {
 };
 
 //测试词法划分是否正确的输出转换
-std::unordered_map<token, std::string> const hash_map_token_to_string {
+std::unordered_map<token, std::string> const token_to_string {
     {token::invalid, "invalid"},
     {token::jmp, "jmp"},
     {token::lable, "lable"},
@@ -56,8 +56,12 @@ std::unordered_map<token, std::string> const hash_map_token_to_string {
 
     {token::key_void,           "key_void"},
     {token::key_int,            "key_int"},
+    {token::key_long,           "key_long"},
     {token::key_double,         "key_double"},
     {token::key_char,           "key_char"},
+    {token::key_unsigned,       "key_unsigned"},
+    {token::key_do,             "key_do"},
+    {token::key_default,        "default"},
 
     {token::r_int,          "r_int"},
     {token::r_double,       "r_double"},
@@ -107,10 +111,10 @@ std::unordered_map<token, std::string> const hash_map_token_to_string {
     {token::key_func,         "key_func"},
     {token::key_return,       "key_return"},
     {token::key_break,        "key_break"},
-    {token::key_continue,     "key_continue"}
+    {token::key_continue,     "key_continue"},
 };
 
-//查找关键字
+//find key words
 std::unordered_map<std::string, token> const key_words {
     {"if",       token::key_if},
     {"else",     token::key_else},
@@ -119,16 +123,47 @@ std::unordered_map<std::string, token> const key_words {
     {"while",    token::key_while},
     {"for",      token::key_for},
     {"null",     token::key_null},
-    {"func",     token::key_func},
     {"return",   token::key_return},
     {"break",    token::key_break},
     {"continue", token::key_continue},
+
+    {"struct",   token::key_struct},
+
     {"int",      token::key_int},
     {"double",   token::key_double},
     {"char",     token::key_char},
+    {"long",     token::key_long},
     {"void",     token::key_void},
-    {"extern",   token::key_extern}
+    {"extern",   token::key_extern},
+
+    {"switch",   token::key_switch},
+    {"do",       token::key_do},
+    {"for",      token::key_for},
+    {"case",     token::key_case},
+    {"default",  token::key_default},
+
+    {"auto",     token::key_auto},
+    {"break",    token::key_break},
+    {"case",     token::key_case},
+    {"const",    token::key_const},
+    {"enum",     token::key_enum},
+    {"inline",   token::key_inline},
+    {"register", token::key_register},
+    {"restrict", token::key_restrict},
+    {"signed",   token::key_signed},
+    {"short",    token::key_short},
+    {"sizeof",   token::key_sizeof},
+    {"static",   token::key_static},
+    {"switch",   token::key_switch},
+    {"typedef",  token::key_typedef},
+    {"union",    token::key_union},
+    {"void",     token::key_void},
+    {"volatile", token::key_volatile},
+    {"_Bool",    token::key__Bool},
+    {"Complex",  token::key__Complex},
+    {"_Imaginary",token::key__Imaginary},
 };
+
 inline bool is_useless(char const c) {
     for (char i : useless_char) {
         if (i == c) return true;
