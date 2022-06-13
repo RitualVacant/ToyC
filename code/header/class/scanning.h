@@ -35,6 +35,7 @@ class scanning {
         std::fstream file;
         std::tuple<token, std::string> now_token;
         std::tuple<token, std::string> last_token;
+        std::tuple<token, std::string> pre_token;
 
         explicit scanning(std::string &file_path_) : file_path (file_path_) {
             file.open(file_path);

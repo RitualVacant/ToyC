@@ -86,9 +86,10 @@ inline std::tuple<token, std::string> scanning::to_char() {
 
 token
 scanning::get_pre_token() {
-    std::tuple<token, std::string> re = next_token();
+    pre_token = next_token();
     really_next_token = false;
-    return std::get<0>(re);
+    now_token = last_token;
+    return std::get<0>(pre_token);
 }
 
 
@@ -96,7 +97,8 @@ std::tuple<token, std::string>
 scanning::next_token() {
     if (!really_next_token) {
         really_next_token = true;
-        return now_token;
+        now_token = pre_token;
+        return pre_token;
     }
     last_token = now_token;
     std::string re;

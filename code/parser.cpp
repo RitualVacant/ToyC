@@ -1335,9 +1335,21 @@ parser::parser_conditional_expression() {
     return idx_root;
 }
 
-int parser::operator_priority(token t) {
+int
+parser::operator_priority(token t) {
     switch (t) {
         case token::end:
+        case token::assign:
+        case token::plus_agn:
+        case token::minus_agn:
+        case token::times_agn:
+        case token::div_agn:
+        case token::mod_agn:
+        case token::r_shift_agn:
+        case token::l_shift_agn:
+        case token::bit_and_agn:
+        case token::bit_or_agn:
+        case token::bit_xor_agn:
             return -1;
         case token::log_or:
             return 13;
@@ -1636,13 +1648,11 @@ parser::parser_block() {
 
 
         case token::identif:
-            print_token
             if(scan.get_pre_token() == token::key_quotation) {
                 tree[idx_root].value.block.idx_statement
                 = parser_mark_statement();
             }
             else {
-                print_token
                 tree[idx_root].value.block.idx_statement
                 = parser_expression();
             }
