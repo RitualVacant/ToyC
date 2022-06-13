@@ -1062,14 +1062,10 @@ parser::print_synctax_tree() {
 ast::idx
 parser::parser_declaration_or_definition() {
     ast::idx idx_root = tree.creat_node(ast::node_type::declaration_or_definition);
-    //auto &node = tree[idx_root].value;
-    //std::cout << &node << std::endl;
-    //std::cout << &tree[idx_root].value << std::endl;
 
     tree[idx_root].value.declaration_or_definition.idx_declaration_declarator
     = parser_declaration_declarator();
-    //std::cout << &node << std::endl;
-    //std::cout << &tree[idx_root].value << std::endl;
+
     tree[idx_root].value.declaration_or_definition.idx_initial_declatator_list
     = parser_initial_declarator();
 
@@ -1103,7 +1099,10 @@ parser::parser_declaration_declarator() {
     //because the order of C's declarator is random
     //this loop will eat token until get identifier or other token
     ast::declaration_declarator node_declarator;
-    while (scan.get_current_token() != token::identif && scan.get_current_token() != token::l_par) {
+    while (scan.get_current_token() != token::identif
+        && scan.get_current_token() != token::l_par
+        && scan.get_current_token() != token::times
+        ) {
         switch(scan.get_current_token()) {
             //TODO:all type
             case token::key_unsigned: {
@@ -1170,9 +1169,10 @@ parser::parser_initial_declarator() {
     ast::idx idx_root = tree.creat_node(ast::node_type::initial_declarator);
     tree[idx_root].value.initial_declarator.idx_declarator
     = parser_declarator();
+
     if (scan.get_current_token() == token::assign) {
         scan.next_token();      //eat =
-        tree[idx_root].value.initial_declarator.idx_initial_value
+        tree[idx_root].value.initial_declarator.idx_initializer
         = parser_initializer();
     }
     return idx_root;
@@ -1246,6 +1246,7 @@ parser::parser_direct_declarator() {
             }
             case token::assign:
             case token::r_par:
+            case token::comma:
                 break;
             default:
                 print_token
@@ -1294,10 +1295,13 @@ parser::parser_arguments_list() {
 ast::idx
 parser::parser_arguments_declaration() {
     ast::idx idx_root = tree.creat_node(ast::node_type::arguments_declaration);
+
     tree[idx_root].value.arguments_declaration.idx_declararion_declarator
     = parser_declaration_declarator();
+
     tree[idx_root].value.arguments_declaration.idx_declarator
     = parser_declarator();
+
     if (scan.get_current_token() == token::comma) {
         scan.next_token();
         tree[idx_root].value.arguments_declaration.idx_next_arguments_declatation
@@ -1336,33 +1340,33 @@ int parser::operator_priority(token t) {
         case token::end:
             return -1;
         case token::log_or:
-            return 4;
+            return 13;
         case token::log_and:
-            return 5;
+            return 12;
         case token::bit_or:
-            return 6;
+            return 11;
         case token::bit_xor:
-            return 7;
+            return 10;
         case token::bit_and:
-            return 8;
+            return 9;
         case token::equ:
         case token::not_equ:
-            return 9;
+            return 8;
         case token::less:
         case token::less_equ:
         case token::great:
         case token::great_equ:
-            return 10;
+            return 7;
         case token::l_shift:
         case token::r_shift:
-            return 11;
+            return 6;
         case token::plus:
         case token::minus:
-            return 12;
+            return 5;
         case token::div:
         case token::mod:
         case token::times:
-            return 13;
+            return 4;
         default:
             print_token
             switch_error
@@ -1383,10 +1387,15 @@ parser::parser_priority_binary_expression(int priority) {
     ast::idx idx_left_node
     = parser_priority_binary_expression(priority - 1);
 
+    ast::idx idx_root = idx_left_node;
+
     //creat node
     while (operator_priority(scan.get_current_token()) == priority) {
+        idx_root = tree.creat_node(ast::node_type::binary_expression);
+        tree[idx_root].value.binary_expression.token_operator
+        = scan.get_current_token();
+
         scan.next_token();
-        ast::idx idx_root = tree.creat_node(ast::node_type::binary_expression);
 
         tree[idx_root].value.binary_expression.idx_left_node
         = idx_left_node;
@@ -1395,7 +1404,7 @@ parser::parser_priority_binary_expression(int priority) {
         = parser_priority_binary_expression(priority - 1);
     }
     //not creat node
-    return idx_left_node;
+    return idx_root;
 }
 
 ast::idx
@@ -1465,6 +1474,19 @@ parser::parser_unary_expression() {
             }
             break;
         }
+
+        case token::assign:
+        case token::plus_agn:
+        case token::minus_agn:
+        case token::times_agn:
+        case token::div_agn:
+        case token::mod_agn:
+        case token::r_shift_agn:
+        case token::l_shift_agn:
+        case token::bit_and_agn:
+        case token::bit_or_agn:
+        case token::bit_xor_agn:
+            break;
         default:
             print_token
             switch_error
@@ -1526,6 +1548,8 @@ parser::parser_postfix_operator() {
         case token::self_plus:
             break;
         default:
+            //TODO
+            return idx_root;
             print_token
             switch_error
     }
@@ -1592,13 +1616,36 @@ parser::parser_block() {
         case token::key_long:
         case token::key_char:
         case token::key_flaot:
+        case token::key__Bool:
+        case token::key__Complex:
+        case token::key__Imaginary:
+        case token::key_unsigned:
+        case token::key_signed:
             tree[idx_root].value.block.idx_declaration
             = parser_declaration_or_definition();
             break;
 
-        case token::identif:
+        case token::key_case:
             tree[idx_root].value.block.idx_statement
-            = parser_mark_statement();
+            = parser_case_label();
+            break;
+
+        case token::key_default:
+            tree[idx_root].value.block.idx_statement
+            = parser_default_label();
+
+
+        case token::identif:
+            print_token
+            if(scan.get_pre_token() == token::key_quotation) {
+                tree[idx_root].value.block.idx_statement
+                = parser_mark_statement();
+            }
+            else {
+                print_token
+                tree[idx_root].value.block.idx_statement
+                = parser_expression();
+            }
             break;
 
         case token::key_if:
@@ -1630,6 +1677,27 @@ parser::parser_block() {
     return idx_root;
 }
 
+ast::idx
+parser::parser_case_label() {
+    scan.next_token();  //eat case
+    ast::idx idx_root = tree.creat_node(ast::node_type::case_label);
+    tree[idx_root].value.case_label.const_expression =
+    parser_const_expression();
+    scan.next_token();  //eat :
+    return idx_root;
+}
+
+//TODO
+ast::idx
+parser::parser_const_expression() {
+    return ast::null;
+}
+
+ast::idx
+parser::parser_default_label() {
+    ast::idx idx_root = tree.creat_node(ast::node_type::default_label);
+    return idx_root;
+}
 
 ast::idx
 parser::parser_mark_statement() {
@@ -1752,7 +1820,7 @@ parser::parser_constant() {
     ast::idx idx_root = tree.creat_node(ast::node_type::constant);
     std::string str = scan.get_current_value();
     scan.next_token();
-    for (std::size_t i = 0; i < std::min(str.size() - 1, static_cast<std::size_t>(50)); ++i) {
+    for (std::size_t i = 0; i < std::min(str.size(), ast::array_in_struct_size); ++i) {
         tree[idx_root].value.constant.const_value[i] = str[i];
     }
     return idx_root;

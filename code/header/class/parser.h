@@ -98,6 +98,9 @@ class parser {
         ast::idx parser_postfix_operator();
         ast::idx parser_T1();
         ast::idx parser_primary_expression();
+        ast::idx parser_const_expression();
+        ast::idx parser_case_label();
+        ast::idx parser_default_label();
         //NEW
         //statement
         ast::idx parser_compound_statement();

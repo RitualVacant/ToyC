@@ -19,9 +19,9 @@ class synctax_tree {
         bool reserve_tree = false;
 
         ast::idx last_root_ptr = ast::null;
-        bool to_file = true;
         std::fstream file;
         std::string file_path{"/home/lzj/code/program/script/test/tree.json"};
+        std::string file_buffer;
         void dfs_print_tree(ast::idx ptr);
         void print_json_key_value(char const *key, char const *value);
         void print_json_key(char const *key);

@@ -153,6 +153,11 @@ scanning::next_token() {
             now_token = std::make_tuple(token::end, ";");
             return std::make_tuple(token::end, ";");
 
+        case ':':
+            get_next_char();
+            now_token = std::make_tuple(token::key_quotation, ":");
+            return now_token;
+
         case '~':
             get_next_char();
             now_token = std::make_tuple(token::bit_not, "~");

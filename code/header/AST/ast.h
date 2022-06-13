@@ -11,6 +11,8 @@
 #include <array>
 
 namespace ast {
+    std::size_t const array_in_struct_size = 25;
+
     enum class node_type {
             type,
             expression,
@@ -46,7 +48,10 @@ namespace ast {
             block,
             mark_statement,
             initializer,
-            postfix_operator
+            postfix_operator,
+
+            case_label,
+            default_label
     };
     using idx = std::size_t;
     idx const null = 0;
@@ -64,7 +69,7 @@ namespace ast {
     };
 
     struct identifier {
-        char name[25] = {};
+        char name[ast::array_in_struct_size] = {};
     };
 
     //-------------------------------------------
@@ -140,7 +145,7 @@ namespace ast {
 
     //constant
     struct constant {
-        std::array<char, 50> const_value;
+        char const_value[array_in_struct_size] = {};
     };
 
     struct constant_int {
@@ -168,11 +173,11 @@ namespace ast {
     struct unary_expression {
         bool is_sizeof = false;
 
-        ast::idx idx_declaration_declatator = ast::null;
         token unary_operator = token::invalid;
+        ast::idx idx_declaration_declatator = ast::null;
         ast::idx idx_unary_expression = ast::null;
-
         ast::idx idx_postfix_expression = ast::null;
+
     };
 
     struct postfix_expression {
@@ -189,6 +194,14 @@ namespace ast {
 
     struct primary_expression {
 
+    };
+
+
+    struct case_label {
+        ast::idx const_expression = ast::null;
+    };
+
+    struct default_label {
     };
 
     //declare
@@ -210,7 +223,7 @@ namespace ast {
     struct initial_declarator {
         ast::idx idx_declarator = ast::null;
         ast::idx idx_next_initial_declarator = ast::null;
-        ast::idx idx_initial_value = ast::null;
+        ast::idx idx_initializer = ast::null;
     };
 
     #include "declataror.h"
@@ -248,7 +261,7 @@ namespace ast {
         ast::idx idx_block = ast::null;
     };
     struct block {
-        token type_block_by_token = token::invalid;
+      //token type_block_by_token = token::invalid;
         ast::idx idx_statement = ast::null;
         ast::idx idx_declaration = ast::null;
       //ast::idx idx_if_statement = ast::null;
@@ -328,6 +341,8 @@ namespace ast {
         ast::mark mark;
         ast::initializer initializer;
         ast::postfix_operator postfix_operator;
+        ast::case_label case_label;
+        ast::default_label default_label;
     };
 
     struct node {

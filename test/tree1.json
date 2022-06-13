@@ -86,16 +86,6 @@
                                         "operator": "/",
                                         "unary_expression": {
                                             "postfix_expression": {
-                                                "postfix_operator": {},
-                                                "constant": {
-                                                    "value": "4"
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        },
-                                        "unary_expression1": {
-                                            "postfix_expression": {
                                                 "indentifier": {
                                                     "name": "c"
                                                 }

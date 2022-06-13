@@ -58,6 +58,7 @@ enum class token : unsigned int{
     r_char,
     r_bool,
 
+    key_quotation,  //:
 
     bit_and, //&
     bit_or,  //|
