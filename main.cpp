@@ -67,7 +67,7 @@ void choose_mode_run() {
             }
             case mode::mid : {
                 parser p(file_path, output_file_path, false);
-                p.print_mid_code();
+                //p.print_mid_code();
                 break;
             }
             case mode::yes : {

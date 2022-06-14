@@ -4,35 +4,37 @@
             "sign": "true",
             "type": "int",
             "limit": "empty",
-            "store": "empty"
+            "store": "static"
         },
         "initial_declarator": {
             "declarator": {
                 "is_pointer": "false",
                 "direct_declarator": {
                     "indentifier": {
-                        "name": "add"
-                    },
-                    "arguments_type_list": {
-                        "arguments_declaration": {
-                            "declaration_declarator": {
-                                "sign": "true",
-                                "type": "long_long_int",
-                                "limit": "empty",
-                                "store": "empty"
-                            },
-                            "declarator": {
-                                "is_pointer": "true",
-                                "direct_declarator": {
-                                    "indentifier": {
-                                        "name": "b"
-                                    }
-                                }
-                            },
+                        "name": "array"
+                    }
+                }
+            }
+        },
+        "declaration_or_definition": {
+            "declaration_declarator": {
+                "sign": "true",
+                "type": "int",
+                "limit": "empty",
+                "store": "empty"
+            },
+            "initial_declarator": {
+                "declarator": {
+                    "is_pointer": "true",
+                    "direct_declarator": {
+                        "indentifier": {
+                            "name": "add"
+                        },
+                        "arguments_type_list": {
                             "arguments_declaration": {
                                 "declaration_declarator": {
                                     "sign": "true",
-                                    "type": "int",
+                                    "type": "long_long_int",
                                     "limit": "empty",
                                     "store": "empty"
                                 },
@@ -40,7 +42,23 @@
                                     "is_pointer": "true",
                                     "direct_declarator": {
                                         "indentifier": {
-                                            "name": "c"
+                                            "name": "b"
+                                        }
+                                    }
+                                },
+                                "arguments_declaration": {
+                                    "declaration_declarator": {
+                                        "sign": "true",
+                                        "type": "int",
+                                        "limit": "empty",
+                                        "store": "empty"
+                                    },
+                                    "declarator": {
+                                        "is_pointer": "true",
+                                        "direct_declarator": {
+                                            "indentifier": {
+                                                "name": "c"
+                                            }
                                         }
                                     }
                                 }
@@ -48,50 +66,88 @@
                         }
                     }
                 }
-            }
-        },
-        "compound_statement": {
-            "block_list": {
+            },
+            "compound_statement": {
                 "block": {
-                    "declaration_or_definition": {
-                        "declaration_declarator": {
-                            "sign": "true",
-                            "type": "int",
-                            "limit": "empty",
-                            "store": "empty"
-                        },
-                        "initial_declarator": {
-                            "declarator": {
-                                "is_pointer": "false",
-                                "direct_declarator": {
-                                    "indentifier": {
-                                        "name": "a"
-                                    }
+                    "switch_statement": {
+                        "unary_expression": {
+                            "postfix_expression": {
+                                "postfix_operator": {},
+                                "indentifier": {
+                                    "name": "f"
                                 }
                             },
-                            "initializer": {
-                                "binary_expression": {
-                                    "operator": "+",
-                                    "unary_expression": {
-                                        "postfix_expression": {
-                                            "postfix_operator": {},
+                            "is_sizeof": "false",
+                            "unary_operator": "void"
+                        },
+                        "compound_statement": {
+                            "block": {
+                                "case_lable": {
+                                    "constant": {
+                                        "value": "1"
+                                    }
+                                },
+                                "block": {
+                                    "expression": {
+                                        "assignment_expression": {
+                                            "assignment_type": "=",
+                                            "unary_expression": {
+                                                "postfix_expression": {
+                                                    "postfix_operator": {},
+                                                    "indentifier": {
+                                                        "name": "f"
+                                                    }
+                                                },
+                                                "is_sizeof": "false",
+                                                "unary_operator": "void"
+                                            },
+                                            "next_assgin": {}
+                                        }
+                                    },
+                                    "block": {
+                                        "case_lable": {
                                             "constant": {
-                                                "value": "1"
+                                                "value": "2"
                                             }
                                         },
-                                        "is_sizeof": "false",
-                                        "unary_operator": "void"
-                                    },
-                                    "binary_expression": {
-                                        "operator": "/",
-                                        "unary_expression": {
-                                            "postfix_expression": {
-                                                "indentifier": {
-                                                    "name": "c"
+                                        "block": {
+                                            "expression": {
+                                                "assignment_expression": {
+                                                    "assignment_type": "=",
+                                                    "unary_expression": {
+                                                        "postfix_expression": {
+                                                            "postfix_operator": {},
+                                                            "indentifier": {
+                                                                "name": "f"
+                                                            }
+                                                        },
+                                                        "is_sizeof": "false",
+                                                        "unary_operator": "void"
+                                                    },
+                                                    "next_assgin": {}
                                                 }
                                             },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
+                                            "block": {
+                                                "default_label": {},
+                                                "block": {
+                                                    "expression": {
+                                                        "assignment_expression": {
+                                                            "assignment_type": "=",
+                                                            "unary_expression": {
+                                                                "postfix_expression": {
+                                                                    "postfix_operator": {},
+                                                                    "indentifier": {
+                                                                        "name": "f"
+                                                                    }
+                                                                },
+                                                                "is_sizeof": "false",
+                                                                "unary_operator": "void"
+                                                            },
+                                                            "next_assgin": {}
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }

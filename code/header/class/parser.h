@@ -24,8 +24,8 @@ class parser {
         std::string output_file_path;
         bool really_output_asm_code = false;
 
-        std::vector<statement> code;
-        std::size_t lable = 0;
+        //std::vector<statement> code;
+        //std::size_t lable = 0;
 
         //TODO
         //symbol_table table = symbol_table(output_file_path, really_output_asm_code);
@@ -39,7 +39,7 @@ class parser {
         bool is_struct = false;
 
         //临时变量的个数,类似会累加的闭包,parser::get_var_time()
-        std::size_t var_time = 0;
+        //std::size_t var_time = 0;
 
         //void parser_if_statement ();
         //void parser_while_statement();
@@ -53,20 +53,20 @@ class parser {
         //std::string parser_expression();
         //std::string parser_unit(std::string name_array);
         //void parser_primary_expression();
-        void parser_lvalue();
+        //void parser_lvalue();
         //TODO add support for pointer and array declare;
         //TODO now don't support pointer and array
         //void parser_declare();
-        void parser_expression_unit();
-        std::string parser_func_call(std::string name_func);
-        std::string get_var_time();
-        std::string get_lable();
+        //void parser_expression_unit();
+        //std::string parser_func_call(std::string name_func);
+        //std::string get_var_time();
+        //std::string get_lable();
 
         //前缀表达式转后缀表达式
         //本应该写在函数中，在类中减少内存反复分配
-        std::vector<std::tuple<token, std::string>> parser_pre_to_pos();
+        //std::vector<std::tuple<token, std::string>> parser_pre_to_pos();
         //DROP
-        void parser_declare_or_function_define_or_declare();
+        //void parser_declare_or_function_define_or_declare();
         int const start_priority = 13;
         int const end_priority = 3;
 
@@ -84,7 +84,6 @@ class parser {
         ast::idx parser_array_declarator();
         ast::idx parser_initializer();
         ast::idx parser_initializer_list();
-        ast::idx parser_temporary_1();
         //NEW
         //expression
         ast::idx parser_priority_binary_expression(int priority);
@@ -96,7 +95,6 @@ class parser {
         ast::idx parser_unary_expression();
         ast::idx parser_postfix_expression();
         ast::idx parser_postfix_operator();
-        ast::idx parser_T1();
         ast::idx parser_primary_expression();
         ast::idx parser_const_expression();
         ast::idx parser_case_label();

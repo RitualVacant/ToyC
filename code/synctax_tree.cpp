@@ -233,9 +233,49 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
     switch (tree[idx].type) {
         case ast::node_type::assignment_expression:
             print_json_class_head("assignment_expression");
+            print_json_key("assignment_type");
+            switch (tree[idx].value.assignment_expression.assignment_type) {
+                case token::assign:
+                    print_json_value("=");
+                    break;
+                case token::plus_agn:
+                    print_json_value("+=");
+                    break;
+                case token::minus_agn:
+                    print_json_value("-=");
+                    break;
+                case token::times_agn:
+                    print_json_value("*=");
+                    break;
+                case token::div_agn:
+                    print_json_value("/=");
+                    break;
+                case token::mod_agn:
+                    print_json_value("%=");
+                    break;
+                case token::r_shift_agn:
+                    print_json_value(">>=");
+                    break;
+                case token::l_shift_agn:
+                    print_json_value("<<=");
+                    break;
+                case token::bit_and_agn:
+                    print_json_value("&=");
+                    break;
+                case token::bit_or_agn:
+                    print_json_value("|=");
+                    break;
+                case token::bit_xor_agn:
+                    print_json_value("^=");
+                    break;
+                default:
+                    switch_error
+            }
             dfs_print_tree(tree[idx].value.assignment_expression.idx_unary_expression);
             dfs_print_tree(tree[idx].value.assignment_expression.idx_unary_or_binary_expression);
+            print_json_class_head("next_assgin");
             dfs_print_tree(tree[idx].value.assignment_expression.idx_next_assignment_expression);
+            print_json_class_end();
             print_json_class_end();
             break;
 
@@ -275,6 +315,13 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                     switch_error
                 break;
             }
+            print_json_class_end();
+            break;
+
+        case ast::node_type::while_statement:
+            print_json_class_head("while_statement");
+            dfs_print_tree(tree[idx].value.while_statement.idx_assignment_expression);
+            dfs_print_tree(tree[idx].value.while_statement.idx_compound_statement);
             print_json_class_end();
             break;
 
@@ -346,19 +393,23 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                 default:
                     switch_error
             }
-            dfs_print_tree(tree[idx].value.binary_expression.idx_left_node);
-            dfs_print_tree(tree[idx].value.binary_expression.idx_right_node);
+        dfs_print_tree(tree[idx].value.binary_expression.idx_left_node);
+        dfs_print_tree(tree[idx].value.binary_expression.idx_right_node);
+        print_json_class_end();
+        break;
+
+        case ast::node_type::expression:
+            print_json_class_head("expression");
+            dfs_print_tree(tree[idx].value.expression.idx_assignment_expression);
             print_json_class_end();
             break;
+
         /*
         case ast::node_type::type:
             print_json_class_head("type");
             print_json_class_end();
             break;
-        case ast::node_type::expression:
-            print_json_class_head("expression");
-            print_json_class_end();
-            break;
+
         case ast::node_type::conditional_expression:
             print_json_class_head("conditional_expression");
             print_json_class_end();
@@ -448,6 +499,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_declaration_declarator);
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_initial_declatator_list);
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_compound_statement);
+            dfs_print_tree(tree[idx].next);
             print_json_class_end();
             break;
 
@@ -487,15 +539,67 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_head("block");
             dfs_print_tree(tree[idx].value.block.idx_declaration);
             dfs_print_tree(tree[idx].value.block.idx_statement);
+            dfs_print_tree(tree[idx].value.block.idx_next_block);
             print_json_class_end();
             break;
 
         case ast::node_type::postfix_operator:
             print_json_class_head("postfix_operator");
-            dfs_print_tree(tree[idx].value.postfix_operator.idx_expression);
+            dfs_print_tree(tree[idx].value.postfix_operator.idx_array_idx_assignment_expression);
             dfs_print_tree(tree[idx].value.postfix_operator.idx_identifier);
-            dfs_print_tree(tree[idx].value.postfix_operator.idx_assignment_expression_list);
+            dfs_print_tree(tree[idx].value.postfix_operator.idx_func_call_assignment_expression_list);
             dfs_print_tree(tree[idx].value.postfix_operator.idx_next_postfix_operator);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::if_statement:
+            print_json_class_head("if_statement");
+            dfs_print_tree(tree[idx].value.if_statement.idx_expression);
+            dfs_print_tree(tree[idx].value.if_statement.idx_if_body);
+            dfs_print_tree(tree[idx].value.if_statement.idx_else_body);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::for_statement:
+            print_json_class_head("for_statement");
+            dfs_print_tree(tree[idx].value.for_statement.idx_declaration);
+            dfs_print_tree(tree[idx].value.for_statement.idx_conditional_assign_expression);
+            dfs_print_tree(tree[idx].value.for_statement.idx_change_assign_expression);
+            dfs_print_tree(tree[idx].value.for_statement.idx_compound_statement);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::switch_statement:
+            print_json_class_head("switch_statement");
+            dfs_print_tree(tree[idx].value.switch_statement.idx_assign_expression);
+            dfs_print_tree(tree[idx].value.switch_statement.idx_compound_statement);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::do_while_statement:
+            print_json_class_head("do_while_statement");
+            dfs_print_tree(tree[idx].value.do_while_statement.idx_assign_statement);
+            dfs_print_tree(tree[idx].value.do_while_statement.idx_compound_statement);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::continue_statement:
+            print_json_class_head("continue_statement");
+            print_json_class_end();
+            break;
+
+        case ast::node_type::break_statement:
+            print_json_class_head("break_statement");
+            print_json_class_end();
+            break;
+        case ast::node_type::default_label:
+            print_json_class_head("default_label");
+            print_json_class_end();
+            break;
+
+        case ast::node_type::case_label:
+            print_json_class_head("case_lable");
+            dfs_print_tree(tree[idx].value.case_label.const_expression);
             print_json_class_end();
             break;
 

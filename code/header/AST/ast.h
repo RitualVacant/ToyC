@@ -29,6 +29,7 @@ namespace ast {
             definition_struct,
             constant,
             operators,
+            array_declarator,
 
             initial_declarator,
 
@@ -51,7 +52,17 @@ namespace ast {
             postfix_operator,
 
             case_label,
-            default_label
+            default_label,
+
+            if_statement,
+            while_statement,
+            do_while_statement,
+            for_statement,
+            switch_statement,
+            goto_statement,
+            continue_statement,
+            return_statement,
+            break_statement,
     };
     using idx = std::size_t;
     idx const null = 0;
@@ -133,6 +144,11 @@ namespace ast {
 
     };
 
+    struct array_declarator {
+        ast::idx idx_next_array_declarator = ast::null;
+        ast::idx idx_constant = ast::null;
+    };
+
     //constant
 
     struct initializer {
@@ -186,9 +202,9 @@ namespace ast {
     };
     struct postfix_operator {
         token postfix_operator = token::invalid;
-        ast::idx idx_expression = ast::null;
+        ast::idx idx_array_idx_assignment_expression = ast::null;
         ast::idx idx_identifier = ast::null;
-        ast::idx idx_assignment_expression_list = ast::null;
+        ast::idx idx_func_call_assignment_expression_list = ast::null;
         ast::idx idx_next_postfix_operator = ast::null;
     };
 
@@ -232,15 +248,13 @@ namespace ast {
         ast::idx idx_identifier = ast::null;
         ast::idx idx_declarator = ast::null;
         ast::idx idx_arguments_type_list = ast::null;
+        ast::idx idx_array_declarator = ast::null;
     };
 
     struct compound_statement {
         ast::idx idx_block_list = ast::null;
     };
 
-    struct array_declarator {
-
-    };
 
     struct arguments_type_list {
         ast::idx idx_argument_declaration = ast::null;
@@ -264,6 +278,7 @@ namespace ast {
       //token type_block_by_token = token::invalid;
         ast::idx idx_statement = ast::null;
         ast::idx idx_declaration = ast::null;
+        ast::idx idx_next_block = ast::null;
       //ast::idx idx_if_statement = ast::null;
       //ast::idx idx_while_statement = ast::null;
       //ast::idx idx_do_while_statement = ast::null;
@@ -292,21 +307,53 @@ namespace ast {
 
     };
 
-    // statement node
-
-    //break
-    struct break_statement {
-
-    };
-    //continue
-    struct continue_statement {
-
-    };
     //expression
     struct expr_statement {
 
     };
-    //return
+
+    struct if_statement {
+        ast::idx idx_expression = ast::null;
+        ast::idx idx_if_body = ast::null;
+        ast::idx idx_else_body = ast::null;
+    };
+
+    struct else_statement {
+
+    };
+
+    struct while_statement {
+        ast::idx idx_assignment_expression = ast::null;
+        ast::idx idx_compound_statement = ast::null;
+    };
+    struct do_while_statement {
+        ast::idx idx_assign_statement = ast::null;
+        ast::idx idx_compound_statement = ast::null;
+    };
+    struct for_statement {
+        ast::idx idx_declaration = ast::null;
+        ast::idx idx_conditional_assign_expression = ast::null;
+        ast::idx idx_change_assign_expression = ast::null;
+        ast::idx idx_compound_statement = ast::null;
+    };
+
+    struct break_statement {};
+
+    struct switch_statement {
+        ast::idx idx_assign_expression = ast::null;
+        ast::idx idx_compound_statement = ast::null;
+    };
+
+    struct goto_statement {
+        ast::idx idx_identifier = ast::null;
+    };
+
+    struct continue_statement {};
+
+    struct return_statement {
+        ast::idx idx_assignment_expression = ast::null;
+    };
+
     union value {
         ast::type type;
         ast::expression expression;
@@ -343,6 +390,17 @@ namespace ast {
         ast::postfix_operator postfix_operator;
         ast::case_label case_label;
         ast::default_label default_label;
+        ast::if_statement if_statement;
+        ast::else_statement else_statement;
+        ast::while_statement while_statement;
+        ast::do_while_statement do_while_statement;
+        ast::for_statement for_statement;
+        ast::switch_statement switch_statement;
+        ast::goto_statement goto_statement;
+        ast::continue_statement continue_statement;
+        ast::return_statement return_statement;
+        ast::break_statement break_statement;
+        ast::array_declarator array_declarator;
     };
 
     struct node {
