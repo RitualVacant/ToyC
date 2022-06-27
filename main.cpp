@@ -1,8 +1,13 @@
+#include <string>
+
+std::string file_path = "/home/lzj/code/program/script/test/i1";
+std::string output_file_path = "/home/lzj/code/program/script/test/o1";
+
+#pragma once
 #include "./code/parser.cpp"
+#include "./code/build_llvm_ir.cpp"
 #include "fmt/core.h"
 
-//run mode
-//for debug
 enum class mode : char {
     scan  = 's',
     yes   = 'y',
@@ -10,8 +15,10 @@ enum class mode : char {
     quit  = 'q',
     help  = 'h',
     debug = 'd',
-    tree  = 't'
+    tree  = 't',
+    llvm_ir = 'l'
 };
+
 
 //-----------------------------------------------------------------------------------------------
 //dec
@@ -23,9 +30,7 @@ void output_help_information();
 //-----------------------------------------------------------------------------------------------
 //main func
 //-----------------------------------------------------------------------------------------------
-
-std::string file_path = "/home/lzj/code/program/script/test/i1";
-std::string output_file_path = "/home/lzj/code/program/script/test/o1";
+std::vector<std::string> command;
 int main(int argc, char* argv[]) {
     if (argc == 1) {
         fmt::print("path of input file  : ");
@@ -37,7 +42,7 @@ int main(int argc, char* argv[]) {
     else {
         file_path = argv[1];
         output_file_path = argv[2];
-        parser p{file_path, output_file_path, true};
+        parser p;
         fmt::print("\nMyScript {} {}\nDone\n", file_path, output_file_path);
     }
     return 0;
@@ -46,6 +51,10 @@ int main(int argc, char* argv[]) {
 //-----------------------------------------------------------------------------------------------
 //def
 //-----------------------------------------------------------------------------------------------
+void parser_command() {
+
+}
+
 void choose_mode_run() {
     output_help_information();
     mode choose_mode = mode::help;
@@ -61,21 +70,27 @@ void choose_mode_run() {
                 break;
             }
             case mode::tree: {
-                parser p(file_path, output_file_path, false);
+                parser p;
                 p.print_synctax_tree();
                 break;
             }
-            case mode::mid : {
-                parser p(file_path, output_file_path, false);
+            case mode::mid: {
+                parser p;
                 //p.print_mid_code();
                 break;
             }
-            case mode::yes : {
-                parser p(file_path, output_file_path, true);
+            case mode::yes: {
+                parser p;
                 break;
             }
-            case mode::help : {
+            case mode::help: {
                 output_help_information();
+                break;
+            }
+            case mode::llvm_ir: {
+                build_llvm_ir ir;
+                ir.output_llvm_ir();
+                break;
             }
             default:
                 break;
@@ -96,6 +111,7 @@ void output_help_information() {
     fmt::print("(b) \n");
     fmt::print("(c) create       --ctreate the\n");
     fmt::print("(h) help         --print table\n");
+    fmt::print("(l) llvm         --output llvm ir\n");
     fmt::print("(q) quit         --quit\n");
     return;
 }

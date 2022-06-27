@@ -8,7 +8,7 @@
         },
         "initial_declarator": {
             "declarator": {
-                "is_pointer": "false",
+                "is_pointer": "0",
                 "direct_declarator": {
                     "indentifier": {
                         "name": "array"
@@ -25,7 +25,7 @@
             },
             "initial_declarator": {
                 "declarator": {
-                    "is_pointer": "true",
+                    "is_pointer": "1",
                     "direct_declarator": {
                         "indentifier": {
                             "name": "add"
@@ -39,7 +39,7 @@
                                     "store": "empty"
                                 },
                                 "declarator": {
-                                    "is_pointer": "true",
+                                    "is_pointer": "1",
                                     "direct_declarator": {
                                         "indentifier": {
                                             "name": "b"
@@ -54,7 +54,7 @@
                                         "store": "empty"
                                     },
                                     "declarator": {
-                                        "is_pointer": "true",
+                                        "is_pointer": "1",
                                         "direct_declarator": {
                                             "indentifier": {
                                                 "name": "c"
@@ -91,7 +91,7 @@
                                     "expression": {
                                         "assignment_expression": {
                                             "assignment_type": "=",
-                                            "unary_expression": {
+                                            "unary_expression1": {
                                                 "postfix_expression": {
                                                     "constant": {
                                                         "value": "2"
@@ -100,7 +100,7 @@
                                                 "is_sizeof": "false",
                                                 "unary_operator": "void"
                                             },
-                                            "unary_expression1": {
+                                            "unary_expression": {
                                                 "postfix_expression": {
                                                     "postfix_operator": {},
                                                     "indentifier": {

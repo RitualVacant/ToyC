@@ -63,7 +63,8 @@ inline std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
 //    return std::make_tuple(token::class_string, re);
 //}
 
-inline std::tuple<token, std::string> scanning::to_comment() {
+inline std::tuple<token, std::string>
+scanning::to_comment() {
     std::string re;
     get_next_char();
     while (c != '\n') {
@@ -74,7 +75,8 @@ inline std::tuple<token, std::string> scanning::to_comment() {
     return std::make_tuple(token::comment, re);
 }
 
-inline std::tuple<token, std::string> scanning::to_char() {
+inline std::tuple<token, std::string>
+scanning::to_char() {
     get_next_char();
     std::string re;
     re += c;

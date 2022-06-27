@@ -4,14 +4,12 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**"
-                //fmt
-                //"~/software/vcpkg/packages/fmt_x64-linux/include/**"
             ],
             "defines": [],
             "compilerPath": "/bin/g++-11",
-            "cStandard": "gnu17",
-            "cppStandard": "gnu++20",
-            "intelliSenseMode": "linux-gcc-x64",
+            "cStandard": "c17",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "${default}",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],

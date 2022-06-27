@@ -19,9 +19,6 @@
 class parser {
     private:
         //yes or no
-
-        std::string file_path;         //初始化scanning
-        std::string output_file_path;
         bool really_output_asm_code = false;
 
         //std::vector<statement> code;
@@ -124,7 +121,7 @@ class parser {
         int operator_priority(token t);
 
     public:
-        explicit parser(std::string &file_path_, std::string &output_file_path_, bool really_output_asm_code_);
+        explicit parser();
         ~parser();
         parser(parser const&)       = delete;
         parser(parser&&)            = delete;
@@ -134,11 +131,12 @@ class parser {
         void print_mid_code();
         void print_asm_code_code();
         void print_synctax_tree();
+        void move_synctax_tree();
+        std::vector<ast::node> &get_synctax_tree();
 };
 
 
- parser::parser(std::string &file_path_, std::string &output_file_path_, bool really_output_asm_code_)
-: file_path(file_path_), output_file_path(output_file_path_), really_output_asm_code(really_output_asm_code_) {
+ parser::parser() {
     scan.next_token();
     while (!scan.file.eof()) {
         ast::idx idx_root = parser_declaration_or_definition();

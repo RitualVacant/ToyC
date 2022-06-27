@@ -205,6 +205,9 @@ ast::idx synctax_tree::creat_node(ast::node_type node_type) {
     return tree.size() - 1;
 }
 
+std::vector<ast::node> &synctax_tree::get_synctax_tree() {
+    return tree;
+}
 
 void
 synctax_tree::connect(ast::idx idx) {
@@ -484,11 +487,28 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
 
         case ast::node_type::declarator:
             print_json_class_head("declarator");
-            if (tree[idx].value.declarator.is_ptr) {
-                print_json_key_value("is_pointer", "true");
-            }
-            else {
-                print_json_key_value("is_pointer", "false");
+            switch (tree[idx].value.declarator.is_ptr) {
+                case 0:
+                    print_json_key_value("is_pointer", "0");
+                    break;
+                case 1:
+                    print_json_key_value("is_pointer", "1");
+                    break;
+                case 2:
+                    print_json_key_value("is_pointer", "2");
+                    break;
+                case 3:
+                    print_json_key_value("is_pointer", "3");
+                    break;
+                case 4:
+                    print_json_key_value("is_pointer", "4");
+                    break;
+                case 5:
+                    print_json_key_value("is_pointer", "5");
+                    break;
+                default:
+                    fmt::print("pointer level can't over 5");
+                    switch_error
             }
             dfs_print_tree(tree[idx].value.declarator.idx_direct_declarator);
             print_json_class_end();

@@ -226,7 +226,7 @@ namespace ast {
     };
 
     struct declarator {
-        bool is_ptr = false;
+        unsigned short int is_ptr = 0;
         ast::idx idx_direct_declarator = ast::null;
     };
 

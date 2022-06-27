@@ -8,7 +8,7 @@
         },
         "initial_declarator": {
             "declarator": {
-                "is_pointer": "false",
+                "is_pointer": "0",
                 "direct_declarator": {
                     "indentifier": {
                         "name": "array"
@@ -25,7 +25,7 @@
             },
             "initial_declarator": {
                 "declarator": {
-                    "is_pointer": "true",
+                    "is_pointer": "1",
                     "direct_declarator": {
                         "indentifier": {
                             "name": "add"
@@ -39,7 +39,7 @@
                                     "store": "empty"
                                 },
                                 "declarator": {
-                                    "is_pointer": "true",
+                                    "is_pointer": "1",
                                     "direct_declarator": {
                                         "indentifier": {
                                             "name": "b"
@@ -54,7 +54,7 @@
                                         "store": "empty"
                                     },
                                     "declarator": {
-                                        "is_pointer": "true",
+                                        "is_pointer": "1",
                                         "direct_declarator": {
                                             "indentifier": {
                                                 "name": "c"

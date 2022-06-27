@@ -1056,6 +1056,10 @@ parser::print_mid_code() {
 
 //NEW
 
+std::vector<ast::node> &parser::get_synctax_tree() {
+    return tree.get_synctax_tree();
+}
+
 void
 parser::print_synctax_tree() {
     tree.print_tree();
@@ -1218,8 +1222,8 @@ parser::parser_initializer_list() {
 ast::idx
 parser::parser_declarator() {
     ast::idx idx_root = tree.creat_node(ast::node_type::declarator);
-    if (scan.get_current_token() == token::times) {
-        tree[idx_root].value.declarator.is_ptr = true;
+    while (scan.get_current_token() == token::times) {
+        ++tree[idx_root].value.declarator.is_ptr;
         scan.next_token();
     }
     tree[idx_root].value.declarator.idx_direct_declarator = parser_direct_declarator();
