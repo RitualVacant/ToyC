@@ -2,8 +2,8 @@
 #define SIGN_MAP_CPP
 
 #pragma once
-#include "./header/class/symbol_table.h"
-#include "./header/AST/token.h"
+#include "symbol_table.h"
+#include "token.h"
 #include "worng.cpp"
 
 void symbol_table::insert_func(func func_) {

@@ -2,7 +2,8 @@
 #define ASM_FILE_CPP
 
 #pragma once
-#include "./header/class/asm_code.h"
+/*
+#include "asm_code.h"
 #include <sstream>
 
 std::size_t asm_code::sizeof_all_var_in_func(std::size_t now_loc) {
@@ -497,4 +498,5 @@ bool asm_code::register_is_used(register_name name) {
     return register_used[static_cast<std::size_t>(name)];
 }
 
+*/
 #endif

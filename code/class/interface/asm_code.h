@@ -3,7 +3,7 @@
 
 #pragma once
 #include <fstream>
-#include "./../../parser.cpp"
+#include "parser.cpp"
 
 //stack_frame of asm_code
 //in asm_code.h

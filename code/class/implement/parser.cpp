@@ -1,12 +1,12 @@
 #ifndef PARSER_CPP
 #define PARSER_CPP
 
-#include "./header/AST/judge_char.h"
-#include "./header/AST/token.h"
-#include "./header/class/parser.h"
-#include "./header/AST/declataror.h"
-#include "./synctax_tree.cpp"
-#include "./error/inner.cpp"
+#include "judge_char.h"
+#include "token.h"
+#include "parser.h"
+#include "declataror.h"
+#include "synctax_tree.cpp"
+#include "inner.cpp"
 #include "algorithm"
 
 

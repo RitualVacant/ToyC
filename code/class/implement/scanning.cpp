@@ -2,9 +2,9 @@
 #define SCANNING_CPP
 
 #pragma once
-#include "./header/AST/judge_char.h"
-#include "./header/AST/token.h"
-#include "./header/class/scanning.h"
+#include "judge_char.h"
+#include "token.h"
+#include "scanning.h"
 
 inline void scanning::get_next_char() {
     ++column;

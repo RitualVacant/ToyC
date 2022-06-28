@@ -7,13 +7,13 @@
 #include <tuple>
 #include <memory>
 #include <stdlib.h>
-#include "./../AST/token.h"
-#include "./../AST/ast.h"
-#include "./../../scanning.cpp"
-#include "./../../symbol_table.cpp"
-#include "./../../worng.cpp"
-#include "./../../asm_code.cpp"
-#include "./../../synctax_tree.cpp"
+#include "token.h"
+#include "ast.h"
+#include "scanning.cpp"
+#include "symbol_table.cpp"
+#include "worng.cpp"
+#include "asm_code.cpp"
+#include "synctax_tree.cpp"
 
 
 class parser {

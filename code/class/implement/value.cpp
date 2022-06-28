@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
-#include "./header/AST/ast.h"
+#include "ast.h"
 
 enum class value_type : char {
     int_type,
@@ -18,6 +18,7 @@ enum class value_type : char {
     array_type,
 };
 
+/*
 namespace script {
 
     struct block {
@@ -114,4 +115,5 @@ class run_time : public context {
         bool fw;
 }
 
+*/
 #endif

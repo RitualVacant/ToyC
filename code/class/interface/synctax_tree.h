@@ -5,8 +5,8 @@
 #include <string>
 #include <fstream>
 
-#include "./../AST/declataror.h"
-#include "./../AST/ast.h"
+#include "declataror.h"
+#include "ast.h"
 
 
 

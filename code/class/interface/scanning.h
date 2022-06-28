@@ -5,9 +5,9 @@
 #include <string>
 #include <fstream>
 #include <tuple>
-#include "./../AST/token.h"
+#include "token.h"
 #include <stdlib.h>
-#include "./../AST/ast.h"
+#include "ast.h"
 #include "fmt/core.h"
 #include "fmt/color.h"
 

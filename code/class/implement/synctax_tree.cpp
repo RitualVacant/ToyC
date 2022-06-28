@@ -1,10 +1,10 @@
 #ifndef SYNCTAX_TREE_CPP
 #define SYNCTAX_TREE_CPP
 #pragma once
-#include "./header/class/synctax_tree.h"
+#include "synctax_tree.h"
 #include <fmt/core.h>
-#include "./error/inner.cpp"
-#include "./header/AST/declataror.h"
+#include "inner.cpp"
+#include "declataror.h"
 #include <stdlib.h>
 
 synctax_tree::synctax_tree() {

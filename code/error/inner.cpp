@@ -2,7 +2,7 @@
 #define INNER_CPP
 
 #include <string>
-#include "./../scanning.cpp"
+#include "scanning.h"
 
 #define print_token \
 fmt::print(fg(fmt::color::red), "the token is:{} line:{} column:{}\n", scan.get_current_value(), line, column);

@@ -5,9 +5,9 @@
 #include <vector>
 #include <tuple>
 #include <unordered_set>
-#include "./../AST/token.h"
+#include "token.h"
 #include <string>
-#include "./../../parser.cpp"
+#include "parser.h"
 #include <unordered_map>
 
 //类型大小

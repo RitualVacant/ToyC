@@ -3,8 +3,8 @@
 
 #pragma once
 #include <vector>
-#include "./../../parser.cpp"
-#include "./../../synctax_tree.cpp"
+#include "parser.h"
+#include "synctax_tree.cpp"
 
 
 //#include "/usr/include/llvm-12/llvm/ADT/APFloat.h"
@@ -61,7 +61,7 @@ class build_llvm_ir {
         llvm::Type *build_mult_declaration_or_defination(ast::idx idx);
         llvm::Type *build_declaration_or_defination(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         llvm::Type *build_declaration_declarator(ast::idx idx);
-        llvm::BasicBlock *build_compound_statement();
+        llvm::BasicBlock *build_compound_statement(ast::idx idx_compound_statement);
         void build_variable(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         void build_function_or_function_ptr(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         void build_array(ast::idx idx, llvm::Type *ptr_declaration_declarator);

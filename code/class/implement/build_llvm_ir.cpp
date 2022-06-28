@@ -2,8 +2,8 @@
 #define BUILD_LLVM_IR_CPP
 
 #pragma once
-#include "./header/class/build_llvm_ir.h"
-#include "./parser.cpp"
+#include "build_llvm_ir.h"
+#include "parser.cpp"
 
 build_llvm_ir::build_llvm_ir() {
     tree = std::move(parse.get_synctax_tree());
@@ -22,16 +22,14 @@ build_llvm_ir::~build_llvm_ir() {
     module->dump();
 }
 
-void
+llvm::Type *
 build_llvm_ir::build_mult_declaration_or_defination(ast::idx idx) {
     ast::idx idx_declaration_declarator = tree[idx].value.declaration_or_definition.idx_declaration_declarator;
     ast::idx idx_initial_declarator = tree[idx].value.declaration_or_definition.idx_initial_declatator_list;
     ast::idx idx_compound_statement = tree[idx].value.declaration_or_definition.idx_compound_statement;
     llvm::Type *ptr_declaration_declarator = build_declaration_declarator(idx_declaration_declarator);
 
-
     //is function or struct
-
 
     llvm::Type *function;
     for (
@@ -44,9 +42,10 @@ build_llvm_ir::build_mult_declaration_or_defination(ast::idx idx) {
     }
 
     if (idx_compound_statement != ast::null) {
-        build_compound_statement();
+        build_compound_statement(idx_compound_statement);
     }
-    return;
+    //TODO return a true pointer
+    return nullptr;
 }
 
 llvm::Type *
@@ -54,7 +53,7 @@ build_llvm_ir::build_declaration_declarator(ast::idx idx) {
 
 }
 
-void
+llvm::Type *
 build_llvm_ir::build_declaration_or_defination(ast::idx idx, llvm::Type *ptr_declaration_declarator) {
     switch (which_type(idx)) {
         case type_of_def_or_dec::is_var:
@@ -69,7 +68,8 @@ build_llvm_ir::build_declaration_or_defination(ast::idx idx, llvm::Type *ptr_dec
         default:
             switch_error
     }
-    return;
+    //TODO return a true pointer
+    return nullptr;
 }
 
 llvm::SmallVector<llvm::Type*>
