@@ -196,6 +196,7 @@ std::vector<ast::node> &synctax_tree::get_synctax_tree() {
     return tree;
 }
 
+//
 void
 synctax_tree::trans_tree() {
     for (
@@ -214,15 +215,23 @@ synctax_tree::trans_declaration_or_definination(ast::idx idx_declaration_or_defi
     ast::idx idx_start_initial_declarator
     = tree[idx_declaration_or_definition].value.declaration_or_definition.idx_initial_declatator_list;
 
-    ast::idx idx_declaration_or_definition;
+    idx_now_declaration_declarator
+    = tree[idx_declaration_or_definition].value.declaration_or_definition.idx_declaration_declarator;
 
+    idx_now_compound_statement
+    = tree[idx_declaration_or_definition].value.declaration_or_definition.idx_compound_statement;
+
+    //trans will cover the next idx value in declarator
+    //j store next idx before next idx been covered
     for (
-        ast::idx i = 1;
+        ast::idx i = idx_start_initial_declarator,
+                 j = tree[i].value.initial_declarator.idx_next_initial_declarator;
         i != ast::null;
-        i = tree[i].value.initial_declarator.idx_next_initial_declarator
+        i = j
     )
     {
-
+        std::cout << i << ' ' << j << std::endl;
+        trans_each_initial_declarator(i);
     }
     return;
 }
@@ -231,19 +240,28 @@ void
 synctax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
     switch(which_type(idx_initial_declarator)) {
         case type_decl_defi::array_decl:
-            tree[idx_initial_declarator].type = ast::node_type::array_declarator;
+            tree[idx_initial_declarator].type = ast::node_type::array_definintion;
+            trans_to_arrary_definition(idx_initial_declarator);
             break;
         case type_decl_defi::enum_defi:
+            tree[idx_initial_declarator].type = ast::node_type::enum_definition;
+            trans_to_enum_definition(idx_initial_declarator);
             break;
         case type_decl_defi::func_decl:
-            break;
         case type_decl_defi::func_defi:
+            trans_to_function(idx_initial_declarator);
             break;
         case type_decl_defi::struct_decl:
+            tree[idx_initial_declarator].type = ast::node_type::struct_declaration;
+            trans_to_struct_declaration(idx_initial_declarator);
             break;
         case type_decl_defi::struct_defi:
+            tree[idx_initial_declarator].type = ast::node_type::struct_defination;
+            trans_to_struct_definition(idx_initial_declarator);
             break;
         case type_decl_defi::var_decl:
+            tree[idx_initial_declarator].type = ast::node_type::basic_type_declaration;
+            trans_to_basic_type_declaration(idx_initial_declarator);
             break;
         default:
             switch_error
@@ -252,22 +270,20 @@ synctax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
 }
 
 synctax_tree::type_decl_defi
-synctax_tree::which_type(ast::idx idx) {
+synctax_tree::which_type(ast::idx idx_initial_declarator) {
     ast::idx idx_declaration_declarator
-    = tree[idx].value.declaration_or_definition.idx_declaration_declarator;
+    = tree[idx_initial_declarator].value.declaration_or_definition.idx_declaration_declarator;
 
     ast::idx idx_direct_declarator =
         tree[
             tree[
-                tree[
-                    idx
-                ].value.declaration_or_definition.idx_initial_declatator_list
+                idx_initial_declarator
             ].value.initial_declarator.idx_declarator
         ].value.declarator.idx_direct_declarator;
 
     //function
     if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
-        if (tree[idx].value.declaration_or_definition.idx_compound_statement != ast::null) {
+        if (tree[idx_initial_declarator].value.declaration_or_definition.idx_compound_statement != ast::null) {
             return type_decl_defi::func_defi;
         }
         else {
@@ -282,7 +298,7 @@ synctax_tree::which_type(ast::idx idx) {
 
     //struct
     if (tree[idx_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_struct) {
-        if (tree[idx].value.declaration_or_definition.idx_compound_statement != ast::null) {
+        if (tree[idx_initial_declarator].value.declaration_or_definition.idx_compound_statement != ast::null) {
             return type_decl_defi::struct_defi;
         }
         else {
@@ -298,7 +314,64 @@ synctax_tree::which_type(ast::idx idx) {
     return var_decl;
 }
 
+void
+synctax_tree::trans_to_function(ast::idx idx) {
+    if (idx_now_compound_statement != ast::null) {
+        tree[idx].type = ast::node_type::function_definition;
+    }
+    else {
+        tree[idx].type = ast::node_type::function_declaration;
+    }
 
+    ast::idx idx_next_declarator = tree[idx].value.initial_declarator.idx_next_initial_declarator;
+    ast::idx idx_declarator = tree[idx].value.initial_declarator.idx_declarator;
+    ast::idx idx_arguments_type_list =
+        tree[
+            tree [
+                tree[
+                    idx
+                ].value.initial_declarator.idx_declarator
+            ].value.declarator.idx_direct_declarator
+        ].value.direct_declarator.idx_arguments_type_list;
+
+    //return type
+    tree[idx].value.function_declaration.idx_function_return_type
+    = idx_now_declaration_declarator;
+
+    //function body
+    tree[idx].value.function_declaration.idx_function_body
+    = idx_now_compound_statement;
+
+    //next declaration
+    tree[idx].value.function_declaration.idx_next
+    = idx_next_declarator;
+
+    //arguments list
+    tree[idx].value.function_declaration.idx_function_arguments_type_list
+    = idx_arguments_type_list;
+    return;
+}
+
+void
+synctax_tree::trans_to_arrary_definition(ast::idx idx) {
+    return;
+}
+void
+synctax_tree::trans_to_struct_definition(ast::idx idx) {
+    return;
+}
+void
+synctax_tree::trans_to_struct_declaration(ast::idx idx) {
+    return;
+}
+void
+synctax_tree::trans_to_basic_type_declaration(ast::idx idx) {
+    return;
+}
+void
+synctax_tree::trans_to_enum_definition(ast::idx idx) {
+    return;
+}
 
 void
 synctax_tree::connect(ast::idx idx) {
@@ -313,13 +386,14 @@ synctax_tree::connect(ast::idx idx) {
 }
 
 void
-synctax_tree::print_tree() {
+synctax_tree::print_tree(std::string file_path) {
     file.open(file_path, std::fstream::out);
     if (!file.is_open()) {
         fmt::print("can't open file in synctax_tree");
         exit(0);
     }
 
+    file_buffer.clear();
     file_buffer += '{';
     dfs_print_tree(last_root_ptr);
     file_buffer += '}';
@@ -647,8 +721,8 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_head("arguments_declaration");
             dfs_print_tree(tree[idx].value.arguments_declaration.idx_declararion_declarator);
             dfs_print_tree(tree[idx].value.arguments_declaration.idx_declarator);
-            dfs_print_tree(tree[idx].value.arguments_declaration.idx_next_arguments_declatation);
             print_json_class_end();
+            dfs_print_tree(tree[idx].value.arguments_declaration.idx_next_arguments_declatation);
             break;
 
         case ast::node_type::compound_statement:
@@ -799,6 +873,19 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_end();
             break;
         }
+
+
+        //second step node
+        case ast::node_type::function_declaration:
+            print_json_class_head("function_declaration");
+            //TODO will change son node type
+            dfs_print_tree(tree[idx].value.function_declaration.idx_function_name);
+            dfs_print_tree(tree[idx].value.function_declaration.idx_function_arguments_type_list);
+            dfs_print_tree(tree[idx].value.function_declaration.idx_function_return_type);
+            dfs_print_tree(tree[idx].value.function_declaration.idx_function_body);
+            dfs_print_tree(tree[idx].value.function_declaration.idx_next);
+            print_json_class_end();
+            break;
         default: {
             fmt::print(fg(fmt::color::red), "node type : {}\n", tree[idx].type);
             switch_error

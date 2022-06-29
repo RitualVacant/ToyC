@@ -98,10 +98,13 @@ namespace ast {
             break_statement,
 
             //second
-            function_declartion,
+            function_declaration,
             function_definition,
-            arrary_definintion,
-            basic_type_definiton
+            enum_definition,
+            array_definintion,
+            struct_declaration,
+            struct_defination,
+            basic_type_declaration,
 
     };
     using idx = std::size_t;
@@ -404,7 +407,24 @@ namespace ast {
     //those nodes is second step trans nods
     //
 
-    struct function_declartion {
+    struct enum_definition {
+
+        ast::idx idx_next = ast::null;
+    };
+    struct struct_declaration {
+
+        ast::idx idx_next = ast::null;
+    };
+    struct struct_defination {
+
+        ast::idx idx_next = ast::null;
+    };
+    struct basic_type_declaration {
+
+        ast::idx idx_next = ast::null;
+    };
+
+    struct function_declaration {
         ast::idx idx_function_return_type;
         ast::idx idx_function_arguments_type_list;
         ast::idx idx_function_name;
@@ -414,14 +434,17 @@ namespace ast {
 
     struct function_definition {
 
+        ast::idx idx_next = ast::null;
     };
 
     struct arrary_definintion {
 
+        ast::idx idx_next = ast::null;
     };
 
     struct basic_type_definiton {
 
+        ast::idx idx_next = ast::null;
     };
 
 
@@ -472,6 +495,14 @@ namespace ast {
         ast::return_statement return_statement;
         ast::break_statement break_statement;
         ast::array_declarator array_declarator;
+        //trans node
+        ast::function_declaration function_declaration;
+        ast::function_definition function_definition;
+        ast::arrary_definintion arrary_definintion;
+        ast::struct_declaration struct_declaration;
+        ast::struct_defination struct_defination;
+        ast::basic_type_declaration basic_type_declaration;
+        ast::enum_definition enum_definition;
     };
 
     struct node {

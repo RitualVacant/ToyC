@@ -39,10 +39,20 @@ class synctax_tree {
         void print_json_value(char const *value);
         void print_json_class_head(char const *value);
         void print_json_class_end();
-        void trans_tree();
+
+        ast::idx idx_now_declaration_declarator = ast::null;
+        ast::idx idx_now_compound_statement = ast::null;
+
         void trans_declaration_or_definination(ast::idx idx);
         void trans_each_initial_declarator(ast::idx idx);
         type_decl_defi which_type(ast::idx idx);
+
+        void trans_to_function(ast::idx idx);
+        void trans_to_arrary_definition(ast::idx idx);
+        void trans_to_struct_definition(ast::idx idx);
+        void trans_to_struct_declaration(ast::idx idx);
+        void trans_to_basic_type_declaration(ast::idx idx);
+        void trans_to_enum_definition(ast::idx idx);
 
     public:
         synctax_tree();
@@ -53,8 +63,9 @@ class synctax_tree {
         void connect(ast::idx ptr);
         void earse(ast::idx idx);
         ast::node& operator [] (ast::idx ptr);
-        void print_tree();
+        void print_tree(std::string file_path);
         void to_json();
+        void trans_tree();
         std::vector<ast::node> &get_synctax_tree();
 };
 

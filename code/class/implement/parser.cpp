@@ -1065,7 +1065,9 @@ parser::get_synctax_tree() {
 
 void
 parser::print_synctax_tree() {
-    tree.print_tree();
+    tree.print_tree("/home/lzj/code/program/script/test/tree.json");
+    tree.trans_tree();
+    tree.print_tree("/home/lzj/code/program/script/test/tree1.json");
 }
 
 ast::idx

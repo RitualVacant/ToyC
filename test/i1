@@ -1,13 +1,1 @@
-static int array[10][34], a;
-
-int *add (long long *b, int *c) {
-    switch (f) {
-        case 1:
-            f = 2;
-        case 2:
-            f = 4;
-        default:
-            f = b[3 + f][4];
-    }
-    return b;
-}
+int *add(long long *b, int *c);

@@ -106,7 +106,7 @@ void output_help_information() {
     fmt::print("(s) scan         --lexical analysis and output the token\n");
     fmt::print("(y) yes          --get the asm_code file\n");
     fmt::print("(m) mid_code     --get transfrom code\n");
-    fmt::print("(t) tree         --print synctax tree\n");
+    fmt::print("(t) tree         --print synctax tree1\n");
     fmt::print("(b) \n");
     fmt::print("(c) create       --ctreate the\n");
     fmt::print("(h) help         --print table\n");
