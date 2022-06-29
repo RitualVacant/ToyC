@@ -3,11 +3,13 @@
 
 #pragma once
 #include <fstream>
+#include "token.h"
 #include "parser.cpp"
 
 //stack_frame of asm_code
 //in asm_code.h
 //all info
+/*
 struct stack_frame {
     std::string name;
     token class_var;
@@ -104,5 +106,7 @@ asm_code::asm_code(std::string &file_path_, std::vector<statement> &&code_, symb
 asm_code::~asm_code() {
     file.close();
 };
+
+*/
 
 #endif

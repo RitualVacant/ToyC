@@ -2,12 +2,14 @@
 #define ASM_FILE_CPP
 
 #pragma once
-/*
+
 #include "asm_code.h"
 #include <sstream>
 
+
+/*
 std::size_t asm_code::sizeof_all_var_in_func(std::size_t now_loc) {
-    std::size_t sizeof_all_var = 0;
+    std::size_t sizeof_all_var = 0;sizeof_all_var_in_func
     for (int i = now_loc; code[i].symbol != token::func_return; ++i) {
         switch (code[i].symbol) {
             case token::dec_int: {
@@ -50,6 +52,7 @@ std::size_t asm_code::sizeof_all_var_in_func(std::size_t now_loc) {
     }
     return sizeof_all_var;
 }
+
 
 func& asm_code::find_func(std::string name) {
     for (auto &i : table->func_table) {
@@ -499,4 +502,5 @@ bool asm_code::register_is_used(register_name name) {
 }
 
 */
+
 #endif

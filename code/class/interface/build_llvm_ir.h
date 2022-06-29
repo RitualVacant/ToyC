@@ -3,7 +3,7 @@
 
 #pragma once
 #include <vector>
-#include "parser.h"
+#include "parser.cpp"
 #include "synctax_tree.cpp"
 
 
@@ -65,7 +65,7 @@ class build_llvm_ir {
         void build_variable(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         void build_function_or_function_ptr(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         void build_array(ast::idx idx, llvm::Type *ptr_declaration_declarator);
-        void build_funcion_declaration(ast::idx);
+        void build_function_declaration(ast::idx);
         void build_expression_ir();
         void build_assign_expression_ir();
 

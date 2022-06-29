@@ -13,6 +13,39 @@
 namespace ast {
     std::size_t const array_in_struct_size = 25;
 
+    enum class declarator_type : unsigned char {
+        type_empty,
+
+        type_void,
+        type_int,
+        type_short_int,
+        type_char,
+        type_float,
+        type_double,
+        type_long_int,
+        type_long_long_int,
+        type_struct,
+        type_enum
+    };
+
+    enum class declarator_store : unsigned char {
+        store_empty,
+
+        store_extern,
+        store_static,
+        store_typedef
+    };
+
+    enum class declarator_limit : unsigned char {
+        limit_empty,
+        limit_Alignas
+    };
+
+    enum class declarator_sign : bool {
+        sign_signed,
+        sign_unsigned
+    };
+
     enum class node_type {
             type,
             expression,
@@ -63,6 +96,13 @@ namespace ast {
             continue_statement,
             return_statement,
             break_statement,
+
+            //second
+            function_declartion,
+            function_definition,
+            arrary_definintion,
+            basic_type_definiton
+
     };
     using idx = std::size_t;
     idx const null = 0;
@@ -89,7 +129,7 @@ namespace ast {
         ast::idx idx_declaration_declarator = ast::null;
         ast::idx idx_initial_declatator_list = ast::null;
         ast::idx idx_compound_statement = ast::null;
-
+        ast::idx idx_next_declaration_or_definition = ast::null;
     };
 
     struct declare_funcion {
@@ -242,7 +282,12 @@ namespace ast {
         ast::idx idx_initializer = ast::null;
     };
 
-    #include "declataror.h"
+    struct declaration_declarator {
+        declarator_type type = declarator_type::type_empty;
+        declarator_store store = declarator_store::store_empty;
+        declarator_limit limit = declarator_limit::limit_empty;
+        declarator_sign sign = declarator_sign::sign_signed;
+    };
 
     struct direct_declarator {
         ast::idx idx_identifier = ast::null;
@@ -353,6 +398,32 @@ namespace ast {
     struct return_statement {
         ast::idx idx_assignment_expression = ast::null;
     };
+
+
+    //
+    //those nodes is second step trans nods
+    //
+
+    struct function_declartion {
+        ast::idx idx_function_return_type;
+        ast::idx idx_function_arguments_type_list;
+        ast::idx idx_function_name;
+        ast::idx idx_function_body;
+        ast::idx idx_next = ast::null;
+    };
+
+    struct function_definition {
+
+    };
+
+    struct arrary_definintion {
+
+    };
+
+    struct basic_type_definiton {
+
+    };
+
 
     union value {
         ast::type type;

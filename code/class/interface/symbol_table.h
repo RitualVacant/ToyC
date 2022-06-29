@@ -7,7 +7,7 @@
 #include <unordered_set>
 #include "token.h"
 #include <string>
-#include "parser.h"
+#include "parser.cpp"
 #include <unordered_map>
 
 //类型大小

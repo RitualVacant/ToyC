@@ -21,4 +21,8 @@ if (type1 != type2) {\
     exit(0);\
 }\
 
+#define file_fail_open\
+fmt::print(fg(fmt::color::red),file fail to open at ":{}:{}\nin: funcion {}\n", __FILE__, __LINE__, __FUNCTON__);\
+exit(0)
+
 #endif

@@ -30,7 +30,7 @@ class parser {
         scanning     scan  = scanning(file_path);
         synctax_tree tree;
         //std::unique_ptr<asm_code> asm_file  = std::make_unique<asm_code>(asm_code(fil))
-        asm_code* asm_file = nullptr;
+        //asm_code* asm_file = nullptr;
         //
         bool is_func = false;
         bool is_struct = false;
@@ -146,7 +146,7 @@ class parser {
 
 parser::~parser() {
     //delete scan;
-    delete asm_file;
+    //delete asm_file;
 };
 
 #endif

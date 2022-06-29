@@ -1,4 +1,4 @@
-static int array[10][34];
+static int array[10][34], a;
 
 int *add (long long *b, int *c) {
     switch (f) {

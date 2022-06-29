@@ -8,33 +8,20 @@
 #include <stdlib.h>
 
 synctax_tree::synctax_tree() {
-    //if (reserve_tree) tree.reserve(sizeof_synctax_tree_init);
-
+    if (reserve_tree) {
+        tree.reserve(sizeof_synctax_tree_init);
+    }
     tree.push_back({});
 }
 
 synctax_tree::~synctax_tree() {
-    for (std::size_t i = 0, j = 1; j < file_buffer.size(); ++i, ++j) {
-        if (file_buffer[i] == ',' && file_buffer[j] == '}') {
-            file_buffer[i] = '\n';
-        }
-    }
-
-    file.open(file_path, std::fstream::out);
-    if (!file.is_open()) {
-        fmt::print("can't open file in synctax_tree");
-        exit(0);
-    }
-    file << file_buffer;
-    file.close();
-
-    int done = system("python3.8 -m json.tool /home/lzj/code/program/script/test/tree.json /home/lzj/code/program/script/test/tree1.json");
-    if (done == 127) {
-        fmt::print("output json tree");
-    }
-    if (done == -1) {
-        fmt::print("output json tree");
-    }
+    //int done = system("python3.8 -m json.tool /home/lzj/code/program/script/test/tree.json /home/lzj/code/program/script/test/tree1.json");
+    //if (done == 127) {
+    //    fmt::print("output json tree");
+    //}
+    //if (done == -1) {
+    //    fmt::print("output json tree");
+    //}
 }
 
 /*
@@ -210,9 +197,114 @@ std::vector<ast::node> &synctax_tree::get_synctax_tree() {
 }
 
 void
+synctax_tree::trans_tree() {
+    for (
+        ast::idx i = 1;
+        i != ast::null;
+        i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition
+    )
+    {
+        trans_declaration_or_definination(i);
+    }
+    return;
+}
+
+void
+synctax_tree::trans_declaration_or_definination(ast::idx idx_declaration_or_definition) {
+    ast::idx idx_start_initial_declarator
+    = tree[idx_declaration_or_definition].value.declaration_or_definition.idx_initial_declatator_list;
+
+    ast::idx idx_declaration_or_definition;
+
+    for (
+        ast::idx i = 1;
+        i != ast::null;
+        i = tree[i].value.initial_declarator.idx_next_initial_declarator
+    )
+    {
+
+    }
+    return;
+}
+
+void
+synctax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
+    switch(which_type(idx_initial_declarator)) {
+        case type_decl_defi::array_decl:
+            tree[idx_initial_declarator].type = ast::node_type::array_declarator;
+            break;
+        case type_decl_defi::enum_defi:
+            break;
+        case type_decl_defi::func_decl:
+            break;
+        case type_decl_defi::func_defi:
+            break;
+        case type_decl_defi::struct_decl:
+            break;
+        case type_decl_defi::struct_defi:
+            break;
+        case type_decl_defi::var_decl:
+            break;
+        default:
+            switch_error
+    }
+    return;
+}
+
+synctax_tree::type_decl_defi
+synctax_tree::which_type(ast::idx idx) {
+    ast::idx idx_declaration_declarator
+    = tree[idx].value.declaration_or_definition.idx_declaration_declarator;
+
+    ast::idx idx_direct_declarator =
+        tree[
+            tree[
+                tree[
+                    idx
+                ].value.declaration_or_definition.idx_initial_declatator_list
+            ].value.initial_declarator.idx_declarator
+        ].value.declarator.idx_direct_declarator;
+
+    //function
+    if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
+        if (tree[idx].value.declaration_or_definition.idx_compound_statement != ast::null) {
+            return type_decl_defi::func_defi;
+        }
+        else {
+            return type_decl_defi::func_decl;
+        }
+    }
+
+    //array
+    if (tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null) {
+        return type_decl_defi::array_decl;
+    }
+
+    //struct
+    if (tree[idx_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_struct) {
+        if (tree[idx].value.declaration_or_definition.idx_compound_statement != ast::null) {
+            return type_decl_defi::struct_defi;
+        }
+        else {
+            return type_decl_defi::struct_decl;
+        }
+    }
+
+    //enum
+    if (tree[idx_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_enum) {
+        return type_decl_defi::enum_defi;
+    }
+
+    return var_decl;
+}
+
+
+
+void
 synctax_tree::connect(ast::idx idx) {
     if (last_root_ptr != ast::null) {
-        tree[last_root_ptr].next = idx;
+        tree[last_root_ptr].value.declaration_or_definition.idx_next_declaration_or_definition
+        = idx;
     }
     else {
         last_root_ptr = idx;
@@ -222,10 +314,26 @@ synctax_tree::connect(ast::idx idx) {
 
 void
 synctax_tree::print_tree() {
+    file.open(file_path, std::fstream::out);
+    if (!file.is_open()) {
+        fmt::print("can't open file in synctax_tree");
+        exit(0);
+    }
 
     file_buffer += '{';
     dfs_print_tree(last_root_ptr);
     file_buffer += '}';
+
+    //earse extra comma in json file string
+    //just repalce comma with /n
+    for (std::size_t i = 0, j = 1; j < file_buffer.size(); ++i, ++j) {
+        if (file_buffer[i] == ',' && file_buffer[j] == '}') {
+            file_buffer[i] = '\n';
+        }
+    }
+
+    file << file_buffer;
+    file.close();
 
     return;
 }
@@ -519,7 +627,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_declaration_declarator);
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_initial_declatator_list);
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_compound_statement);
-            dfs_print_tree(tree[idx].next);
+            dfs_print_tree(tree[idx].value.declaration_or_definition.idx_next_declaration_or_definition);
             print_json_class_end();
             break;
 

@@ -4,8 +4,8 @@ std::string file_path = "/home/lzj/code/program/script/test/i1";
 std::string output_file_path = "/home/lzj/code/program/script/test/o1";
 
 #pragma once
-#include "./code/class/interface/parser.h"
-#include "./code/class/interface/build_llvm_ir.h"
+#include "parser.cpp"
+#include "build_llvm_ir.cpp"
 #include "fmt/core.h"
 
 enum class mode : char {
@@ -18,7 +18,6 @@ enum class mode : char {
     tree  = 't',
     llvm_ir = 'l'
 };
-
 
 //-----------------------------------------------------------------------------------------------
 //dec

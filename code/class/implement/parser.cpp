@@ -1,13 +1,13 @@
 #ifndef PARSER_CPP
 #define PARSER_CPP
 
+#pragma once
 #include "judge_char.h"
 #include "token.h"
 #include "parser.h"
 #include "declataror.h"
 #include "synctax_tree.cpp"
 #include "inner.cpp"
-#include "algorithm"
 
 
 /*
@@ -1054,9 +1054,12 @@ parser::print_mid_code() {
 }
 */
 
+class parser;
+
 //NEW
 
-std::vector<ast::node> &parser::get_synctax_tree() {
+std::vector<ast::node> &
+parser::get_synctax_tree() {
     return tree.get_synctax_tree();
 }
 
@@ -1175,9 +1178,11 @@ parser::parser_declaration_declarator() {
     return idx_root;
 }
 
+//DROP
+//not creat list node, it's useless
 ast::idx
 parser::parser_initial_declarator_list() {
-    ast::idx idx_root = tree.creat_node(ast::node_type::initial_declarator);
+    ast::idx idx_root = tree.creat_node(ast::node_type::initial_declarator_list);
     tree[idx_root].value.initial_declarator_list.idx_initial_declarator = parser_initial_declarator();
     if (scan.get_current_token() == token::comma) {
         tree[idx_root].value.initial_declarator.idx_next_initial_declarator = parser_initial_declarator_list();
@@ -1197,6 +1202,14 @@ parser::parser_initial_declarator() {
         tree[idx_root].value.initial_declarator.idx_initializer
         = parser_initializer();
     }
+
+    //next initial declarator
+    if (scan.get_current_token() == token::comma) {
+        scan.next_token();   //eat ,
+        tree[idx_root].value.initial_declarator.idx_next_initial_declarator
+        = parser_initial_declarator();
+    }
+
     return idx_root;
 }
 

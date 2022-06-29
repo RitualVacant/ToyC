@@ -5,7 +5,7 @@
 #include "token.h"
 #include <unordered_map>
 
-/*
+
 namespace worng {
     std::unordered_map<token, std::string> const trans_token_to_string {
         {token::invalid, "0"},
@@ -94,6 +94,6 @@ namespace worng {
         return;
     }
 }
-*/
+
 
 #endif

@@ -18,6 +18,16 @@ class synctax_tree {
     private:
         bool reserve_tree = false;
 
+        enum type_decl_defi {
+            func_decl,
+            func_defi,
+            struct_decl,
+            struct_defi,
+            array_decl,
+            var_decl,
+            enum_defi,
+        };
+
         ast::idx last_root_ptr = ast::null;
         std::fstream file;
         std::string file_path{"/home/lzj/code/program/script/test/tree.json"};
@@ -29,6 +39,10 @@ class synctax_tree {
         void print_json_value(char const *value);
         void print_json_class_head(char const *value);
         void print_json_class_end();
+        void trans_tree();
+        void trans_declaration_or_definination(ast::idx idx);
+        void trans_each_initial_declarator(ast::idx idx);
+        type_decl_defi which_type(ast::idx idx);
 
     public:
         synctax_tree();

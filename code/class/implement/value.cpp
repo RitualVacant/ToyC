@@ -1,13 +1,6 @@
 #ifndef VALUE_CPP
 #define VALUE_CPP
-
-#pragma once
-#include <any>
-#include <unordered_map>
-#include <string>
-#include <vector>
-#include "ast.h"
-
+/*
 enum class value_type : char {
     int_type,
     double_type,
@@ -18,7 +11,6 @@ enum class value_type : char {
     array_type,
 };
 
-/*
 namespace script {
 
     struct block {

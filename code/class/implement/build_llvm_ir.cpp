@@ -8,7 +8,7 @@
 build_llvm_ir::build_llvm_ir() {
     tree = std::move(parse.get_synctax_tree());
     context = std::make_unique<llvm::LLVMContext>();
-    module  = std::make_unique<llvm::Module>("text_moudle", *context);
+    module  = std::make_unique<llvm::Module>("text_module", *context);
     builder = std::make_unique<llvm::IRBuilder<>>(*context);
 
     ast::idx idx = 1;
@@ -21,6 +21,7 @@ build_llvm_ir::build_llvm_ir() {
 build_llvm_ir::~build_llvm_ir() {
     module->dump();
 }
+
 
 llvm::Type *
 build_llvm_ir::build_mult_declaration_or_defination(ast::idx idx) {
@@ -50,7 +51,6 @@ build_llvm_ir::build_mult_declaration_or_defination(ast::idx idx) {
 
 llvm::Type *
 build_llvm_ir::build_declaration_declarator(ast::idx idx) {
-
 }
 
 llvm::Type *
@@ -102,14 +102,14 @@ build_llvm_ir::build_arguments_type_list(ast::idx idx_initial_declarator) {
 //2.
 llvm::Type *
 build_llvm_ir::build_argument_declaration(ast::idx idx) {
-    ast::idx idx_declararion_declarator
+    ast::idx idx_declaration_declarator
     = tree[idx].value.arguments_declaration.idx_declararion_declarator;
 
     ast::idx idx_declarator
     = tree[idx].value.arguments_declaration.idx_declarator;
 
     llvm::Type *ptr_declarator = nullptr;
-    switch (tree[idx_declararion_declarator].value.declaration_declarator.type) {
+    switch (tree[idx_declaration_declarator].value.declaration_declarator.type) {
         case ast::declarator_type::type_char:
             ptr_declarator = builder->getInt8Ty();
             break;
@@ -250,7 +250,7 @@ build_llvm_ir::is_union(ast::idx idx) {
 }
 
 void
-build_llvm_ir::build_funcion_declaration(ast::idx) {
+build_llvm_ir::build_function_declaration(ast::idx) {
     llvm::LLVMContext Context;
     llvm::Module *mod = new llvm::Module("sum.ll", Context);
 
