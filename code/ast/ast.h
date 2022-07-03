@@ -412,11 +412,14 @@ namespace ast {
         ast::idx idx_next = ast::null;
     };
     struct struct_declaration {
-
+        ast::idx idx_struct_name = ast::null;
+        ast::idx idx_struct_type = ast::null;
         ast::idx idx_next = ast::null;
     };
     struct struct_defination {
-
+        ast::idx idx_struct_name = ast::null;
+        ast::idx idx_struct_body = ast::null;
+        ast::idx idx_struct_type = ast::null;
         ast::idx idx_next = ast::null;
     };
     struct basic_type_declaration {

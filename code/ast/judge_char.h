@@ -112,6 +112,21 @@ std::unordered_map<token, std::string> const token_to_string {
     {token::key_return,       "key_return"},
     {token::key_break,        "key_break"},
     {token::key_continue,     "key_continue"},
+    {token::key_struct,       "key_struct"},
+    {token::key__Bool,        "key__Bool"},
+    {token::key__Complex,     "key__Complex"},
+    {token::key__Imaginary,   "key__Imaginary"},
+    {token::key_auto,         "key_auto"},
+    {token::key_break,        "key_break"},
+    {token::key_case,         "key_case"},
+    {token::key_enum,         "key_enum"},
+    {token::key_extern,       "key_extern"},
+    {token::key_restrict,     "key_restrict"},
+  //{token::key__Bool},
+  //{token::key__Bool},
+  //{token::key__Bool},
+  //{token::key__Bool},
+  //{token::key__Bool},
 };
 
 //find key words
@@ -142,6 +157,7 @@ std::unordered_map<std::string, token> const key_words {
     {"case",     token::key_case},
     {"default",  token::key_default},
 
+    {"struct",   token::key_struct},
     {"auto",     token::key_auto},
     {"break",    token::key_break},
     {"case",     token::key_case},

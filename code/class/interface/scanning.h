@@ -66,11 +66,20 @@ class scanning {
         //测试词法分析器函数
         void token_output() {
             while (!file.eof()) {
-                auto &&a = next_token();
-                if (token_to_string.find(std::get<0>(a)) == token_to_string.end())
+                auto a = next_token();
+                if (token_to_string.find(std::get<0>(a)) == token_to_string.end()) {
                     fmt::print("[token:] identif   [string:] \"{}\"\n", std::get<1>(a));
-                else
+                }
+                else if (token_to_string.find(std::get<0>(a)) == token_to_string.end()
+                    && key_words.find(std::get<1>(a)) != key_words.end()
+                )
+                {
+                    fmt::print("can't print token cause it is not involed in token_to_string");
+                    exit(0);
+                }
+                else {
                     fmt::print("[token:] {:10} [string:] \"{}\"\n", token_to_string.at(std::get<0>(a)), std::get<1>(a));
+                }
             }
         }
 };

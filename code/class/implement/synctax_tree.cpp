@@ -252,11 +252,9 @@ synctax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
             trans_to_function(idx_initial_declarator);
             break;
         case type_decl_defi::struct_decl:
-            tree[idx_initial_declarator].type = ast::node_type::struct_declaration;
             trans_to_struct_declaration(idx_initial_declarator);
             break;
         case type_decl_defi::struct_defi:
-            tree[idx_initial_declarator].type = ast::node_type::struct_defination;
             trans_to_struct_definition(idx_initial_declarator);
             break;
         case type_decl_defi::var_decl:
@@ -271,8 +269,6 @@ synctax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
 
 synctax_tree::type_decl_defi
 synctax_tree::which_type(ast::idx idx_initial_declarator) {
-    ast::idx idx_declaration_declarator
-    = tree[idx_initial_declarator].value.declaration_or_definition.idx_declaration_declarator;
 
     ast::idx idx_direct_declarator =
         tree[
@@ -297,8 +293,8 @@ synctax_tree::which_type(ast::idx idx_initial_declarator) {
     }
 
     //struct
-    if (tree[idx_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_struct) {
-        if (tree[idx_initial_declarator].value.declaration_or_definition.idx_compound_statement != ast::null) {
+    if (tree[idx_now_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_struct) {
+        if (idx_now_compound_statement != ast::null) {
             return type_decl_defi::struct_defi;
         }
         else {
@@ -307,7 +303,7 @@ synctax_tree::which_type(ast::idx idx_initial_declarator) {
     }
 
     //enum
-    if (tree[idx_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_enum) {
+    if (tree[idx_now_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_enum) {
         return type_decl_defi::enum_defi;
     }
 
@@ -353,15 +349,48 @@ synctax_tree::trans_to_function(ast::idx idx) {
 }
 
 void
-synctax_tree::trans_to_arrary_definition(ast::idx idx) {
+synctax_tree::trans_to_arrary_definition(ast::idx idx_initial_declarator) {
+    tree[idx_initial_declarator].type = ast::node_type::struct_declaration;
+
+    //type of struct
+    tree[idx_initial_declarator].value.struct_defination.idx_struct_type
+    = idx_now_declaration_declarator;
+
+    //struct idnentifer
+    tree[idx_initial_declarator].value.struct_defination.idx_struct_name
+    =   tree[
+            tree[
+                tree[idx_initial_declarator].value.initial_declarator.idx_declarator
+            ].value.declarator.idx_direct_declarator
+        ].value.direct_declarator.idx_identifier;
+
     return;
 }
 void
-synctax_tree::trans_to_struct_definition(ast::idx idx) {
+synctax_tree::trans_to_struct_definition(ast::idx idx_initial_declarator) {
+    tree[idx_initial_declarator].type = ast::node_type::struct_defination;
+
+    //type of struct
+    tree[idx_initial_declarator].value.struct_defination.idx_struct_type
+    = idx_now_declaration_declarator;
+
+    //struct body
+    tree[idx_initial_declarator].value.struct_defination.idx_struct_body
+    = idx_now_compound_statement;
+
+    //struct idnentifer
+    tree[idx_initial_declarator].value.struct_defination.idx_struct_name
+    =   tree[
+            tree[
+                tree[idx_initial_declarator].value.initial_declarator.idx_declarator
+            ].value.declarator.idx_direct_declarator
+        ].value.direct_declarator.idx_identifier;
+
     return;
 }
 void
-synctax_tree::trans_to_struct_declaration(ast::idx idx) {
+synctax_tree::trans_to_struct_declaration(ast::idx idx_initial_declarator) {
+    tree[idx_initial_declarator].type = ast::node_type::struct_declaration;
     return;
 }
 void
@@ -578,10 +607,10 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                 default:
                     switch_error
             }
-        dfs_print_tree(tree[idx].value.binary_expression.idx_left_node);
-        dfs_print_tree(tree[idx].value.binary_expression.idx_right_node);
-        print_json_class_end();
-        break;
+            dfs_print_tree(tree[idx].value.binary_expression.idx_left_node);
+            dfs_print_tree(tree[idx].value.binary_expression.idx_right_node);
+            print_json_class_end();
+            break;
 
         case ast::node_type::expression:
             print_json_class_head("expression");
@@ -805,6 +834,28 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_end();
             break;
 
+        //TODO
+        case ast::node_type::basic_type_declaration:
+            print_json_class_head("basic_type_declaration");
+            dfs_print_tree(tree[idx].value.basic_type_declaration.idx_next);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::struct_declaration:
+            print_json_class_head("struct_declaration");
+            dfs_print_tree(tree[idx].value.struct_defination.idx_struct_type);
+            dfs_print_tree(tree[idx].value.struct_defination.idx_struct_name);
+            print_json_class_end();
+            break;
+
+        case ast::node_type::struct_defination:
+            print_json_class_head("struct_defination");
+            dfs_print_tree(tree[idx].value.struct_defination.idx_struct_type);
+            dfs_print_tree(tree[idx].value.struct_defination.idx_struct_name);
+            dfs_print_tree(tree[idx].value.struct_defination.idx_struct_body);
+            print_json_class_end();
+            break;
+
         case ast::node_type::declaration_declarator: {
             print_json_class_head("declaration_declarator");
             auto &decl = tree[idx].value.declaration_declarator;
@@ -841,8 +892,11 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                 case ast::declarator_type::type_void:
                     print_json_value("void");
                     break;
-                default:
+                case ast::declarator_type::type_struct:
+                    print_json_value("struct");
                     break;
+                default:
+                    switch_error
             }
 
             print_json_key("limit");

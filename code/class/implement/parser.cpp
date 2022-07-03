@@ -1112,6 +1112,9 @@ parser::parser_declaration_declarator() {
         ) {
         switch(scan.get_current_token()) {
             //TODO:all type
+            case token::key_struct:
+                node_declarator.type = ast::declarator_type::type_struct;
+                break;
             case token::key_auto:
             case token::key_register:
                 break;
@@ -1284,8 +1287,10 @@ parser::parser_direct_declarator() {
                 = parser_array_declarator();
                 break;
             }
+            //case not parser in this function
             case token::assign:
             case token::r_par:
+            case token::l_big_par:
             case token::comma:
             case token::end:
                 break;
