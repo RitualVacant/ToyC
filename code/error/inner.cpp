@@ -4,6 +4,10 @@
 #include <string>
 #include "scanning.h"
 
+#define todo \
+fmt::print(fg(fmt::color::red), "haven't finshed part at :{}:{}\n", __FILE__, __LINE__);\
+exit(0);
+
 #define print_token \
 fmt::print(fg(fmt::color::red), "the token is:{} line:{} column:{}\n", scan.get_current_value(), line, column);
 
@@ -19,10 +23,11 @@ exit(0);
 if (type1 != type2) {\
     fmt::print(fg(fmt::color::red), "node type is worong at: {}:{}", __FILE__, __LINE__);\
     exit(0);\
-}\
+}
 
-#define file_fail_open\
-fmt::print(fg(fmt::color::red),file fail to open at ":{}:{}\nin: funcion {}\n", __FILE__, __LINE__, __FUNCTON__);\
-exit(0)
+#define file_fail_open \
+fmt::print(fg(fmt::color::red),"file fail to open at :{}:{}\nin: funcion {}\n", __FILE__, __LINE__, __FUNCTON__);\
+exit(0);
+
 
 #endif

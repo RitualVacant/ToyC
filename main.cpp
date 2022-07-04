@@ -50,9 +50,6 @@ int main(int argc, char* argv[]) {
 //-----------------------------------------------------------------------------------------------
 //def
 //-----------------------------------------------------------------------------------------------
-void parser_command() {
-
-}
 
 void choose_mode_run() {
     output_help_information();
@@ -101,8 +98,6 @@ void choose_mode_run() {
 void output_help_information() {
     fmt::print("\n");
     fmt::print("size of node: {}B\n", sizeof(ast::node));
-    fmt::print("size of node.value: {}B\n", sizeof(ast::node::value));
-    fmt::print("size of node.next: {}B\n", sizeof(ast::node::next));
     fmt::print("(s) scan         --lexical analysis and output the token\n");
     fmt::print("(y) yes          --get the asm_code file\n");
     fmt::print("(m) mid_code     --get transfrom code\n");

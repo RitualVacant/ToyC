@@ -11,20 +11,16 @@ build_llvm_ir::build_llvm_ir() {
     module  = std::make_unique<llvm::Module>("text_module", *context);
     builder = std::make_unique<llvm::IRBuilder<>>(*context);
 
-    ast::idx idx = 1;
-    while (idx != ast::null) {
-        build_mult_declaration_or_defination(idx);
-        idx = tree[idx].next;
-    }
+    build_mult_declaration_or_defination();
 }
 
 build_llvm_ir::~build_llvm_ir() {
-    module->dump();
 }
 
 
 llvm::Type *
-build_llvm_ir::build_mult_declaration_or_defination(ast::idx idx) {
+build_llvm_ir::build_mult_declaration_or_defination() {
+    /*
     ast::idx idx_declaration_declarator = tree[idx].value.declaration_or_definition.idx_declaration_declarator;
     ast::idx idx_initial_declarator = tree[idx].value.declaration_or_definition.idx_initial_declatator_list;
     ast::idx idx_compound_statement = tree[idx].value.declaration_or_definition.idx_compound_statement;
@@ -47,6 +43,108 @@ build_llvm_ir::build_mult_declaration_or_defination(ast::idx idx) {
     }
     //TODO return a true pointer
     return nullptr;
+    */
+
+    for (
+        ast::idx i{1};
+        i != ast::null;
+        i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition
+    )
+    {
+        std::cout << "i" << i;
+        for (
+            ast::idx j = tree[i].value.declaration_or_definition.idx_initial_declatator_list;
+            j != ast::null;
+        )
+        {
+            std::cout << "j" << j;
+            switch (tree[j].type) {
+                case ast::node_type::function_declaration:
+                    build_function_declaration(j);
+                    j = tree[j].value.function_declaration.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::function_definition:
+                    todo
+                    j = tree[j].value.function_definition.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::struct_declaration:
+                    todo
+                    j = tree[j].value.struct_declaration.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::struct_defination:
+                    todo
+                    j = tree[j].value.struct_defination.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::array_declarator:
+                    todo
+                    //goto out;
+                    break;
+                default:
+                    fmt::print(fg(fmt::color::red), "node type is {}\n", tree[j].type);
+                    switch_error
+            }
+        }
+    }
+
+    return nullptr;
+
+    for (
+        ast::idx idx_decl_defi{1};
+        idx_decl_defi != ast::null;
+        idx_decl_defi = tree[idx_decl_defi].value.declaration_or_definition.idx_next_declaration_or_definition
+    )
+    {
+      //if (idx_decl_defi  != ast::null) {
+      //    std::cout << std::endl;
+      //    std::cout << idx_decl_defi << "!=" << ast::null;
+      //    //std::cout << typeid(i).name() << std::endl;
+      //    //std::cout << typeid(ast::null).name() << std::endl;
+      //    //std::cout << (typeid(i) == typeid(ast::null)) << std::endl;
+      //    if (idx_decl_defi == ast::null) {
+      //        std::cout << idx_decl_defi << "==" << ast::null << std::endl << std::endl;
+      //    }
+      //}
+        for (
+            ast::idx j = tree[idx_decl_defi].value.declaration_or_definition.idx_initial_declatator_list;
+            j != ast::null;
+        )
+        {
+            //std::cout << ' ' << j << std::endl;
+            switch (tree[j].type) {
+                case ast::node_type::function_declaration:
+                    build_function_declaration(j);
+                    j = tree[j].value.function_declaration.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::function_definition:
+                    todo
+                    j = tree[j].value.function_definition.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::struct_declaration:
+                    todo
+                    j = tree[j].value.struct_declaration.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::struct_defination:
+                    todo
+                    j = tree[j].value.struct_defination.idx_next;
+                    //goto out;
+                    break;
+                case ast::node_type::array_declarator:
+                    todo
+                    //goto out;
+                    break;
+                default:
+                    fmt::print(fg(fmt::color::red), "node type is {}\n", tree[j].type);
+                    switch_error
+            }
+        }
+    }
 }
 
 llvm::Type *
@@ -205,7 +303,7 @@ build_llvm_ir::is_func_decl(ast::idx idx) {
 
 void
 build_llvm_ir::output_llvm_ir() {
-    //module->dump();
+    module->dump();
     return;
 }
 
@@ -249,8 +347,50 @@ build_llvm_ir::is_union(ast::idx idx) {
 
 }
 
+
+
 void
-build_llvm_ir::build_function_declaration(ast::idx) {
+build_llvm_ir::build_function_declaration(ast::idx idx_function_declaration) {
+    std::cout << "build_function_declaration" << std::endl;
+    //fmt::print("build_function_declaration\n");
+    //get function return type
+
+    /*
+    llvm::Type *return_type = build_declaration_declarator(
+        tree[idx_function_declaration].value.function_declaration.idx_function_return_type
+    );
+
+    ast::idx idx_function_declarator
+    = tree[idx_function_declaration].value.function_declaration.idx_function_declarator;
+
+    for (
+        auto i = tree[idx_function_declarator].value.declarator.is_ptr;
+        i > 0;
+        --i
+    )
+    {
+        return_type = llvm::PointerType::get(return_type, 0);
+        //return_type = builder->getPtrTy(return_type, 0);
+    }
+
+    //get function type list
+    auto argument_type_list = build_arguments_type_list(
+        tree[idx_function_declaration].value.function_declaration.idx_function_arguments_type_list
+    );
+
+    //get function name
+    char const *func_name
+    = tree[
+        tree[idx_function_declaration].value.function_declaration.idx_function_name
+    ].value.identifier.name;
+
+    //create funcion
+    llvm::FunctionType *ptr_func = llvm::FunctionType::get(return_type, argument_type_list, false);
+    llvm::Function *ptr_func_ = llvm::Function::Create(ptr_func, llvm::Function::ExternalLinkage, func_name, *module);
+    */
+
+
+    /*
     llvm::LLVMContext Context;
     llvm::Module *mod = new llvm::Module("sum.ll", Context);
 
@@ -295,6 +435,7 @@ build_llvm_ir::build_function_declaration(ast::idx) {
     //mod->print();
 
     return;
+    */
 }
 
 #endif

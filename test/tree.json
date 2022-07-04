@@ -1,16 +1,59 @@
-{"declaration_or_definition":{"declaration_declarator":{"sign":"true","type":"struct","limit":"empty","store":"empty"
-},"initial_declarator":{"declarator":{"is_pointer":"0","direct_declarator":{"indentifier":{"name":"node"
-}
-}
-}
-},"compound_statement":{"block":{"declaration_or_definition":{"declaration_declarator":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"initial_declarator":{"declarator":{"is_pointer":"2","direct_declarator":{"indentifier":{"name":"a"
-}
-}
-}
-}
-}
-}
-}
-}
+{
+    "declaration_or_definition": {
+        "declaration_declarator": {
+            "sign": "true",
+            "type": "int",
+            "limit": "empty",
+            "store": "empty"
+        },
+        "initial_declarator": {
+            "declarator": {
+                "is_pointer": "0",
+                "direct_declarator": {
+                    "declarator": {
+                        "is_pointer": "1",
+                        "direct_declarator": {
+                            "indentifier": {
+                                "name": "f1"
+                            }
+                        }
+                    },
+                    "arguments_type_list": {
+                        "arguments_declaration": {
+                            "declaration_declarator": {
+                                "sign": "true",
+                                "type": "int",
+                                "limit": "empty",
+                                "store": "empty"
+                            },
+                            "declarator": {
+                                "is_pointer": "0",
+                                "direct_declarator": {
+                                    "indentifier": {
+                                        "name": "a"
+                                    }
+                                }
+                            }
+                        },
+                        "arguments_declaration": {
+                            "declaration_declarator": {
+                                "sign": "true",
+                                "type": "double",
+                                "limit": "empty",
+                                "store": "empty"
+                            },
+                            "declarator": {
+                                "is_pointer": "0",
+                                "direct_declarator": {
+                                    "indentifier": {
+                                        "name": "b"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

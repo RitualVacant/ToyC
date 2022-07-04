@@ -108,7 +108,7 @@ namespace ast {
 
     };
     using idx = std::size_t;
-    idx const null = 0;
+    idx const null{0};
 
     //-------------------------------------------
 
@@ -429,6 +429,7 @@ namespace ast {
 
     struct function_declaration {
         ast::idx idx_function_return_type;
+        ast::idx idx_function_declarator;
         ast::idx idx_function_arguments_type_list;
         ast::idx idx_function_name;
         ast::idx idx_function_body;

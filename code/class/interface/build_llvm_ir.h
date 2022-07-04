@@ -58,7 +58,7 @@ class build_llvm_ir {
         bool is_var(ast::idx);
 
 
-        llvm::Type *build_mult_declaration_or_defination(ast::idx idx);
+        llvm::Type *build_mult_declaration_or_defination();
         llvm::Type *build_declaration_or_defination(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         llvm::Type *build_declaration_declarator(ast::idx idx);
         llvm::BasicBlock *build_compound_statement(ast::idx idx_compound_statement);

@@ -193,12 +193,14 @@ ast::idx synctax_tree::creat_node(ast::node_type node_type) {
 }
 
 std::vector<ast::node> &synctax_tree::get_synctax_tree() {
+    trans_tree();
     return tree;
 }
 
 //
 void
 synctax_tree::trans_tree() {
+    print_trans_tree = true;
     for (
         ast::idx i = 1;
         i != ast::null;
@@ -230,7 +232,7 @@ synctax_tree::trans_declaration_or_definination(ast::idx idx_declaration_or_defi
         i = j
     )
     {
-        std::cout << i << ' ' << j << std::endl;
+        //std::cout << i << ' ' << j << std::endl;
         trans_each_initial_declarator(i);
     }
     return;
@@ -329,6 +331,10 @@ synctax_tree::trans_to_function(ast::idx idx) {
                 ].value.initial_declarator.idx_declarator
             ].value.declarator.idx_direct_declarator
         ].value.direct_declarator.idx_arguments_type_list;
+
+    //function type and return type
+    tree[idx].value.function_declaration.idx_function_declarator
+    = idx_declarator;
 
     //return type
     tree[idx].value.function_declaration.idx_function_return_type
@@ -671,15 +677,18 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_head("definition_struct");
             print_json_class_end();
             break;
+
         case ast::node_type::constant:
             print_json_class_head("constant");
             print_json_key_value("value", tree[idx].value.constant.const_value);
             print_json_class_end();
             break;
+
         case ast::node_type::operators:
             print_json_class_head("operators");
             print_json_class_end();
             break;
+
         case ast::node_type::initial_declarator:
             print_json_class_head("initial_declarator");
             dfs_print_tree(tree[idx].value.initial_declarator.idx_declarator);
@@ -692,7 +701,17 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_head("direct_declarator");
             dfs_print_tree(tree[idx].value.direct_declarator.idx_identifier);
             dfs_print_tree(tree[idx].value.direct_declarator.idx_declarator);
-            dfs_print_tree(tree[idx].value.direct_declarator.idx_arguments_type_list);
+            dfs_print_tree(tree[idx].value.direct_declarator.idx_array_declarator);
+            if (!print_trans_tree) {
+                dfs_print_tree(tree[idx].value.direct_declarator.idx_arguments_type_list);
+            }
+            print_json_class_end();
+            break;
+
+        case ast::node_type::array_declarator:
+            print_json_class_head("array_declarator");
+            dfs_print_tree(tree[idx].value.array_declarator.idx_constant);
+            dfs_print_tree(tree[idx].value.array_declarator.idx_next_array_declarator);
             print_json_class_end();
             break;
 
@@ -727,9 +746,11 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
 
         case ast::node_type::declaration_or_definition:
             print_json_class_head("declaration_or_definition");
-            dfs_print_tree(tree[idx].value.declaration_or_definition.idx_declaration_declarator);
+            if (!print_trans_tree) {
+                dfs_print_tree(tree[idx].value.declaration_or_definition.idx_declaration_declarator);
+                dfs_print_tree(tree[idx].value.declaration_or_definition.idx_compound_statement);
+            }
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_initial_declatator_list);
-            dfs_print_tree(tree[idx].value.declaration_or_definition.idx_compound_statement);
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_next_declaration_or_definition);
             print_json_class_end();
             break;
@@ -770,8 +791,8 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_head("block");
             dfs_print_tree(tree[idx].value.block.idx_declaration);
             dfs_print_tree(tree[idx].value.block.idx_statement);
-            dfs_print_tree(tree[idx].value.block.idx_next_block);
             print_json_class_end();
+            dfs_print_tree(tree[idx].value.block.idx_next_block);
             break;
 
         case ast::node_type::postfix_operator:
@@ -934,14 +955,15 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_head("function_declaration");
             //TODO will change son node type
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_name);
-            dfs_print_tree(tree[idx].value.function_declaration.idx_function_arguments_type_list);
+            dfs_print_tree(tree[idx].value.function_declaration.idx_function_declarator);
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_return_type);
+            dfs_print_tree(tree[idx].value.function_declaration.idx_function_arguments_type_list);
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_body);
             dfs_print_tree(tree[idx].value.function_declaration.idx_next);
             print_json_class_end();
             break;
         default: {
-            fmt::print(fg(fmt::color::red), "node type : {}\n", tree[idx].type);
+            fmt::print(fg(fmt::color::red), "add node type : {}\n", tree[idx].type);
             switch_error
         }
     }

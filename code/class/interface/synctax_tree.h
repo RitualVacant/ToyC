@@ -17,6 +17,7 @@ std::size_t const sizeof_synctax_tree_init = 100000;
 class synctax_tree {
     private:
         bool reserve_tree = false;
+        bool print_trans_tree = false;
 
         enum type_decl_defi {
             func_decl,
