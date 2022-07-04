@@ -323,6 +323,29 @@ synctax_tree::trans_to_function(ast::idx idx) {
 
     ast::idx idx_next_declarator = tree[idx].value.initial_declarator.idx_next_initial_declarator;
     ast::idx idx_declarator = tree[idx].value.initial_declarator.idx_declarator;
+    ast::idx idx_identifier;
+
+    //because the function pointer
+    for (ast::idx i = idx_declarator; tree[i].type != ast::node_type::identifier;) {
+        switch (tree[i].type) {
+            case ast::node_type::declarator:
+                i = tree[i].value.declarator.idx_direct_declarator;
+                break;
+            case ast::node_type::direct_declarator:
+                if (tree[i].value.direct_declarator.idx_identifier != ast::null) {
+                    i = tree[i].value.direct_declarator.idx_identifier;
+                    idx_identifier = i;
+                }
+                else {
+                    i = tree[i].value.direct_declarator.idx_declarator;
+                }
+                break;
+            default:
+                fmt::print(fg(fmt::color::red), "node type {}\n", tree[i].type);
+                switch_error
+        }
+    }
+
     ast::idx idx_arguments_type_list =
         tree[
             tree [
@@ -331,6 +354,14 @@ synctax_tree::trans_to_function(ast::idx idx) {
                 ].value.initial_declarator.idx_declarator
             ].value.declarator.idx_direct_declarator
         ].value.direct_declarator.idx_arguments_type_list;
+
+    //
+    //cover
+    //
+
+    //function name
+    tree[idx].value.function_declaration.idx_function_name
+    = idx_identifier;
 
     //function type and return type
     tree[idx].value.function_declaration.idx_function_declarator
@@ -953,7 +984,6 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
         //second step node
         case ast::node_type::function_declaration:
             print_json_class_head("function_declaration");
-            //TODO will change son node type
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_name);
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_declarator);
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_return_type);

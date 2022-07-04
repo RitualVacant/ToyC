@@ -91,64 +91,28 @@ build_llvm_ir::build_mult_declaration_or_defination() {
     }
 
     return nullptr;
-
-    for (
-        ast::idx idx_decl_defi{1};
-        idx_decl_defi != ast::null;
-        idx_decl_defi = tree[idx_decl_defi].value.declaration_or_definition.idx_next_declaration_or_definition
-    )
-    {
-      //if (idx_decl_defi  != ast::null) {
-      //    std::cout << std::endl;
-      //    std::cout << idx_decl_defi << "!=" << ast::null;
-      //    //std::cout << typeid(i).name() << std::endl;
-      //    //std::cout << typeid(ast::null).name() << std::endl;
-      //    //std::cout << (typeid(i) == typeid(ast::null)) << std::endl;
-      //    if (idx_decl_defi == ast::null) {
-      //        std::cout << idx_decl_defi << "==" << ast::null << std::endl << std::endl;
-      //    }
-      //}
-        for (
-            ast::idx j = tree[idx_decl_defi].value.declaration_or_definition.idx_initial_declatator_list;
-            j != ast::null;
-        )
-        {
-            //std::cout << ' ' << j << std::endl;
-            switch (tree[j].type) {
-                case ast::node_type::function_declaration:
-                    build_function_declaration(j);
-                    j = tree[j].value.function_declaration.idx_next;
-                    //goto out;
-                    break;
-                case ast::node_type::function_definition:
-                    todo
-                    j = tree[j].value.function_definition.idx_next;
-                    //goto out;
-                    break;
-                case ast::node_type::struct_declaration:
-                    todo
-                    j = tree[j].value.struct_declaration.idx_next;
-                    //goto out;
-                    break;
-                case ast::node_type::struct_defination:
-                    todo
-                    j = tree[j].value.struct_defination.idx_next;
-                    //goto out;
-                    break;
-                case ast::node_type::array_declarator:
-                    todo
-                    //goto out;
-                    break;
-                default:
-                    fmt::print(fg(fmt::color::red), "node type is {}\n", tree[j].type);
-                    switch_error
-            }
-        }
-    }
 }
 
 llvm::Type *
 build_llvm_ir::build_declaration_declarator(ast::idx idx) {
+    switch (tree[idx].value.declaration_declarator.type) {
+        case ast::declarator_type::type_char:
+            return builder->getInt8Ty();
+        case ast::declarator_type::type_double:
+            return builder->getDoubleTy();
+        case ast::declarator_type::type_float:
+            return builder->getFloatTy();
+        case ast::declarator_type::type_short_int:
+            return builder->getInt16Ty();
+        case ast::declarator_type::type_int:
+        case ast::declarator_type::type_long_int:
+            return builder->getInt32Ty();
+        case ast::declarator_type::type_long_long_int:
+            return builder->getInt64Ty();
+        case ast::declarator_type::type_void:
+        default:
+            switch_error
+    }
 }
 
 llvm::Type *
@@ -171,23 +135,17 @@ build_llvm_ir::build_declaration_or_defination(ast::idx idx, llvm::Type *ptr_dec
 }
 
 llvm::SmallVector<llvm::Type*>
-build_llvm_ir::build_arguments_type_list(ast::idx idx_initial_declarator) {
-    ast::idx idx_argu_type_list
-    = tree[
-        tree[
-            tree[
-                 idx_initial_declarator
-            ].value.initial_declarator.idx_declarator
-        ].value.declarator.idx_direct_declarator
-    ].value.direct_declarator.idx_arguments_type_list;
+build_llvm_ir::build_arguments_type_list(ast::idx idx_arguemnt_type_list) {
 
-    node_type_wrong(tree[idx_argu_type_list].type, ast::node_type::arguments_type_list)
+    node_type_wrong(tree[idx_arguemnt_type_list].type, ast::node_type::arguments_type_list)
 
     //traverse each argument declatation in the arguments type list
     llvm::SmallVector<llvm::Type*> arguments_type_list;
-    for (ast::idx i = tree[idx_argu_type_list].value.arguments_type_list.idx_argument_declaration;
-        tree[i].value.arguments_declaration.idx_next_arguments_declatation != ast::null;
-        i = tree[i].value.arguments_declaration.idx_next_arguments_declatation)
+    for (
+        ast::idx i = tree[idx_arguemnt_type_list].value.arguments_type_list.idx_argument_declaration;
+        i != ast::null;
+        i = tree[i].value.arguments_declaration.idx_next_arguments_declatation
+    )
     {
         arguments_type_list.push_back(build_argument_declaration(i));
     }
@@ -206,7 +164,9 @@ build_llvm_ir::build_argument_declaration(ast::idx idx) {
     ast::idx idx_declarator
     = tree[idx].value.arguments_declaration.idx_declarator;
 
-    llvm::Type *ptr_declarator = nullptr;
+    //TODO add pointer
+    llvm::Type *ptr_type_argument = build_declaration_declarator(idx_declaration_declarator);
+    /*
     switch (tree[idx_declaration_declarator].value.declaration_declarator.type) {
         case ast::declarator_type::type_char:
             ptr_declarator = builder->getInt8Ty();
@@ -236,20 +196,9 @@ build_llvm_ir::build_argument_declaration(ast::idx idx) {
         default:
             switch_error
     }
+    */
 
-    //TODO
-    //pointer
-    goto __seg;
-
-    for (auto i = tree[idx_declarator].value.declarator.is_ptr; i > 0; --i) {
-
-    }
-
-    __seg:
-
-    //TODO
-    //return type
-    return ptr_declarator;
+    return ptr_type_argument;
 }
 
 //TODO
@@ -351,11 +300,8 @@ build_llvm_ir::is_union(ast::idx idx) {
 
 void
 build_llvm_ir::build_function_declaration(ast::idx idx_function_declaration) {
-    std::cout << "build_function_declaration" << std::endl;
-    //fmt::print("build_function_declaration\n");
     //get function return type
 
-    /*
     llvm::Type *return_type = build_declaration_declarator(
         tree[idx_function_declaration].value.function_declaration.idx_function_return_type
     );
@@ -363,6 +309,7 @@ build_llvm_ir::build_function_declaration(ast::idx idx_function_declaration) {
     ast::idx idx_function_declarator
     = tree[idx_function_declaration].value.function_declaration.idx_function_declarator;
 
+    //TODO pointer
     for (
         auto i = tree[idx_function_declarator].value.declarator.is_ptr;
         i > 0;
@@ -387,10 +334,13 @@ build_llvm_ir::build_function_declaration(ast::idx idx_function_declaration) {
     //create funcion
     llvm::FunctionType *ptr_func = llvm::FunctionType::get(return_type, argument_type_list, false);
     llvm::Function *ptr_func_ = llvm::Function::Create(ptr_func, llvm::Function::ExternalLinkage, func_name, *module);
-    */
+
+    return;
 
 
-    /*
+
+    //------------------------------------------------------
+
     llvm::LLVMContext Context;
     llvm::Module *mod = new llvm::Module("sum.ll", Context);
 
@@ -432,10 +382,6 @@ build_llvm_ir::build_function_declaration(ast::idx idx_function_declaration) {
     Res.IRBroken = llvm::verifyModule(*mod, &llvm::dbgs(), &Res.DebugInfoBroken);
 
     mod->dump();
-    //mod->print();
-
-    return;
-    */
 }
 
 #endif

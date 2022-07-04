@@ -1,21 +1,62 @@
-{"declaration_or_definition":{"function_declaration":{"declarator":{"is_pointer":"0","direct_declarator":{"declarator":{"is_pointer":"1","direct_declarator":{"indentifier":{"name":"f1"
-}
-}
-}
-}
-},"declaration_declarator":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"arguments_type_list":{"arguments_declaration":{"declaration_declarator":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"declarator":{"is_pointer":"0","direct_declarator":{"indentifier":{"name":"a"
-}
-}
-}
-},"arguments_declaration":{"declaration_declarator":{"sign":"true","type":"double","limit":"empty","store":"empty"
-},"declarator":{"is_pointer":"0","direct_declarator":{"indentifier":{"name":"b"
-}
-}
-}
-}
-}
-}
-}
+{
+    "declaration_or_definition": {
+        "function_declaration": {
+            "indentifier": {
+                "name": "f1"
+            },
+            "declarator": {
+                "is_pointer": "0",
+                "direct_declarator": {
+                    "declarator": {
+                        "is_pointer": "1",
+                        "direct_declarator": {
+                            "indentifier": {
+                                "name": "f1"
+                            }
+                        }
+                    }
+                }
+            },
+            "declaration_declarator": {
+                "sign": "true",
+                "type": "int",
+                "limit": "empty",
+                "store": "empty"
+            },
+            "arguments_type_list": {
+                "arguments_declaration": {
+                    "declaration_declarator": {
+                        "sign": "true",
+                        "type": "int",
+                        "limit": "empty",
+                        "store": "empty"
+                    },
+                    "declarator": {
+                        "is_pointer": "0",
+                        "direct_declarator": {
+                            "indentifier": {
+                                "name": "a"
+                            }
+                        }
+                    }
+                },
+                "arguments_declaration": {
+                    "declaration_declarator": {
+                        "sign": "true",
+                        "type": "double",
+                        "limit": "empty",
+                        "store": "empty"
+                    },
+                    "declarator": {
+                        "is_pointer": "0",
+                        "direct_declarator": {
+                            "indentifier": {
+                                "name": "b"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
