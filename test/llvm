@@ -1,0 +1,4 @@
+; ModuleID = 'text_module'
+source_filename = "text_module"
+
+declare i32 @f1(i32*, double, i64**)

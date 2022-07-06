@@ -61,16 +61,21 @@ class build_llvm_ir {
         llvm::Type *build_mult_declaration_or_defination();
         llvm::Type *build_declaration_or_defination(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         llvm::Type *build_declaration_declarator(ast::idx idx);
+        llvm::Type *build_type(ast::idx idx_declarator, ast::idx idx_declaration_declarator);
+        llvm::Type *build_pointer(llvm::Type *ptr_type_declaration_declarator, ast::idx idx_declarator);
+        llvm::Type *build_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declarator);
+        llvm::Type *build_recurs_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declarator);
         llvm::BasicBlock *build_compound_statement(ast::idx idx_compound_statement);
         void build_variable(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         void build_function_or_function_ptr(ast::idx idx, llvm::Type *ptr_declaration_declarator);
-        void build_array(ast::idx idx, llvm::Type *ptr_declaration_declarator);
-        void build_function_declaration(ast::idx);
+        void build_function(ast::idx);
         void build_expression_ir();
         void build_assign_expression_ir();
 
         llvm::SmallVector<llvm::Type*> build_arguments_type_list(ast::idx idx);
         llvm::Type *build_argument_declaration(ast::idx idx);
+
+        std::size_t get_constant(ast::idx idx_constans);
 
     public:
 

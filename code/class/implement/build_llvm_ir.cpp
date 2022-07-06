@@ -11,6 +11,7 @@ build_llvm_ir::build_llvm_ir() {
     module  = std::make_unique<llvm::Module>("text_module", *context);
     builder = std::make_unique<llvm::IRBuilder<>>(*context);
 
+    context->setOpaquePointers(false);
     build_mult_declaration_or_defination();
 }
 
@@ -51,37 +52,29 @@ build_llvm_ir::build_mult_declaration_or_defination() {
         i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition
     )
     {
-        std::cout << "i" << i;
+        //std::cout << "i" << i;
         for (
             ast::idx j = tree[i].value.declaration_or_definition.idx_initial_declatator_list;
             j != ast::null;
         )
         {
-            std::cout << "j" << j;
+            //std::cout << "j" << j;
             switch (tree[j].type) {
                 case ast::node_type::function_declaration:
-                    build_function_declaration(j);
-                    j = tree[j].value.function_declaration.idx_next;
-                    //goto out;
-                    break;
                 case ast::node_type::function_definition:
-                    todo
-                    j = tree[j].value.function_definition.idx_next;
-                    //goto out;
+                    build_function(j);
+                    j = tree[j].value.function_declaration.idx_next;
                     break;
                 case ast::node_type::struct_declaration:
                     todo
                     j = tree[j].value.struct_declaration.idx_next;
-                    //goto out;
                     break;
                 case ast::node_type::struct_defination:
                     todo
                     j = tree[j].value.struct_defination.idx_next;
-                    //goto out;
                     break;
                 case ast::node_type::array_declarator:
                     todo
-                    //goto out;
                     break;
                 default:
                     fmt::print(fg(fmt::color::red), "node type is {}\n", tree[j].type);
@@ -115,6 +108,7 @@ build_llvm_ir::build_declaration_declarator(ast::idx idx) {
     }
 }
 
+//DROP
 llvm::Type *
 build_llvm_ir::build_declaration_or_defination(ast::idx idx, llvm::Type *ptr_declaration_declarator) {
     switch (which_type(idx)) {
@@ -149,6 +143,7 @@ build_llvm_ir::build_arguments_type_list(ast::idx idx_arguemnt_type_list) {
     {
         arguments_type_list.push_back(build_argument_declaration(i));
     }
+
     return arguments_type_list;
 }
 
@@ -157,46 +152,14 @@ build_llvm_ir::build_arguments_type_list(ast::idx idx_arguemnt_type_list) {
 //1. array's pointer
 //2.
 llvm::Type *
-build_llvm_ir::build_argument_declaration(ast::idx idx) {
+build_llvm_ir::build_argument_declaration(ast::idx idx_argument_declaration) {
     ast::idx idx_declaration_declarator
-    = tree[idx].value.arguments_declaration.idx_declararion_declarator;
+    = tree[idx_argument_declaration].value.arguments_declaration.idx_declararion_declarator;
 
     ast::idx idx_declarator
-    = tree[idx].value.arguments_declaration.idx_declarator;
+    = tree[idx_argument_declaration].value.arguments_declaration.idx_declarator;
 
-    //TODO add pointer
-    llvm::Type *ptr_type_argument = build_declaration_declarator(idx_declaration_declarator);
-    /*
-    switch (tree[idx_declaration_declarator].value.declaration_declarator.type) {
-        case ast::declarator_type::type_char:
-            ptr_declarator = builder->getInt8Ty();
-            break;
-        case ast::declarator_type::type_double:
-            ptr_declarator = builder->getDoubleTy();
-            break;
-        case ast::declarator_type::type_float:
-            ptr_declarator = builder->getFloatTy();
-            break;
-        case ast::declarator_type::type_int:
-            ptr_declarator = builder->getInt32Ty();
-            break;
-        case ast::declarator_type::type_long_int:
-            ptr_declarator = builder->getInt32Ty();
-            break;
-        case ast::declarator_type::type_long_long_int:
-            ptr_declarator = builder->getInt64Ty();
-            break;
-        case ast::declarator_type::type_short_int:
-            ptr_declarator = builder->getInt16Ty();
-            break;
-        case ast::declarator_type::type_void:
-            //TODO
-            return nullptr;
-            break;
-        default:
-            switch_error
-    }
-    */
+    llvm::Type *ptr_type_argument = build_type(idx_declaration_declarator, idx_declarator);
 
     return ptr_type_argument;
 }
@@ -217,9 +180,53 @@ void
 build_llvm_ir::build_variable(ast::idx idx, llvm::Type *ptr_declaration_declarator) {
 
 }
-void
-build_llvm_ir::build_array(ast::idx idx, llvm::Type *ptr_declaration_declarator) {
 
+llvm::Type *
+build_llvm_ir::build_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declarator) {
+    ast::idx idx_next_array_declarator
+    = tree[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
+
+    ast::idx idx_constant
+    = tree[idx_array_declarator].value.array_declarator.idx_constant;
+    if (idx_next_array_declarator != ast::null) {
+        return llvm::ArrayType::get(
+            build_array(
+                ptr_unit_type,
+                idx_next_array_declarator
+            ),
+            get_constant(idx_constant)
+        );
+    }
+    else {
+        return llvm::ArrayType::get(
+            ptr_unit_type,
+            get_constant(idx_constant)
+        );
+    }
+}
+
+llvm::Type *
+build_llvm_ir::build_recurs_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declarator) {
+    ast::idx idx_next_array_declarator
+    = tree[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
+
+    ast::idx idx_constant
+    = tree[idx_array_declarator].value.array_declarator.idx_constant;
+    if (idx_next_array_declarator != ast::null) {
+        return llvm::ArrayType::get(
+            build_recurs_array(
+                ptr_unit_type,
+                idx_next_array_declarator
+            ),
+            get_constant(idx_constant)
+        );
+    }
+    else {
+        return llvm::ArrayType::get(
+            ptr_unit_type,
+            get_constant(idx_constant)
+        );
+    }
 }
 
 bool
@@ -253,6 +260,9 @@ build_llvm_ir::is_func_decl(ast::idx idx) {
 void
 build_llvm_ir::output_llvm_ir() {
     module->dump();
+    std::error_code ec;
+    llvm::raw_fd_ostream file("/home/lzj/code/program/script/test/llvm", ec);
+    module->print(file, nullptr);
     return;
 }
 
@@ -296,10 +306,64 @@ build_llvm_ir::is_union(ast::idx idx) {
 
 }
 
+llvm::Type *
+build_llvm_ir::build_pointer(llvm::Type *ptr_type_declaration_declarator, ast::idx idx_declarator) {
+    for (
+        auto i = tree[idx_declarator].value.declarator.is_ptr;
+        i > 0;
+        --i
+    )
+    {
+        ptr_type_declaration_declarator = llvm::PointerType::get(ptr_type_declaration_declarator, 0);
+    }
+    return ptr_type_declaration_declarator;
+}
 
+llvm::Type *
+build_llvm_ir::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarator) {
+
+    //1. unit type
+    //return type, var type, arrary type
+    llvm::Type *ptr_return_type = nullptr;
+
+    llvm::Type *ptr_type_declaration_declarator = build_declaration_declarator(idx_declaration_declarator);
+
+
+    ast::idx idx_direct_declarator = tree[idx_declarator].value.declarator.idx_direct_declarator;
+
+    //array or a pointer to array
+    if (tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null) {
+        llvm::Type *ptr_unit_type = ptr_type_declaration_declarator;
+        ptr_unit_type = build_pointer(ptr_unit_type, idx_declarator);
+        ast::idx idx_array_declarator
+        = tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator;
+        llvm::Type *ptr_array_type = build_array(ptr_unit_type, idx_array_declarator);
+        while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null) {
+        }
+    }
+    //function
+    else if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
+
+    }
+
+
+    while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null) {
+        std::cout << "level" << std::endl;
+    }
+
+    //TODO
+    //
+    ptr_type = ptr_declaration_declarator;
+
+    if (ptr_type == nullptr) {
+        not_excutable
+    }
+
+    return ptr_type;
+}
 
 void
-build_llvm_ir::build_function_declaration(ast::idx idx_function_declaration) {
+build_llvm_ir::build_function(ast::idx idx_function_declaration) {
     //get function return type
 
     llvm::Type *return_type = build_declaration_declarator(
