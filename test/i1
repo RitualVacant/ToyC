@@ -1,1 +1,11 @@
-int f1(int *a, double b, long long **c);
+
+int main() {
+    int a = 1;
+    if (a > 3) {
+        a = 0;
+    }
+    else {
+        a = 10;
+    }
+    return a;
+}

@@ -314,12 +314,7 @@ synctax_tree::which_type(ast::idx idx_initial_declarator) {
 
 void
 synctax_tree::trans_to_function(ast::idx idx) {
-    if (idx_now_compound_statement != ast::null) {
-        tree[idx].type = ast::node_type::function_definition;
-    }
-    else {
-        tree[idx].type = ast::node_type::function_declaration;
-    }
+    tree[idx].type = ast::node_type::function;
 
     ast::idx idx_next_declarator = tree[idx].value.initial_declarator.idx_next_initial_declarator;
     ast::idx idx_declarator = tree[idx].value.initial_declarator.idx_declarator;
@@ -982,7 +977,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
 
 
         //second step node
-        case ast::node_type::function_declaration:
+        case ast::node_type::function:
             print_json_class_head("function_declaration");
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_name);
             dfs_print_tree(tree[idx].value.function_declaration.idx_function_declarator);

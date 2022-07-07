@@ -65,7 +65,7 @@ class build_llvm_ir {
         llvm::Type *build_pointer(llvm::Type *ptr_type_declaration_declarator, ast::idx idx_declarator);
         llvm::Type *build_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declarator);
         llvm::Type *build_recurs_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declarator);
-        llvm::BasicBlock *build_compound_statement(ast::idx idx_compound_statement);
+        llvm::BasicBlock *build_compound_statement(ast::idx idx_compound_statement, llvm::Function *ptr_func , llvm::BasicBlock *ptr_block);
         void build_variable(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         void build_function_or_function_ptr(ast::idx idx, llvm::Type *ptr_declaration_declarator);
         void build_function(ast::idx);

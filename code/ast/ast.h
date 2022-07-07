@@ -98,8 +98,7 @@ namespace ast {
             break_statement,
 
             //second
-            function_declaration,
-            function_definition,
+            function,
             enum_definition,
             array_definintion,
             struct_declaration,
@@ -201,6 +200,12 @@ namespace ast {
 
 
     //-------------------------------------------
+
+    enum const_type {
+        int_const,
+        float_const,
+        string_const,
+    };
 
     //constant
     struct constant {

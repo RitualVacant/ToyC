@@ -1363,8 +1363,10 @@ parser::parser_identifier() {
 ast::idx
 parser::parser_arguments_type_list() {
     ast::idx idx_root = tree.creat_node(ast::node_type::arguments_type_list);
-    tree[idx_root].value.arguments_type_list.idx_argument_declaration
-    = parser_arguments_declaration();
+    if (scan.get_current_token() != token::r_par) {
+        tree[idx_root].value.arguments_type_list.idx_argument_declaration
+        = parser_arguments_declaration();
+    }
     /*
     if (scan.get_current_token() == token::comma) {
     }
