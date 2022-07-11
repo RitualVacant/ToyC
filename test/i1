@@ -1,11 +1,6 @@
 
-int main() {
-    int a = 1;
-    if (a > 3) {
-        a = 0;
-    }
-    else {
-        a = 10;
-    }
+int f1(int *c) {
+    double a, b, d;
+    a = b + d;
     return a;
 }

@@ -193,7 +193,8 @@ ast::idx synctax_tree::creat_node(ast::node_type node_type) {
 }
 
 std::vector<ast::node> &synctax_tree::get_synctax_tree() {
-    trans_tree();
+    //DROP
+    //trans_tree();
     return tree;
 }
 
@@ -215,7 +216,7 @@ synctax_tree::trans_tree() {
 void
 synctax_tree::trans_declaration_or_definination(ast::idx idx_declaration_or_definition) {
     ast::idx idx_start_initial_declarator
-    = tree[idx_declaration_or_definition].value.declaration_or_definition.idx_initial_declatator_list;
+    = tree[idx_declaration_or_definition].value.declaration_or_definition.idx_initial_declarator;
 
     idx_now_declaration_declarator
     = tree[idx_declaration_or_definition].value.declaration_or_definition.idx_declaration_declarator;
@@ -517,7 +518,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                 default:
                     switch_error
             }
-            dfs_print_tree(tree[idx].value.assignment_expression.idx_unary_expression);
+            dfs_print_tree(tree[idx].value.assignment_expression.idx_binary_expression);
             dfs_print_tree(tree[idx].value.assignment_expression.idx_unary_or_binary_expression);
             print_json_class_head("next_assgin");
             dfs_print_tree(tree[idx].value.assignment_expression.idx_next_assignment_expression);
@@ -648,6 +649,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             print_json_class_head("expression");
             dfs_print_tree(tree[idx].value.expression.idx_assignment_expression);
             print_json_class_end();
+            dfs_print_tree(tree[idx].value.expression.idx_next_expression);
             break;
 
         /*
@@ -776,7 +778,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                 dfs_print_tree(tree[idx].value.declaration_or_definition.idx_declaration_declarator);
                 dfs_print_tree(tree[idx].value.declaration_or_definition.idx_compound_statement);
             }
-            dfs_print_tree(tree[idx].value.declaration_or_definition.idx_initial_declatator_list);
+            dfs_print_tree(tree[idx].value.declaration_or_definition.idx_initial_declarator);
             dfs_print_tree(tree[idx].value.declaration_or_definition.idx_next_declaration_or_definition);
             print_json_class_end();
             break;
@@ -803,13 +805,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
 
         case ast::node_type::compound_statement:
             print_json_class_head("compound_statement");
-            dfs_print_tree(tree[idx].value.compound_statement.idx_block_list);
-            print_json_class_end();
-            break;
-
-        case ast::node_type::block_list:
-            print_json_class_head("block_list");
-            dfs_print_tree(tree[idx].value.block_list.idx_block);
+            dfs_print_tree(tree[idx].value.compound_statement.idx_block);
             print_json_class_end();
             break;
 

@@ -1,4 +1,11 @@
 ; ModuleID = 'text_module'
 source_filename = "text_module"
 
-declare i32 @main()
+define i32 @f1(i32* %0) {
+func_body:
+  %1 = alloca double, align 8
+  %2 = alloca double, align 8
+  %3 = alloca double, align 8
+  %4 = add double* %2, %3
+  store double* %4, double* %1, align 8
+}

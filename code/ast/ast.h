@@ -129,7 +129,7 @@ namespace ast {
 
     struct declaration_or_definition {
         ast::idx idx_declaration_declarator = ast::null;
-        ast::idx idx_initial_declatator_list = ast::null;
+        ast::idx idx_initial_declarator = ast::null;
         ast::idx idx_compound_statement = ast::null;
         ast::idx idx_next_declaration_or_definition = ast::null;
     };
@@ -163,11 +163,12 @@ namespace ast {
     //expression
     struct expression {
         ast::idx idx_assignment_expression = ast::null;
+        ast::idx idx_next_expression = ast::null;
     };
 
     struct assignment_expression {
         ast::idx idx_unary_or_binary_expression = ast::null;
-        ast::idx idx_unary_expression = ast::null;
+        ast::idx idx_binary_expression = ast::null;
         ast::idx idx_next_assignment_expression = ast::null;
         token assignment_type;
     };
@@ -256,9 +257,6 @@ namespace ast {
         ast::idx idx_next_postfix_operator = ast::null;
     };
 
-    struct primary_expression {
-
-    };
 
 
     struct case_label {
@@ -305,7 +303,7 @@ namespace ast {
     };
 
     struct compound_statement {
-        ast::idx idx_block_list = ast::null;
+        ast::idx idx_block = ast::null;
     };
 
 
@@ -324,20 +322,14 @@ namespace ast {
 
     };
 
-    struct block_list {
-        ast::idx idx_block = ast::null;
-    };
+  //struct block_list {
+  //    ast::idx idx_block = ast::null;
+  //};
+
     struct block {
-      //token type_block_by_token = token::invalid;
         ast::idx idx_statement = ast::null;
         ast::idx idx_declaration = ast::null;
         ast::idx idx_next_block = ast::null;
-      //ast::idx idx_if_statement = ast::null;
-      //ast::idx idx_while_statement = ast::null;
-      //ast::idx idx_do_while_statement = ast::null;
-      //ast::idx idx_swtich_statement = ast::null;
-      //ast::idx idx_for_statement = ast::null;
-      //ast::idx idx_next_block = ast::null;
     };
 
     struct arguments_declaration {
@@ -475,7 +467,6 @@ namespace ast {
         ast::binary_expression binary_expression;
         ast::unary_expression unary_expression;
         ast::postfix_expression postfix_expression;
-        ast::primary_expression primary_expression;
         ast::declare_var declare_var;
         ast::initial_declarator initial_declarator;
         ast::initial_declarator_list initial_declarator_list;
@@ -486,7 +477,6 @@ namespace ast {
         ast::arguments_type_list arguments_type_list;
         ast::compound_statement compound_statement;
         ast::block block;
-        ast::block_list block_list;
         ast::mark_statement mark_statement;
         ast::mark mark;
         ast::initializer initializer;

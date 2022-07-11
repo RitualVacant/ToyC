@@ -1,136 +1,48 @@
-{
-    "declaration_or_definition": {
-        "function_declaration": {
-            "indentifier": {
-                "name": "main"
-            },
-            "declarator": {
-                "is_pointer": "0",
-                "direct_declarator": {
-                    "indentifier": {
-                        "name": "main"
-                    }
-                }
-            },
-            "declaration_declarator": {
-                "sign": "true",
-                "type": "int",
-                "limit": "empty",
-                "store": "empty"
-            },
-            "arguments_type_list": {},
-            "compound_statement": {
-                "block": {
-                    "declaration_or_definition": {
-                        "initial_declarator": {
-                            "declarator": {
-                                "is_pointer": "0",
-                                "direct_declarator": {
-                                    "indentifier": {
-                                        "name": "a"
-                                    }
-                                }
-                            },
-                            "initializer": {
-                                "unary_expression": {
-                                    "postfix_expression": {
-                                        "constant": {
-                                            "value": "1"
-                                        }
-                                    },
-                                    "is_sizeof": "false",
-                                    "unary_operator": "void"
-                                }
-                            }
-                        }
-                    }
-                },
-                "block1": {
-                    "if_statement": {
-                        "binary_expression": {
-                            "operator": ">",
-                            "unary_expression": {
-                                "postfix_expression": {
-                                    "postfix_operator": {},
-                                    "indentifier": {
-                                        "name": "a"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            },
-                            "unary_expression1": {
-                                "postfix_expression": {
-                                    "postfix_operator": {},
-                                    "constant": {
-                                        "value": "3"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            }
-                        },
-                        "compound_statement1": {
-                            "block": {
-                                "expression": {
-                                    "assignment_expression": {
-                                        "assignment_type": "=",
-                                        "unary_expression": {
-                                            "postfix_expression": {
-                                                "constant": {
-                                                    "value": "0"
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        },
-                                        "unary_expression1": {
-                                            "postfix_expression": {
-                                                "postfix_operator": {},
-                                                "indentifier": {
-                                                    "name": "a"
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        },
-                                        "next_assgin": {}
-                                    }
-                                }
-                            }
-                        },
-                        "compound_statement": {
-                            "block": {
-                                "expression": {
-                                    "assignment_expression": {
-                                        "assignment_type": "=",
-                                        "unary_expression": {
-                                            "postfix_expression": {
-                                                "constant": {
-                                                    "value": "10"
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        },
-                                        "unary_expression1": {
-                                            "postfix_expression": {
-                                                "postfix_operator": {},
-                                                "indentifier": {
-                                                    "name": "a"
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        },
-                                        "next_assgin": {}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+{"declaration_or_definition":{"function_declaration":{"indentifier":{"name":"f1"
+},"declarator":{"is_pointer":"0","direct_declarator":{"indentifier":{"name":"f1"
+}
+}
+},"declaration_declarator":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"arguments_type_list":{"arguments_declaration":{"declaration_declarator":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"declarator":{"is_pointer":"0","direct_declarator":{"indentifier":{"name":"c"
+}
+}
+}
+}
+},"compound_statement":{"block":{"declaration_or_definition":{"initial_declarator":{"declarator":{"is_pointer":"0","direct_declarator":{"indentifier":{"name":"a"
+}
+}
+}
+}
+}
+},"block":{"expression":{"assignment_expression":{"assignment_type":"+=","binary_expression":{"operator":"+","unary_expression":{"postfix_expression":{"postfix_operator":{},"indentifier":{"name":"a"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression":{"postfix_expression":{"postfix_operator":{},"indentifier":{"name":"c"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+},"unary_expression":{"postfix_expression":{"postfix_operator":{},"indentifier":{"name":"b"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"next_assgin":{"assignment_expression":{"assignment_type":"=","unary_expression":{"postfix_expression":{"postfix_operator":{},"indentifier":{"name":"c"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"next_assgin":{}
+}
+}
+}
+},"expression":{"assignment_expression":{"assignment_type":"=","unary_expression":{"postfix_expression":{"constant":{"value":"3"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression":{"postfix_expression":{"postfix_operator":{},"indentifier":{"name":"a"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"next_assgin":{}
+}
+}
+}
+}
+}
+}
 }

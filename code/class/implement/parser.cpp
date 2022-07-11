@@ -1077,7 +1077,7 @@ parser::parser_declaration_or_definition() {
     tree[idx_root].value.declaration_or_definition.idx_declaration_declarator
     = parser_declaration_declarator();
 
-    tree[idx_root].value.declaration_or_definition.idx_initial_declatator_list
+    tree[idx_root].value.declaration_or_definition.idx_initial_declarator
     = parser_initial_declarator();
 
     //declare
@@ -1437,6 +1437,7 @@ parser::operator_priority(token t) {
         case token::r_par:
         case token::r_mid_par:
         case token::r_big_par:
+        case token::comma:
             return -1;
         case token::log_or:
             return 13;
@@ -1690,7 +1691,7 @@ parser::parser_compound_statement() {
     ast::idx idx_root = tree.creat_node(ast::node_type::compound_statement);
     //est {
     scan.next_token();
-    tree[idx_root].value.compound_statement.idx_block_list
+    tree[idx_root].value.compound_statement.idx_block
     = parser_block_list();
     //eat }
     scan.next_token();
@@ -1711,6 +1712,8 @@ parser::parser_block_list() {
     return idx_root;
 }
 
+//TODO
+//add prefix operator
 ast::idx
 parser::parser_block() {
     ast::idx idx_root = tree.creat_node(ast::node_type::block);
@@ -1852,7 +1855,15 @@ parser::parser_expression() {
     ast::idx idx_root = tree.creat_node(ast::node_type::expression);
     tree[idx_root].value.expression.idx_assignment_expression
     = parser_assignment_expression(ast::null);
-    scan.next_token();  //eat ;
+
+    if (scan.get_current_token() == token::comma) {
+        scan.next_token();   //eat ,
+        tree[idx_root].value.expression.idx_next_expression
+        = parser_expression();
+    }
+    else {
+        scan.next_token();  //eat ;
+    }
     return idx_root;
 }
 
@@ -1908,12 +1919,13 @@ parser::parser_assignment_expression(ast::idx last_assign) {
             return idx_root;
         }
 
-        //end of expression ; ) ]
+        //end of expression , ; ) ]
+        case token::comma:
         case token::end:
         case token::r_par:
         case token::r_mid_par:
             if (last_assign != ast::null) {
-                tree[last_assign].value.assignment_expression.idx_unary_expression
+                tree[last_assign].value.assignment_expression.idx_binary_expression
                 = idx_unary_or_binary_expression;
 
                 return last_assign;
@@ -1924,15 +1936,7 @@ parser::parser_assignment_expression(ast::idx last_assign) {
             print_token
             switch_error
     }
-
-
-  //tree[idx_root].value.assignment_expression.idx_unary_expression
-  //= parser_unary_expression();
-
-  //tree[idx_root].value.assignment_expression.assignment_type
-  //= scan.get_current_token();
-
-  //return parser_assignment_expression(idx_root);
+    not_excutable
 }
 
 ast::idx
@@ -1963,6 +1967,7 @@ parser::parser_not_mark_statement() {
 
     return ast::null;
 }
+
 ast::idx
 parser::parser_if_statement() {
     scan.next_token();  //eat if
