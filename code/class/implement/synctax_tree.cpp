@@ -2,6 +2,7 @@
 #define SYNCTAX_TREE_CPP
 #pragma once
 #include "synctax_tree.h"
+#include <fmt/format.h>
 #include <fmt/core.h>
 #include "inner.cpp"
 #include "declataror.h"
@@ -69,29 +70,6 @@ synctax_tree::insert(ast::node_type node_type) {
 ast::node&
 synctax_tree::operator [] (ast::idx idx) {
     return tree[idx];
-    /*
-    switch (tree[idx].type) {
-        case ast::node_type::type:
-        case ast::node_type::expression:
-        case ast::node_type::assignment_expression:
-        case ast::node_type::conditional_expression:
-        case ast::node_type::binary_expression:
-        case ast::node_type::unary_expression:
-        case ast::node_type::postfix_expression:
-        case ast::node_type::primary_expression:
-        case ast::node_type::statement:
-        case ast::node_type::declare_varible:
-        case ast::node_type::declare_function:
-        case ast::node_type::definition_function:
-        case ast::node_type::constant:
-        case ast::node_type::operators:
-        case ast::node_type::declarator:
-            return tree[idx].value.declataor;
-        default: {
-
-        }
-    }
-    */
 }
 
 
@@ -477,6 +455,7 @@ synctax_tree::print_tree(std::string file_path) {
 void
 synctax_tree::dfs_print_tree(ast::idx idx) {
     if (idx == ast::null) return;
+    now_idx = idx;
     switch (tree[idx].type) {
         case ast::node_type::assignment_expression:
             print_json_class_head("assignment_expression");
@@ -558,7 +537,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                     print_json_value("void");
                     break;
                 default:
-                    fmt::print(fg(fmt::color::red), "the operator is {}\n", tree[idx].value.unary_expression.unary_operator);
+                    std::cout << fmt::format(fg(fmt::color::red), "the operator is {}\n", tree[idx].value.unary_expression.unary_operator);
                     switch_error
                 break;
             }
@@ -828,7 +807,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
 
         case ast::node_type::if_statement:
             print_json_class_head("if_statement");
-            dfs_print_tree(tree[idx].value.if_statement.idx_expression);
+            dfs_print_tree(tree[idx].value.if_statement.idx_assign_expression);
             dfs_print_tree(tree[idx].value.if_statement.idx_if_body);
             dfs_print_tree(tree[idx].value.if_statement.idx_else_body);
             print_json_class_end();
@@ -983,6 +962,13 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
             dfs_print_tree(tree[idx].value.function_declaration.idx_next);
             print_json_class_end();
             break;
+
+        case ast::node_type::return_statement:
+            print_json_class_head("return_statement");
+            dfs_print_tree(tree[idx].value.return_statement.idx_assignment_expression);
+            print_json_class_end();
+            break;
+
         default: {
             fmt::print(fg(fmt::color::red), "add node type : {}\n", tree[idx].type);
             switch_error
@@ -994,14 +980,14 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
 void
 synctax_tree::print_json_key_value(char const *key, char const *value) {
     //file << "\"" << key << "\":\"" << value << "\",\n";
-    //auto str_key = std::string(key);
-    //auto str_value = std::string(value);
-    //file_buffer += fmt::format("\"{}\":\"{}\"", str_key, str_value);
-    file_buffer += "\"";
-    file_buffer += std::string(key);
-    file_buffer += "\":\"";
-    file_buffer += std::string(value);
-    file_buffer += "\",";
+    auto str_key = std::string(key);
+    auto str_value = std::string(value);
+    file_buffer += fmt::format("\"{}\":\"{}\",", str_key, str_value);
+  //file_buffer += "\"";
+  //file_buffer += std::string(key);
+  //file_buffer += "\":\"";
+  //file_buffer += std::string(value);
+  //file_buffer += "\",";
     return;
 }
 
@@ -1013,6 +999,8 @@ synctax_tree::print_json_class_head(char const *value) {
     //file_buffer += fmt::format("\"{}\":{", str_value);
     file_buffer += "\"";
     file_buffer += std::string(value);
+    file_buffer += '_';
+    file_buffer += std::to_string(now_idx);
     file_buffer += "\":{";
     return;
 }
@@ -1038,6 +1026,7 @@ synctax_tree::print_json_key(char const *key) {
 
 void
 synctax_tree::print_json_value(char const *value) {
+    //
     //file << "\"" << value << "\",\n";
     //auto str_value = std::string(value);
     //file_buffer += fmt::format("\"{}\",", str_value);

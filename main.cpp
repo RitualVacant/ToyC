@@ -1,11 +1,11 @@
 #include <string>
 
-std::string file_path = "/home/lzj/code/program/script/test/i1";
-std::string output_file_path = "/home/lzj/code/program/script/test/o1";
+std::string file_path = "/home/lzj/code/cpp/script/test/i1";
+std::string output_file_path = "/home/lzj/code/cpp/script/test/o1";
 
-#pragma once
 #include "parser.cpp"
 #include "build_llvm_ir.cpp"
+#include "fmt/format.h"
 #include "fmt/core.h"
 
 enum class mode : char {
@@ -19,16 +19,12 @@ enum class mode : char {
     llvm_ir = 'l'
 };
 
-//-----------------------------------------------------------------------------------------------
 //dec
-//-----------------------------------------------------------------------------------------------
 
 void choose_mode_run();
 void output_help_information();
 
-//-----------------------------------------------------------------------------------------------
 //main func
-//-----------------------------------------------------------------------------------------------
 std::vector<std::string> command;
 int main(int argc, char* argv[]) {
     if (argc == 1) {
@@ -47,9 +43,7 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-//-----------------------------------------------------------------------------------------------
 //def
-//-----------------------------------------------------------------------------------------------
 
 void choose_mode_run() {
     output_help_information();

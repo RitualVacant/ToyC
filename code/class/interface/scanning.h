@@ -8,8 +8,10 @@
 #include "token.h"
 #include <stdlib.h>
 #include "ast.h"
+#include "fmt/format.h"
 #include "fmt/core.h"
 #include "fmt/color.h"
+#include "fstream_guard.cpp"
 
 //line in the source code    loc: script/code/header/class/scanning.h
 static unsigned int line = 1;
@@ -32,24 +34,16 @@ class scanning {
         //std::tuple<token, std::string> to_string();
 
     public:
-        std::fstream file;
+        my::fstream_guard file;
         std::tuple<token, std::string> now_token;
         std::tuple<token, std::string> last_token;
         std::tuple<token, std::string> pre_token;
 
         explicit scanning(std::string &file_path_) : file_path (file_path_) {
-            file.open(file_path);
-            if (!file.is_open()) {
-                fmt::print(fg(fmt::color::red), "\nfail to open the file!\n");
-                fmt::print(fg(fmt::color::red), "please check the input file's path\n");
-                fmt::print(fg(fmt::color::red), "--end--\n");
-                exit(1);
-            }
+            file.open(file_path, my::mode::read);
             c = file.get();
         };
-        ~scanning() {
-            file.close();
-        };
+        ~scanning() {};
 
         scanning(scanning const &)      = delete;
         scanning(scanning&&)            = default;

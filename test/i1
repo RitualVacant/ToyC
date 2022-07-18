@@ -1,6 +1,8 @@
 
-int f1(int *c) {
-    double a, b, d;
-    a = b + d;
-    return a;
+int f1() {
+    int a, b, c;
+    if (a == 0 && b == 1 && c == 2) {
+        a = 9;
+    }
+    return a + b;
 }

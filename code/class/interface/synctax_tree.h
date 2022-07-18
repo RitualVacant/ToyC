@@ -29,6 +29,8 @@ class synctax_tree {
             enum_defi,
         };
 
+        std::size_t now_idx;
+
         ast::idx last_root_ptr = ast::null;
         std::fstream file;
         std::string file_path{"/home/lzj/code/program/script/test/tree.json"};

@@ -108,6 +108,7 @@ namespace ast {
     };
     using idx = std::size_t;
     idx const null{0};
+    using idef = std::size_t;
 
     //-------------------------------------------
 
@@ -211,6 +212,22 @@ namespace ast {
     //constant
     struct constant {
         char const_value[array_in_struct_size] = {};
+
+        std::size_t
+        get_unsigned_int() {
+            std::size_t val = 0;
+            int len;
+            for (len = 0; len < array_in_struct_size; ++len) {
+                if (const_value[len] == '\0') {
+                    break;
+                }
+            }
+            for (int i = len - 1; i >= 0; --i) {
+                val += static_cast<std::size_t>(const_value[i] - '0');
+                val *= 10;
+            }
+            return val;
+        }
     };
 
     struct constant_int {
@@ -358,7 +375,7 @@ namespace ast {
     };
 
     struct if_statement {
-        ast::idx idx_expression = ast::null;
+        ast::idx idx_assign_expression = ast::null;
         ast::idx idx_if_body = ast::null;
         ast::idx idx_else_body = ast::null;
     };

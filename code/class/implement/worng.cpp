@@ -1,6 +1,7 @@
 #ifndef WORNG_CPP
 #define WORNG_CPP
 
+#include "fmt/format.h"
 #include "fmt/core.h"
 #include "token.h"
 #include <unordered_map>

@@ -442,7 +442,6 @@ parser::parser_expression_(std::string name_indentif) {
                     }
                 }
                 //可能没有运算符只有一个数字
-                //TODO
                 if (num_stack.size() == 1) {
                     if (std::get<0>(scan.last_token) == token::identif) {
                         //table->asm_code_mov_auto_r__(size_class.at(std::get<0>(scan.last_token)), "ax", table->find_local(num_stack[0]));
@@ -1065,9 +1064,9 @@ parser::get_synctax_tree() {
 
 void
 parser::print_synctax_tree() {
-    tree.print_tree("/home/lzj/code/program/script/test/tree.json");
+    tree.print_tree("/home/lzj/code/cpp/script/test/tree.json");
     tree.trans_tree();
-    tree.print_tree("/home/lzj/code/program/script/test/tree1.json");
+    tree.print_tree("/home/lzj/code/cpp/script/test/tree1.json");
 }
 
 ast::idx
@@ -1785,7 +1784,7 @@ parser::parser_block() {
         case token::key_return:
             tree[idx_root].value.block.idx_statement
             = parser_return_statement();
-
+            break;
         case token::r_big_par:
             return ast::null;
 
@@ -1974,7 +1973,7 @@ parser::parser_if_statement() {
     scan.next_token();  //eat (
     ast::idx idx_root = tree.creat_node(ast::node_type::if_statement);
 
-    tree[idx_root].value.if_statement.idx_expression
+    tree[idx_root].value.if_statement.idx_assign_expression
     = parser_assignment_expression(ast::null);
 
     scan.next_token();  //eat )
