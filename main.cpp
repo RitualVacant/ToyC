@@ -16,7 +16,8 @@ enum class mode : char {
     help  = 'h',
     debug = 'd',
     tree  = 't',
-    llvm_ir = 'l'
+    llvm_ir = 'l',
+    llvm_opt = 'o'
 };
 
 //dec
@@ -82,6 +83,15 @@ void choose_mode_run() {
                 ir.output_llvm_ir();
                 break;
             }
+            case mode::llvm_opt: {
+                int done = system("opt -dot-cfg ./../test/llvm.ll");
+                if (done == 127) {
+                    fmt::print("");
+                }
+                if (done == -1) {
+                    fmt::print("");
+                }
+            }
             default:
                 break;
         }
@@ -100,6 +110,7 @@ void output_help_information() {
     fmt::print("(c) create       --ctreate the\n");
     fmt::print("(h) help         --print table\n");
     fmt::print("(l) llvm         --output llvm ir\n");
+    fmt::print("(o) dot          --dot\n");
     fmt::print("(q) quit         --quit\n");
     return;
 }
