@@ -1,8 +1,8 @@
 
 int f1() {
-    int a, b, c;
-    if (a == 0 && b == 1 && c == 2) {
-        a = 9;
+    int a, b, c, d;
+    if (a + d >= b && b >= c) {
+        a = b;
     }
     return a + b;
 }

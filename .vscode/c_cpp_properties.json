@@ -3,8 +3,6 @@
         {
             "name": "Linux",
             "includePath": [
-                "/home/lzj/code/program/script/code",
-                "${workspaceFolder}/**",
                 "${default}",
                 "${workspaceFolder}/code/class/implement",
                 "${workspaceFolder}/code/ast",
@@ -12,12 +10,10 @@
                 "${workspaceFolder}/code/class/interface"
             ],
             "defines": [],
-            "compilerPath": "/bin/g++-11",
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "${default}"
             //"configurationProvider": "ms-vscode.cmake-tools"
-            //"compileCommands": "${workspaceFolder}/build/compile_commands.json"
         }
     ],
     "version": 4

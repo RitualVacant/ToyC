@@ -1,171 +1,68 @@
-{
-    "declaration_or_definition_1": {
-        "declaration_declarator_2": {
-            "sign": "true",
-            "type": "int",
-            "limit": "empty",
-            "store": "empty"
-        },
-        "compound_statement_8": {
-            "block_9": {
-                "declaration_or_definition_10": {
-                    "declaration_declarator_11": {
-                        "sign": "true",
-                        "type": "int",
-                        "limit": "empty",
-                        "store": "empty"
-                    },
-                    "initial_declarator_12": {
-                        "declarator_13": {
-                            "is_pointer": "0",
-                            "direct_declarator_14": {
-                                "indentifier_15": {
-                                    "name": "a"
-                                }
-                            }
-                        },
-                        "initial_declarator_16": {
-                            "declarator_17": {
-                                "is_pointer": "0",
-                                "direct_declarator_18": {
-                                    "indentifier_19": {
-                                        "name": "b"
-                                    }
-                                }
-                            },
-                            "initial_declarator_20": {
-                                "declarator_21": {
-                                    "is_pointer": "0",
-                                    "direct_declarator_22": {
-                                        "indentifier_23": {
-                                            "name": "c"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "block_24": {
-                "if_statement_25": {
-                    "binary_expression_45": {
-                        "operator": "&&",
-                        "binary_expression_30": {
-                            "operator": "==",
-                            "unary_expression_26": {
-                                "postfix_expression_27": {
-                                    "postfix_operator_29": {},
-                                    "indentifier_28": {
-                                        "name": "a"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            },
-                            "unary_expression_31": {
-                                "postfix_expression_32": {
-                                    "postfix_operator_34": {},
-                                    "constant_33": {
-                                        "value": "0"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            }
-                        },
-                        "binary_expression_50": {
-                            "operator": "==",
-                            "unary_expression_46": {
-                                "postfix_expression_47": {
-                                    "postfix_operator_49": {},
-                                    "indentifier_48": {
-                                        "name": "c"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            },
-                            "unary_expression_51": {
-                                "postfix_expression_52": {
-                                    "postfix_operator_54": {},
-                                    "constant_53": {
-                                        "value": "2"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            }
-                        }
-                    },
-                    "compound_statement_55": {
-                        "block_56": {
-                            "expression_57": {
-                                "assignment_expression_62": {
-                                    "assignment_type": "=",
-                                    "unary_expression_63": {
-                                        "postfix_expression_64": {
-                                            "constant_65": {
-                                                "value": "9"
-                                            }
-                                        },
-                                        "is_sizeof": "false",
-                                        "unary_operator": "void"
-                                    },
-                                    "unary_expression_58": {
-                                        "postfix_expression_59": {
-                                            "postfix_operator_61": {},
-                                            "indentifier_60": {
-                                                "name": "a"
-                                            }
-                                        },
-                                        "is_sizeof": "false",
-                                        "unary_operator": "void"
-                                    },
-                                    "next_assgin_60": {}
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "block_67": {
-                "return_statement_68": {
-                    "binary_expression_73": {
-                        "operator": "+",
-                        "unary_expression_69": {
-                            "postfix_expression_70": {
-                                "postfix_operator_72": {},
-                                "indentifier_71": {
-                                    "name": "a"
-                                }
-                            },
-                            "is_sizeof": "false",
-                            "unary_operator": "void"
-                        },
-                        "unary_expression_74": {
-                            "postfix_expression_75": {
-                                "indentifier_76": {
-                                    "name": "b"
-                                }
-                            },
-                            "is_sizeof": "false",
-                            "unary_operator": "void"
-                        }
-                    }
-                }
-            }
-        },
-        "initial_declarator_3": {
-            "declarator_4": {
-                "is_pointer": "0",
-                "direct_declarator_5": {
-                    "indentifier_6": {
-                        "name": "f1"
-                    },
-                    "arguments_type_list_7": {}
-                }
-            }
-        }
-    }
+{"declaration_or_definition_1":{"declaration_declarator_2":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"compound_statement_8":{"block_9":{"declaration_or_definition_10":{"declaration_declarator_11":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"initial_declarator_12":{"declarator_13":{"is_pointer":"0","direct_declarator_14":{"indentifier_15":{"name":"a"
+}
+}
+},"initial_declarator_16":{"declarator_17":{"is_pointer":"0","direct_declarator_18":{"indentifier_19":{"name":"b"
+}
+}
+},"initial_declarator_20":{"declarator_21":{"is_pointer":"0","direct_declarator_22":{"indentifier_23":{"name":"c"
+}
+}
+},"initial_declarator_24":{"declarator_25":{"is_pointer":"0","direct_declarator_26":{"indentifier_27":{"name":"d"
+}
+}
+}
+}
+}
+}
+}
+}
+},"block_28":{"if_statement_29":{"binary_expression_44":{"operator":"&&","binary_expression_39":{"operator":">=","binary_expression_34":{"operator":"+","unary_expression_30":{"postfix_expression_31":{"postfix_operator_33":{},"indentifier_32":{"name":"a"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_35":{"postfix_expression_36":{"postfix_operator_38":{},"indentifier_37":{"name":"d"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+},"unary_expression_40":{"postfix_expression_41":{"postfix_operator_43":{},"indentifier_42":{"name":"b"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+},"binary_expression_49":{"operator":">=","unary_expression_45":{"postfix_expression_46":{"postfix_operator_48":{},"indentifier_47":{"name":"b"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_50":{"postfix_expression_51":{"postfix_operator_53":{},"indentifier_52":{"name":"c"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+}
+},"compound_statement_54":{"block_55":{"expression_56":{"assignment_expression_61":{"assignment_type":"=","unary_expression_62":{"postfix_expression_63":{"indentifier_64":{"name":"b"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_57":{"postfix_expression_58":{"postfix_operator_60":{},"indentifier_59":{"name":"a"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"next_assgin_59":{}
+}
+}
+}
+}
+}
+},"block_66":{"return_statement_67":{"binary_expression_72":{"operator":"+","unary_expression_68":{"postfix_expression_69":{"postfix_operator_71":{},"indentifier_70":{"name":"a"
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_73":{"postfix_expression_74":{"indentifier_75":{"name":"b"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+}
+}
+}
+},"initial_declarator_3":{"declarator_4":{"is_pointer":"0","direct_declarator_5":{"indentifier_6":{"name":"f1"
+},"arguments_type_list_7":{}
+}
+}
+}
+}
 }

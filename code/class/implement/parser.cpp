@@ -1483,6 +1483,8 @@ parser::parser_priority_binary_expression(int priority) {
         return parser_unary_expression();
     }
 
+    //note
+    //left
     ast::idx idx_left_node
     = parser_priority_binary_expression(priority - 1);
 
@@ -1501,6 +1503,8 @@ parser::parser_priority_binary_expression(int priority) {
 
         tree[idx_root].value.binary_expression.idx_right_node
         = parser_priority_binary_expression(priority - 1);
+
+        idx_left_node = idx_root;
     }
     //not creat node
     return idx_root;
