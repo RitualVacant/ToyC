@@ -23,7 +23,7 @@
 
 enum type_of_def_or_dec {
     is_func_decl,
-    is_arrary,
+    is_array,
     is_var
 };
 
@@ -84,6 +84,8 @@ class build_llvm_ir {
         llvm::Value *build_binary_expression(ast::idx idx_binary_expression, llvm::BasicBlock *ptr_true_block = nullptr, llvm::BasicBlock *ptr_false_block = nullptr);
         variable     build_unary_expression(ast::idx idx_unary_expression);
         llvm::Value *build_primary_expression(ast::idx idx_primary_expression);
+        llvm::Value *build_log_and_chain(ast::idx idx_log_and_operator);
+        llvm::Value *build_log_or_chain(ast::idx idx_log_or_operator);
 
         llvm::SmallVector<llvm::Type*> build_arguments_type_list(ast::idx idx);
         llvm::Type *build_argument_declaration(ast::idx idx);

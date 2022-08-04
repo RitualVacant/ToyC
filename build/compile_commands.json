@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/lzj/code/program/script/build",
-  "command": "/usr/bin/clang++-12 -DFMT_LOCALE  -g   -Wall -g -o CMakeFiles/ToyC.dir/main.cpp.o -c /home/lzj/code/program/script/main.cpp",
-  "file": "/home/lzj/code/program/script/main.cpp"
-}
-]

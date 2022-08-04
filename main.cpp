@@ -5,7 +5,6 @@ std::string output_file_path = "/home/lzj/code/cpp/script/test/o1";
 
 #include "parser.cpp"
 #include "build_llvm_ir.cpp"
-#include "fmt/format.h"
 #include "fmt/core.h"
 
 enum class mode : char {

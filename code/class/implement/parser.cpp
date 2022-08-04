@@ -1093,8 +1093,8 @@ parser::parser_declaration_or_definition() {
             break;
         }
         default: {
-            print_token
-            switch_error
+            PRINT_TOKEN
+            SWITCH_ERROR
         }
     }
     return idx_root;
@@ -1170,8 +1170,8 @@ parser::parser_declaration_declarator() {
                 break;
             }
             default: {
-                print_token
-                switch_error
+                PRINT_TOKEN
+                SWITCH_ERROR
             }
         }
         scan.next_token();
@@ -1295,8 +1295,8 @@ parser::parser_direct_declarator() {
                 break;
 
             default:
-                print_token
-                switch_error
+                PRINT_TOKEN
+                SWITCH_ERROR
         }
         /*
         tree[idx_root].value.direct_declarator.idx_identifier
@@ -1321,8 +1321,8 @@ parser::parser_direct_declarator() {
             case token::end:
                 break;
             default:
-                print_token
-                switch_error
+                PRINT_TOKEN
+                SWITCH_ERROR
         }
         */
     }
@@ -1467,8 +1467,8 @@ parser::operator_priority(token t) {
         case token::times:
             return 4;
         default:
-            print_token
-            switch_error
+            PRINT_TOKEN
+            SWITCH_ERROR
     }
 }
 
@@ -1591,8 +1591,8 @@ parser::parser_unary_expression() {
         case token::bit_xor_agn:
             break;
         default:
-            print_token
-            switch_error
+            PRINT_TOKEN
+            SWITCH_ERROR
     }
     return idx_root;
 }
@@ -1651,8 +1651,8 @@ parser::parser_postfix_operator() {
         default:
             //TODO
             return idx_root;
-            print_token
-            switch_error
+            PRINT_TOKEN
+            SWITCH_ERROR
     }
 
     tree[idx_root].value.postfix_operator.idx_next_postfix_operator =
@@ -1679,8 +1679,8 @@ parser::parser_primary_expression() {
             return idx_expression;
         }
         default:
-            print_token
-            switch_error
+            PRINT_TOKEN
+            SWITCH_ERROR
     }
 }
 
@@ -1793,8 +1793,8 @@ parser::parser_block() {
             return ast::null;
 
         default:
-            print_token
-            switch_error
+            PRINT_TOKEN
+            SWITCH_ERROR
     }
 
     return idx_root;
@@ -1936,10 +1936,10 @@ parser::parser_assignment_expression(ast::idx last_assign) {
             return idx_unary_or_binary_expression;
 
         default:
-            print_token
-            switch_error
+            PRINT_TOKEN
+            SWITCH_ERROR
     }
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 ast::idx

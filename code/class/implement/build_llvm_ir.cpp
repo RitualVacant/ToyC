@@ -66,7 +66,7 @@ build_llvm_ir::build_declaration_declarator(ast::idx idx) {
         //TODO void type
         case ast::declarator_type::type_void:
         default:
-            switch_error
+            SWITCH_ERROR
     }
 }
 
@@ -74,7 +74,7 @@ build_llvm_ir::build_declaration_declarator(ast::idx idx) {
 llvm::SmallVector<llvm::Type*>
 build_llvm_ir::build_arguments_type_list(ast::idx idx_arguemnt_type_list) {
 
-    node_type_wrong(tree[idx_arguemnt_type_list].type, ast::node_type::arguments_type_list)
+    NOTD_TYPE_WRONG(tree[idx_arguemnt_type_list].type, ast::node_type::arguments_type_list)
 
     //traverse each argument declatation in the arguments type list
     llvm::SmallVector<llvm::Type*> arguments_type_list;
@@ -196,7 +196,7 @@ build_llvm_ir::is_func_decl(ast::idx idx) {
                 }
             }
         default:
-            switch_error
+            SWITCH_ERROR
     }
 }
 
@@ -227,26 +227,26 @@ build_llvm_ir::which_type(ast::idx idx) {
                     return type_of_def_or_dec::is_func_decl;
                 }
                 else if (tree[idx].value.direct_declarator.idx_array_declarator != ast::null) {
-                    return type_of_def_or_dec::is_arrary;
+                    return type_of_def_or_dec::is_array;
                 }
                 else {
                     return type_of_def_or_dec::is_var;
                 }
             default:
-                switch_error
+                SWITCH_ERROR
         }
     }
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 bool
 build_llvm_ir::is_struct(ast::idx idx) {
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 bool
 build_llvm_ir::is_union(ast::idx idx) {
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 llvm::Type *
@@ -290,7 +290,7 @@ build_llvm_ir::build_declaration_or_definiation(ast::idx idx_declaration_declara
                 break;
             default:
                 fmt::print(fg(fmt::color::red), "node type {}\n", tree[i].type);
-                switch_error
+                SWITCH_ERROR
         }
     }
     std::string name{tree[idx_identifier].value.identifier.name};
@@ -312,7 +312,7 @@ build_llvm_ir::build_declaration_or_definiation(ast::idx idx_declaration_declara
         builder->CreateAlloca(ptr_array_type);
         return;
     }
-    //todo
+    //TODO
     //function
     else if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
         llvm::Type *ptr_return_type = ptr_type;
@@ -352,7 +352,7 @@ build_llvm_ir::build_declaration_or_definiation(ast::idx idx_declaration_declara
     }
     //struct enum
     else if (now_compound_statement != ast::null) {
-        todo
+        TODO
     }
     //var
     else {
@@ -364,7 +364,7 @@ build_llvm_ir::build_declaration_or_definiation(ast::idx idx_declaration_declara
 
     return;
 
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 
@@ -396,7 +396,7 @@ build_llvm_ir::build_type(ast::idx idx_declaration_declarator, ast::idx idx_decl
 
         return ptr_array_type;
     }
-    //todo
+    //TODO
     //function
     else if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
         llvm::Type *ptr_return_type = ptr_type;
@@ -413,7 +413,7 @@ build_llvm_ir::build_type(ast::idx idx_declaration_declarator, ast::idx idx_decl
         return ptr_type;
     }
 
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 //TODO
@@ -471,7 +471,7 @@ build_llvm_ir::build_block(ast::idx idx_block) {
                 build_expression(idx_statement);
                 break;
             default:
-                switch_error
+                SWITCH_ERROR
         }
     }
     return;
@@ -531,23 +531,23 @@ build_llvm_ir::build_if_statement(ast::idx idx_if_statement) {
 void
 build_llvm_ir::build_while_statement(ast::idx idx_while_statement) {
 
-todo
+TODO
 }
 
 void
 build_llvm_ir::build_switch_statement(ast::idx idx_switch_statement) {
-todo
+TODO
 }
 
 
 void
 build_llvm_ir::build_do_while_statement(ast::idx idx_do_while_statement) {
-todo
+TODO
 }
 
 void
 build_llvm_ir::build_for_statement(ast::idx idx_for_statement) {
-todo
+TODO
 }
 
 void
@@ -702,7 +702,7 @@ build_llvm_ir::build_assign_expression(ast::idx idx_assign_expression ,llvm::Bas
                 break;
 
             default:
-                switch_error
+                SWITCH_ERROR
         }
 
 
@@ -774,12 +774,12 @@ build_llvm_ir::find_value(std::string name) {
     if (global_symbol_table.find(name) != global_symbol_table.end()) {
         return global_symbol_table.at(name);
     }
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 llvm::Value *
 build_llvm_ir::build_primary_expression(ast::idx idx_primary_expression) {
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 llvm::Value *
@@ -894,21 +894,21 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
-        todo
+        TODO
 
         case token::bit_or:
             value_l
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
-        todo
+        TODO
 
         case token::bit_xor:
             value_l
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
-        todo
+        TODO
 
         case token::equ:
             value_l
@@ -958,14 +958,14 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
 
-        //todo
+        //TODO
         case token::r_shift:
             value_l
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
 
-        //todo
+        //TODO
         case token::plus:
             value_l
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
@@ -985,38 +985,46 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
-            todo
+            TODO
 
         case token::div:
             value_l
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
-            todo
+            TODO
 
         case token::mod:
             value_l
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_left_node);
             value_r
             = build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
-            todo
+            TODO
 
         default:
-            switch_error
+            SWITCH_ERROR
     }
-    not_excutable
+    NOT_EXCUTABLE
 }
 
 
 llvm::Value *
 build_llvm_ir::build_log_and_chain(ast::idx idx_log_and_operator) {
-    while (
+    if (
         tree[idx_log_and_operator].value.binary_expression.token_operator
-        == token::log_and
+        != token::log_and
     )
     {
-
+        return build_binary_expression(idx_log_and_operator);
     }
+    ast::idx l_value
+    = tree[idx_log_and_operator].value.binary_expression.idx_left_node;
+    ast::idx r_value
+    = tree[idx_log_and_operator].value.binary_expression.idx_right_node;
+
+    build_log_and_chain(l_value);
+    build_log_and_chain(r_value);
+
 }
 
 llvm::Value *

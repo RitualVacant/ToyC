@@ -22,7 +22,7 @@ class parser {
         bool really_output_asm_code = false;
 
         //std::vector<statement> code;
-        //std::size_t lable = 0;
+        //std::size_tlable = 0;
 
         //TODO
         //symbol_table table = symbol_table(output_file_path, really_output_asm_code);

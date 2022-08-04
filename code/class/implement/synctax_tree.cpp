@@ -164,7 +164,7 @@ ast::idx synctax_tree::creat_node(ast::node_type node_type) {
             tree.back().
             break;
         default:
-            switch_error
+            SWITCH_ERROR
     }
     */
     return tree.size() - 1;
@@ -243,7 +243,7 @@ synctax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
             trans_to_basic_type_declaration(idx_initial_declarator);
             break;
         default:
-            switch_error
+            SWITCH_ERROR
     }
     return;
 }
@@ -316,7 +316,7 @@ synctax_tree::trans_to_function(ast::idx idx) {
                 break;
             default:
                 fmt::print(fg(fmt::color::red), "node type {}\n", tree[i].type);
-                switch_error
+                SWITCH_ERROR
         }
     }
 
@@ -495,7 +495,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                     print_json_value("^=");
                     break;
                 default:
-                    switch_error
+                    SWITCH_ERROR
             }
             dfs_print_tree(tree[idx].value.assignment_expression.idx_binary_expression);
             dfs_print_tree(tree[idx].value.assignment_expression.idx_unary_or_binary_expression);
@@ -538,7 +538,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                     break;
                 default:
                     std::cout << fmt::format(fg(fmt::color::red), "the operator is {}\n", tree[idx].value.unary_expression.unary_operator);
-                    switch_error
+                    SWITCH_ERROR
                 break;
             }
             print_json_class_end();
@@ -617,7 +617,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                     print_json_value("*");
                     break;
                 default:
-                    switch_error
+                    SWITCH_ERROR
             }
             dfs_print_tree(tree[idx].value.binary_expression.idx_left_node);
             dfs_print_tree(tree[idx].value.binary_expression.idx_right_node);
@@ -745,7 +745,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                     break;
                 default:
                     fmt::print("pointer level can't over 5");
-                    switch_error
+                    SWITCH_ERROR
             }
             dfs_print_tree(tree[idx].value.declarator.idx_direct_declarator);
             print_json_class_end();
@@ -918,7 +918,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
                     print_json_value("struct");
                     break;
                 default:
-                    switch_error
+                    SWITCH_ERROR
             }
 
             print_json_key("limit");
@@ -971,7 +971,7 @@ synctax_tree::dfs_print_tree(ast::idx idx) {
 
         default: {
             fmt::print(fg(fmt::color::red), "add node type : {}\n", tree[idx].type);
-            switch_error
+            SWITCH_ERROR
         }
     }
     return;
