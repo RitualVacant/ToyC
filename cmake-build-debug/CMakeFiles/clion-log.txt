@@ -1,10 +1,4 @@
 /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/ninja/linux/ninja -G Ninja -S /home/lzj/code/cpp/script -B /home/lzj/code/cpp/script/cmake-build-debug
--- The CXX compiler identification is Clang 14.0.6
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: /usr/local/bin/clang++ - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
 number of processors:12
 cmake make program/home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/ninja/linux/ninja
 -- Found LLVM 14.0.6

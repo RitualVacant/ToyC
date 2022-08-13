@@ -1053,7 +1053,6 @@ parser::print_mid_code() {
 }
 */
 
-class parser;
 
 //NEW
 
@@ -1419,7 +1418,7 @@ parser::parser_conditional_expression() {
 int
 parser::operator_priority(token t) {
     switch (t) {
-        //end of an experssion
+        //end of an expression
         //return -1
         case token::end:
         case token::assign:
@@ -1493,18 +1492,37 @@ parser::parser_priority_binary_expression(int priority) {
     //creat node
     while (operator_priority(scan.get_current_token()) == priority) {
         idx_root = tree.creat_node(ast::node_type::binary_expression);
+
         tree[idx_root].value.binary_expression.token_operator
         = scan.get_current_token();
 
-        scan.next_token();
+        //[1] right combine operators || &&
+        if (
+            scan.get_current_token() == token::log_or
+            || scan.get_current_token() == token::log_and
+        )
+        {
+            scan.next_token();  //eat operator
 
-        tree[idx_root].value.binary_expression.idx_left_node
-        = idx_left_node;
+            tree[idx_root].value.binary_expression.idx_left_node
+            = idx_left_node;
 
-        tree[idx_root].value.binary_expression.idx_right_node
-        = parser_priority_binary_expression(priority - 1);
+            tree[idx_root].value.binary_expression.idx_right_node
+            = parser_priority_binary_expression(priority);
+            break;
+        }
+        //[2] left combine operators except || &&
+        else {
+            scan.next_token();  //eat operator
 
-        idx_left_node = idx_root;
+            tree[idx_root].value.binary_expression.idx_left_node
+            = idx_left_node;
+
+            tree[idx_root].value.binary_expression.idx_right_node
+            = parser_priority_binary_expression(priority - 1);
+
+            idx_left_node = idx_root;
+        }
     }
     //not creat node
     return idx_root;
@@ -1512,11 +1530,17 @@ parser::parser_priority_binary_expression(int priority) {
 
 ast::idx
 parser::parser_unary_expression() {
-    ast::idx idx_root = tree.creat_node(ast::node_type::unary_expression);
+    //assume unary expression is a binary expression in brackets
+    //don't create unary expression node
+    //so idx_root don't need to initialize
+    //idx_root can be an idx of binary expression or unary expression
+    ast::idx idx_root;
+
     switch (scan.get_current_token()) {
         case token::identif:
         case token::r_int:
         case token::r_double: {
+            idx_root = tree.creat_node(ast::node_type::unary_expression);
         //TODO
         //case token::string
             tree[idx_root].value.unary_expression.idx_postfix_expression
@@ -1528,14 +1552,17 @@ parser::parser_unary_expression() {
         case token::times:
         case token::bit_not:
         case token::log_not: {
+            ast::idx idx_root = tree.creat_node(ast::node_type::unary_expression);
             scan.next_token();
             tree[idx_root].value.unary_expression.idx_declaration_declatator
             = parser_unary_expression();
             break;
         }
 
+        //cast or (expression)
         case token::l_par: {
             switch (scan.get_pre_token()) {
+                //cast
                 case token::key__Bool:
                 case token::key__Complex:
                 case token::key__Imaginary:
@@ -1546,6 +1573,8 @@ parser::parser_unary_expression() {
                 case token::key_double:
                 case token::key_unsigned:
                 case token::key_signed: {
+                    idx_root = tree.creat_node(ast::node_type::unary_expression);
+
                     scan.next_token();  //eat (
 
                     tree[idx_root].value.unary_expression.idx_declaration_declatator
@@ -1556,11 +1585,15 @@ parser::parser_unary_expression() {
                     tree[idx_root].value.unary_expression.idx_unary_expression
                     = parser_unary_expression();
                 }
-
+                //(expression)
                 default: {
-                    tree[idx_root].value.unary_expression.idx_postfix_expression
-                    = parser_postfix_expression();
-                    break;
+                    scan.next_token(); //eat (
+                    idx_root = parser_binary_expression();
+                    scan.next_token(); //eat )
+                    return idx_root;
+                  //tree[idx_root].value.unary_expression.idx_postfix_expression
+                  //= parser_postfix_expression();
+                  //break;
                 }
             }
             break;
@@ -1767,7 +1800,7 @@ parser::parser_block() {
             break;
         case token::key_switch:
             tree[idx_root].value.block.idx_statement
-            = parser_swtich_statement();
+            = parser_switch_statement();
             break;
         case token::key_do:
             tree[idx_root].value.block.idx_statement
@@ -1869,6 +1902,11 @@ parser::parser_expression() {
     }
     return idx_root;
 }
+
+//ast::idx
+//parser::parser_assignment_expression(ast::idx idx_root) {
+
+//}
 
 ast::idx
 parser::parser_assignment_expression(ast::idx last_assign) {
@@ -2006,7 +2044,7 @@ parser::parser_if_statement() {
     return idx_root;
 }
 ast::idx
-parser::parser_swtich_statement() {
+parser::parser_switch_statement() {
     ast::idx idx_root = tree.creat_node(ast::node_type::switch_statement);
 
     scan.next_token();  //eat switch

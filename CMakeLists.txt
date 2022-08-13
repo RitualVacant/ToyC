@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.13.4)
 
 
-set(CMAKE_CXX_COMPILER "/usr/local/bin/clang++")
-set(CMAKE_C_COMPILER "/usr/local/bin/clang")
+#set(CMAKE_CXX_COMPILER "/usr/local/bin/clang++")
+#set(CMAKE_C_COMPILER "/usr/local/bin/clang")
 #set(CMAKE_CXX_COMPILER "/usr/bin/g++-11")
 #set(CMAKE_C_COMPILER "/usr/bin/g++-11")
 #set(VCPKG_ROOT "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")

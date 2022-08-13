@@ -435,6 +435,8 @@ build_llvm_ir::build_compound_statement(ast::idx idx_compound_statement, llvm::B
     {
         build_block(i);
     }
+    //TODO
+    return nullptr;
 }
 
 void
@@ -525,7 +527,6 @@ build_llvm_ir::build_if_statement(ast::idx idx_if_statement) {
         //end of if statement
         builder->SetInsertPoint(ptr_block_statement_end );
     }
-    return;
 }
 
 void
@@ -637,7 +638,7 @@ build_llvm_ir::build_assign_expression(ast::idx idx_assign_expression ,llvm::Bas
                 );
                 break;
 
-            case token::div_agn:    ///=
+            case token::div_agn:    // /=
                 builder->CreateStore(
                     builder->CreateSDiv(
                         r_value,
@@ -803,7 +804,19 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
         //TODO
         //float num
         case token::log_and: {
+            for (
+                auto i = idx_binary_expression;
+                tree[i].type == ast::node_type::binary_expression
+                    && tree[i].value.binary_expression.token_operator == token::log_and;
+                i = tree[i].value.binary_expression.idx_right_node
+                )
+            {
 
+            }
+
+            //****************************************************************
+            //DROP
+            //****************************************************************
             //left value
             value_l = build_binary_expression(
                 tree[idx_binary_expression].value.binary_expression.idx_left_node,

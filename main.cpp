@@ -27,6 +27,7 @@ void output_help_information();
 //main func
 std::vector<std::string> command;
 int main(int argc, char* argv[]) {
+
     if (argc == 1) {
         fmt::print("path of input file  : ");
         //std::cin >> file_path;
@@ -103,10 +104,10 @@ void output_help_information() {
     fmt::print("size of node: {}B\n", sizeof(ast::node));
     fmt::print("(s) scan         --lexical analysis and output the token\n");
     fmt::print("(y) yes          --get the asm_code file\n");
-    fmt::print("(m) mid_code     --get transfrom code\n");
+    fmt::print("(m) mid_code     --get transform code\n");
     fmt::print("(t) tree         --print synctax tree1\n");
     fmt::print("(b) \n");
-    fmt::print("(c) create       --ctreate the\n");
+    fmt::print("(c) create       --create the\n");
     fmt::print("(h) help         --print table\n");
     fmt::print("(l) llvm         --output llvm ir\n");
     fmt::print("(o) dot          --dot\n");

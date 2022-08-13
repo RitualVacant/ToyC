@@ -1,8 +1,8 @@
 
 int f1() {
     int a, b, c, d;
-    if (a >= b && b >= c && a >= c && a >= d) {
-        a = b;
+    if ((a <= b || b <= c + a) && c <= d || c <= d || d == c && a <= b) {
+        d = a;
     }
     return a + b;
 }

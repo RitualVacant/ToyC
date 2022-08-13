@@ -107,7 +107,7 @@ class parser {
         ast::idx parser_constant();
         ast::idx parser_not_mark_statement();
         ast::idx parser_if_statement();
-        ast::idx parser_swtich_statement();
+        ast::idx parser_switch_statement();
         ast::idx parser_while_statement();
         ast::idx parser_do_while_statement();
         ast::idx parser_for_statement();
