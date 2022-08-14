@@ -946,7 +946,6 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
             }
 
             // last binary expression's right node
-
             if (
                 tree[i].type == ast::node_type::binary_expression
                 && (
