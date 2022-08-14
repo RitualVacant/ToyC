@@ -84,13 +84,14 @@ void choose_mode_run() {
                 break;
             }
             case mode::llvm_opt: {
-                int done = system("opt -dot-cfg ./../test/llvm.ll");
+                int done = system("opt -dot-cfg -S ./../test/llvm.ll");
                 if (done == 127) {
-                    fmt::print("");
+                    fmt::print("done");
                 }
                 if (done == -1) {
-                    fmt::print("");
+                    fmt::print("no");
                 }
+                break;
             }
             default:
                 break;

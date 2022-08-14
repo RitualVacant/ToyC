@@ -11,38 +11,33 @@ define i32 @f1() {
   %5 = load i32, i32* %1, align 4
   %6 = icmp sle i32 %4, %5
   %7 = icmp ne i1 %6, false
-  br i1 %7, label %"4", label %"3"
+  br i1 %7, label %"2", label %"4"
 
-"2":                                              ; preds = %"7"
-  %8 = load i32, i32* %1, align 4
-  store i32 %8, i32* %0, align 4
-  %9 = load i32, i32* %0, align 4
+"2":                                              ; preds = %"5", %"1"
+  %8 = load i32, i32* %0, align 4
+  %9 = load i32, i32* %2, align 4
+  %10 = add i32 %8, %9
+  store i32 %10, i32* %3, align 4
+  %11 = load i32, i32* %3, align 4
   br label %"3"
 
-"3":                                              ; preds = %"2", %"6", %"5", %"4", %"1"
-  %10 = load i32, i32* %0, align 4
-  %11 = load i32, i32* %1, align 4
-  %12 = add i32 %10, %11
-  ret i32 %12
+"3":                                              ; preds = %"2", %"5", %"4"
+  %12 = load i32, i32* %0, align 4
+  %13 = load i32, i32* %1, align 4
+  %14 = add i32 %12, %13
+  ret i32 %14
 
 "4":                                              ; preds = %"1"
-  %13 = load i32, i32* %1, align 4
-  %14 = load i32, i32* %2, align 4
-  %15 = icmp sle i32 %13, %14
-  %16 = icmp ne i1 %15, false
-  br i1 %16, label %"5", label %"3"
+  %15 = load i32, i32* %2, align 4
+  %16 = load i32, i32* %3, align 4
+  %17 = icmp sle i32 %15, %16
+  %18 = icmp ne i1 %17, false
+  br i1 %18, label %"5", label %"3"
 
 "5":                                              ; preds = %"4"
-  %17 = icmp ne i1 %16, false
-  br i1 %17, label %"6", label %"3"
-
-"6":                                              ; preds = %"5"
-  %18 = load i32, i32* %2, align 4
-  %19 = load i32, i32* %3, align 4
-  %20 = icmp sle i32 %18, %19
-  %21 = icmp ne i1 %20, false
-  br i1 %21, label %"7", label %"3"
-
-"7":                                              ; preds = %"6"
-  br label %"2"
+  %19 = load i32, i32* %0, align 4
+  %20 = load i32, i32* %3, align 4
+  %21 = icmp sle i32 %19, %20
+  %22 = icmp ne i1 %21, false
+  br i1 %22, label %"2", label %"3"
 }

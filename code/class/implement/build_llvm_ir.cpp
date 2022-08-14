@@ -519,7 +519,8 @@ build_llvm_ir::build_if_statement(ast::idx idx_if_statement) {
             ptr_block_if_body,
             ptr_block_statement_end
         );
-        builder->CreateBr(ptr_block_if_body);
+        //builder->CreateBr(ptr_block_if_body);
+
         //if body
         builder->SetInsertPoint(ptr_block_if_body);
         build_compound_statement(idx_if_body);
@@ -804,15 +805,45 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
         //TODO
         //float num
         case token::log_and: {
-            for (
-                auto i = idx_binary_expression;
+            auto i = idx_binary_expression;
+            for (;
                 tree[i].type == ast::node_type::binary_expression
                     && tree[i].value.binary_expression.token_operator == token::log_and;
                 i = tree[i].value.binary_expression.idx_right_node
-                )
+            )
             {
-
+                //left node
+                value_l = build_binary_expression(
+                    tree[i].value.binary_expression.idx_left_node
+                );
+                //judge left node
+                auto ret_val = builder->CreateICmpNE(
+                    value_l,
+                    llvm::ConstantInt::get(value_l->getType(), 0)
+                );
+                //create next true block
+                auto ptr_next_true_block
+                = llvm::BasicBlock::Create(*context, get_lable(), ptr_now_func);
+                //conditional jump
+                builder->CreateCondBr(
+                    ret_val,
+                    ptr_next_true_block,
+                    ptr_false_block
+                );
+                //start ture block
+                builder->SetInsertPoint(ptr_next_true_block);
             }
+
+            // last binary expression's right node
+            auto ret_val = builder->CreateICmpNE(
+                build_binary_expression(i),
+                llvm::ConstantInt::get(value_l->getType(), 0)
+            );
+            //jump
+            builder->CreateCondBr(ret_val, ptr_true_block, ptr_false_block);
+            builder->SetInsertPoint(ptr_true_block);
+
+            return ret_val;
 
             //****************************************************************
             //DROP
@@ -826,7 +857,7 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
 
             ptr_true_block = llvm::BasicBlock::Create(*context, get_lable(), ptr_now_func);
 
-            auto ret_val = builder->CreateICmpNE(
+            ret_val = builder->CreateICmpNE(
                 value_l,
                 llvm::ConstantInt::get(value_l->getType(), 0)
             );
@@ -859,7 +890,95 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
         }
 
         case token::log_or: {
+            auto i = idx_binary_expression;
+            for (;
+                tree[i].type == ast::node_type::binary_expression
+                && tree[i].value.binary_expression.token_operator == token::log_or;
+                i = tree[i].value.binary_expression.idx_right_node
+            )
+            {
+                // left node can be a binary expression or a unary expression
+                // if expression tree's root node's operator is || or &&
+                // node don't need to compute the binary expression's return value
+                // only jump to the T/F blocks
+                ast::idx idx_left_node = tree[i].value.binary_expression.idx_left_node;
+                ast::idx idx_right_node = tree[i].value.binary_expression.idx_right_node;
+                if (
+                    tree[idx_left_node].type == ast::node_type::binary_expression
+                    && (
+                        tree[idx_left_node].value.binary_expression.token_operator == token::log_or
+                        || tree[idx_left_node].value.binary_expression.token_operator == token::log_and
+                   )
+                )
+                {
+                    //create next false block
+                    auto ptr_next_false_block
+                        = llvm::BasicBlock::Create(*context, get_lable(), ptr_now_func);
 
+                    build_binary_expression(
+                        idx_left_node,
+                        ptr_true_block,
+                        ptr_next_false_block
+                    );
+
+                    //start false block
+                    builder->SetInsertPoint(ptr_next_false_block);
+                }
+                else {
+                    value_l = build_binary_expression(idx_left_node);
+                    //judge left node
+                    auto ret_val = builder->CreateICmpNE(
+                        value_l,
+                        llvm::ConstantInt::get(value_l->getType(), 0)
+                    );
+                    //create next false block
+                    auto ptr_next_false_block
+                        = llvm::BasicBlock::Create(*context, get_lable(), ptr_now_func);
+                    //conditional jump
+                    builder->CreateCondBr(
+                        ret_val,
+                        ptr_true_block,
+                        ptr_next_false_block
+                    );
+                    //start false block
+                    builder->SetInsertPoint(ptr_next_false_block);
+                }
+            }
+
+            // last binary expression's right node
+
+            if (
+                tree[i].type == ast::node_type::binary_expression
+                && (
+                    tree[i].value.binary_expression.token_operator == token::log_or
+                    || tree[i].value.binary_expression.token_operator == token::log_and
+                )
+            )
+            {
+                build_binary_expression(
+                    i,
+                    ptr_true_block,
+                    ptr_false_block
+                );
+                builder->SetInsertPoint(ptr_true_block);
+                return nullptr;
+            }
+            else {
+                auto ret_val = builder->CreateICmpNE(
+                    build_binary_expression(i),
+                    llvm::ConstantInt::get(value_l->getType(), 0)
+                );
+                //jump
+                builder->CreateCondBr(ret_val, ptr_true_block, ptr_false_block);
+                builder->SetInsertPoint(ptr_true_block);
+
+                return ret_val;
+            }
+
+            //****************************************************************
+            //DROP
+            //****************************************************************
+            /*
             //left value
             value_l = build_binary_expression(
                 tree[idx_binary_expression].value.binary_expression.idx_left_node,
@@ -869,7 +988,7 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
 
             ptr_false_block = llvm::BasicBlock::Create(*context, get_lable(), ptr_now_func);
 
-            auto ret_val = builder->CreateICmpNE(
+            ret_val = builder->CreateICmpNE(
                 value_l,
                 llvm::ConstantInt::get(value_l->getType(), 0)
             );
@@ -900,6 +1019,7 @@ build_llvm_ir::build_binary_expression(ast::idx idx_binary_expression, llvm::Bas
             builder->SetInsertPoint(ptr_false_block);
 
             return ret_val;
+            */
         }
 
         case token::bit_and:
