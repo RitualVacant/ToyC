@@ -80,8 +80,8 @@ class build_llvm_ir {
         void build_switch_statement(ast::idx idx_switch_statement);
         void build_do_while_statement(ast::idx idx_do_while_statement);
         void build_for_statement(ast::idx idx_for_statement);
-        llvm::Value *build_assign_expression(ast::idx idx_assign_expression, llvm::BasicBlock *ptr_true_block = nullptr, llvm::BasicBlock *ptr_false_block = nullptr);
-        llvm::Value *build_binary_expression(ast::idx idx_binary_expression, llvm::BasicBlock *ptr_true_block = nullptr, llvm::BasicBlock *ptr_false_block = nullptr);
+        llvm::Value *build_assign_expression(ast::idx idx_assign_expression, llvm::BasicBlock *ptr_true_block = nullptr, llvm::BasicBlock *ptr_false_block = nullptr, bool is_return_value = true);
+        llvm::Value *build_binary_expression(ast::idx idx_binary_expression, llvm::BasicBlock *ptr_true_block = nullptr, llvm::BasicBlock *ptr_false_block = nullptr, bool is_return_value = true);
         variable     build_unary_expression(ast::idx idx_unary_expression);
         llvm::Value *build_primary_expression(ast::idx idx_primary_expression);
         llvm::Value *build_log_and_chain(ast::idx idx_log_and_operator);
