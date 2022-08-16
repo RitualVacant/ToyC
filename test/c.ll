@@ -7,25 +7,34 @@ target triple = "x86_64-unknown-linux-gnu"
 define dso_local i32 @f1() #0 {
   %1 = alloca i32, align 4
   %2 = alloca i32, align 4
+  %3 = alloca i32, align 4
   store i32 1, i32* %1, align 4
   store i32 4, i32* %2, align 4
-  br label %3
+  store i32 0, i32* %3, align 4
+  br label %4
 
-3:                                                ; preds = %7, %0
-  %4 = load i32, i32* %1, align 4
-  %5 = load i32, i32* %2, align 4
-  %6 = icmp slt i32 %4, %5
-  br i1 %6, label %7, label %10
+4:                                                ; preds = %12, %0
+  %5 = load i32, i32* %3, align 4
+  %6 = load i32, i32* %1, align 4
+  %7 = icmp slt i32 %5, %6
+  br i1 %7, label %8, label %15
 
-7:                                                ; preds = %3
-  %8 = load i32, i32* %1, align 4
-  %9 = add nsw i32 %8, 1
-  store i32 %9, i32* %1, align 4
-  br label %3, !llvm.loop !4
+8:                                                ; preds = %4
+  %9 = load i32, i32* %1, align 4
+  %10 = load i32, i32* %2, align 4
+  %11 = add nsw i32 %9, %10
+  store i32 %11, i32* %1, align 4
+  br label %12
 
-10:                                               ; preds = %3
-  %11 = load i32, i32* %1, align 4
-  ret i32 %11
+12:                                               ; preds = %8
+  %13 = load i32, i32* %3, align 4
+  %14 = add nsw i32 %13, 1
+  store i32 %14, i32* %3, align 4
+  br label %4, !llvm.loop !4
+
+15:                                               ; preds = %4
+  %16 = load i32, i32* %1, align 4
+  ret i32 %16
 }
 
 attributes #0 = { noinline nounwind optnone uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }

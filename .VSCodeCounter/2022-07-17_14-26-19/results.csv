@@ -13,7 +13,7 @@
 "/home/lzj/code/cpp/script/code/class/implement/parser.cpp", "C++", 853, 0, 0, 0, 0, 1118, 157, 2128
 "/home/lzj/code/cpp/script/code/class/implement/scanning.cpp", "C++", 338, 0, 0, 0, 0, 14, 42, 394
 "/home/lzj/code/cpp/script/code/class/implement/symbol_table.cpp", "C++", 103, 0, 0, 0, 0, 49, 18, 170
-"/home/lzj/code/cpp/script/code/class/implement/synctax_tree.cpp", "C++", 736, 0, 0, 0, 0, 210, 93, 1039
+"/home/lzj/code/cpp/script/code/class/implement/syntax_tree.cpp", "C++", 736, 0, 0, 0, 0, 210, 93, 1039
 "/home/lzj/code/cpp/script/code/class/implement/value.cpp", "C++", 3, 0, 0, 0, 0, 108, 0, 111
 "/home/lzj/code/cpp/script/code/class/implement/worng.cpp", "C++", 79, 0, 0, 0, 0, 3, 18, 100
 "/home/lzj/code/cpp/script/code/class/interface/asm_code.h", "C++", 7, 0, 0, 0, 0, 102, 3, 112
@@ -23,7 +23,7 @@
 "/home/lzj/code/cpp/script/code/class/interface/parser.h", "C++", 92, 0, 0, 0, 0, 42, 18, 152
 "/home/lzj/code/cpp/script/code/class/interface/scanning.h", "C++", 66, 0, 0, 0, 0, 4, 11, 81
 "/home/lzj/code/cpp/script/code/class/interface/symbol_table.h", "C++", 100, 0, 0, 0, 0, 22, 26, 148
-"/home/lzj/code/cpp/script/code/class/interface/synctax_tree.h", "C++", 59, 0, 0, 0, 0, 0, 16, 75
+"/home/lzj/code/cpp/script/code/class/interface/syntax_tree.h", "C++", 59, 0, 0, 0, 0, 0, 16, 75
 "/home/lzj/code/cpp/script/code/class/interface/trans_tree.h", "C++", 4, 0, 0, 0, 0, 0, 5, 9
 "/home/lzj/code/cpp/script/code/error/inner.cpp", "C++", 24, 0, 0, 0, 0, 0, 9, 33
 "/home/lzj/code/cpp/script/main.cpp", "C++", 90, 0, 0, 0, 0, 6, 10, 106

@@ -5,5 +5,4 @@
 #include "life.h"
 
 
-
 #endif

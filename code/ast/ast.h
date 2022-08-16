@@ -256,7 +256,7 @@ namespace ast {
         bool is_sizeof = false;
 
         token unary_operator = token::invalid;
-        ast::idx idx_declaration_declatator = ast::null;
+        ast::idx idx_declaration_declarator = ast::null;
         ast::idx idx_unary_expression = ast::null;
         ast::idx idx_postfix_expression = ast::null;
 
@@ -350,9 +350,9 @@ namespace ast {
     };
 
     struct arguments_declaration {
-        ast::idx idx_declararion_declarator = ast::null;
+        ast::idx idx_declaration_declarator = ast::null;
         ast::idx idx_declarator = ast::null;
-        ast::idx idx_next_arguments_declatation = ast::null;
+        ast::idx idx_next_arguments_declaration = ast::null;
     };
 
     struct mark_statement {

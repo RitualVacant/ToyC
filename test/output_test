@@ -5,23 +5,23 @@ add:
     sub     sp,     4
     mov     dword ptr   [bp-4], 3
     cmp     [bp-4], 3
-    jge     lable0
+    jge     label0
     mov     dword ptr   [bp-4], 0
     cmp     [bp-4], 3
-    je      lable1
+    je      label1
     mov     dword ptr   [bp-4], 9
-lable1:
-lable0:
+label1:
+label0:
     mov     dword ptr   [bp-4], 2
     sub     sp,     4
     mov     dword ptr   [bp-8], 0
-lable2:
+label2:
     cmp     [bp-8], 34
-    jle     lable4
-lable4:
+    jle     label4
+label4:
     add     3
-    jmp     lable2
-lable3:
+    jmp     label2
+label3:
     sub     sp,     16
     sub     sp,     3
     mov     dword ptr   [bp-27-1*1],2

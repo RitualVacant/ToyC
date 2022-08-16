@@ -18,7 +18,7 @@ char const useless_char[] = {
 std::unordered_map<token, std::string> const token_to_string {
     {token::invalid, "invalid"},
     {token::jmp, "jmp"},
-    {token::lable, "lable"},
+    {token::label, "label"},
 
     {token::dec_int,         "dec_int"},
     {token::dec_double,      "dec_double"},

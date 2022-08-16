@@ -1,7 +1,16 @@
 int f1() {
-    int a, b, c, d;
-    if (a < b || c < d && b < c) {
-        a = a + b;
-    }
-    return a + b;
+  int    a, b, c, d;
+  double a2f      = 2.3;
+  int    fsd      = 1;
+  int    b2[3][3] = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
+  do {
+    a = a + b;
+  } while (a < b || c < d && b < c);
+  for (int i = 0; i < a; i++) {
+    a = a + i;
+  }
+  if (a == 0) {
+    return 4;
+  }
+  return a + b;
 }

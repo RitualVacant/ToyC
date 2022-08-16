@@ -25,7 +25,7 @@ Total : 31 files,  4168 codes, 2683 comments, 747 blanks, all 7598 lines
 | [code/class/implement/parser.cpp](/code/class/implement/parser.cpp) | C++ | 853 | 1,118 | 157 | 2,128 |
 | [code/class/implement/scanning.cpp](/code/class/implement/scanning.cpp) | C++ | 338 | 14 | 42 | 394 |
 | [code/class/implement/symbol_table.cpp](/code/class/implement/symbol_table.cpp) | C++ | 103 | 49 | 18 | 170 |
-| [code/class/implement/synctax_tree.cpp](/code/class/implement/synctax_tree.cpp) | C++ | 736 | 210 | 93 | 1,039 |
+| [code/class/implement/syntax_tree.cpp](/code/class/implement/syntax_tree.cpp) | C++ | 736 | 210 | 93 | 1,039 |
 | [code/class/implement/value.cpp](/code/class/implement/value.cpp) | C++ | 3 | 108 | 0 | 111 |
 | [code/class/implement/worng.cpp](/code/class/implement/worng.cpp) | C++ | 79 | 3 | 18 | 100 |
 | [code/class/interface/asm_code.h](/code/class/interface/asm_code.h) | C++ | 7 | 102 | 3 | 112 |
@@ -35,7 +35,7 @@ Total : 31 files,  4168 codes, 2683 comments, 747 blanks, all 7598 lines
 | [code/class/interface/parser.h](/code/class/interface/parser.h) | C++ | 92 | 42 | 18 | 152 |
 | [code/class/interface/scanning.h](/code/class/interface/scanning.h) | C++ | 66 | 4 | 11 | 81 |
 | [code/class/interface/symbol_table.h](/code/class/interface/symbol_table.h) | C++ | 100 | 22 | 26 | 148 |
-| [code/class/interface/synctax_tree.h](/code/class/interface/synctax_tree.h) | C++ | 59 | 0 | 16 | 75 |
+| [code/class/interface/syntax_tree.h](/code/class/interface/syntax_tree.h) | C++ | 59 | 0 | 16 | 75 |
 | [code/class/interface/trans_tree.h](/code/class/interface/trans_tree.h) | C++ | 4 | 0 | 5 | 9 |
 | [code/error/inner.cpp](/code/error/inner.cpp) | C++ | 24 | 0 | 9 | 33 |
 | [main.cpp](/main.cpp) | C++ | 90 | 6 | 10 | 106 |

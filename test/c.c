@@ -1,7 +1,7 @@
 int f1() {
-    int a = 1, b = 4;
-    while (a < b) {
-        a = a + 1;
-    }
-    return a;
+  int a = 1, b = 4;
+  for (int i = 0; i < a; i++) {
+    a = a + b;
+  }
+  return a;
 }

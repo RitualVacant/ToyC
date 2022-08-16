@@ -56,9 +56,9 @@ rule CLEAN
 
 
 #############################################
-# Rule for printing all primary targets available.
+# Rule for printing all primary targets availabel.
 
 rule HELP
   command = /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/ninja/linux/ninja -t targets
-  description = All primary targets available:
+  description = All primary targets availabel:
 

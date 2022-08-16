@@ -15,18 +15,18 @@ fmt::print(fg(fmt::color::red), "the token is:{} line:{} column:{}\n", scan.get_
 fmt::print(fg(fmt::color::red), "a not expected switch case happen in:  {}:{}\nin function : {}()\n", __FILE__,  __LINE__, __FUNCTION__);\
 exit(0);
 
-#define NOT_EXCUTABLE \
+#define NOT_REACHABLE \
 fmt::print(fg(fmt::color::red), "The program cannot be executed here:{}:{}\n", __FILE__, __LINE__);\
 exit(0);
 
-#define NOTD_TYPE_WRONG(type1, type2) \
+#define NODE_TYPE_WRONG(type1, type2) \
 if (type1 != type2) {\
     fmt::print(fg(fmt::color::red), "node type is wrong at: {}:{}", __FILE__, __LINE__);\
     exit(0);\
 }
 
 #define FILE_FAIL_OPEN \
-fmt::print(fg(fmt::color::red),"file fail to open at :{}:{}\nin: funcion {}\n", __FILE__, __LINE__, __FUNCTON__);\
+fmt::print(fg(fmt::color::red),"file fail to open at :{}:{}\nin: function {}\n", __FILE__, __LINE__, __FUNCTON__);\
 exit(0);
 
 

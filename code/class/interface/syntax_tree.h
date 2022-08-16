@@ -1,5 +1,5 @@
-#ifndef SYNCTAX_TREE_H
-#define SYNCTAX_TREE_H
+#ifndef syntax_TREE_H
+#define syntax_TREE_H
 #pragma once
 #include <vector>
 #include <string>
@@ -10,11 +10,11 @@
 
 
 
-std::size_t const sizeof_synctax_tree_init = 100000;
+std::size_t const sizeof_syntax_tree_init = 100000;
 
 
 
-class synctax_tree {
+class syntax_tree {
     private:
         bool reserve_tree = false;
         bool print_trans_tree = false;
@@ -58,8 +58,8 @@ class synctax_tree {
         void trans_to_enum_definition(ast::idx idx);
 
     public:
-        synctax_tree();
-        ~synctax_tree();
+        syntax_tree();
+        ~syntax_tree();
 
         ast::idx insert(ast::node_type node_type);
         ast::idx creat_node(ast::node_type node_type);
@@ -69,7 +69,7 @@ class synctax_tree {
         void print_tree(std::string file_path);
         void to_json();
         void trans_tree();
-        std::vector<ast::node> &get_synctax_tree();
+        std::vector<ast::node> &get_syntax_tree();
 };
 
 #endif

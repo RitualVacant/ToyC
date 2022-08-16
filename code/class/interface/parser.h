@@ -13,7 +13,7 @@
 #include "symbol_table.cpp"
 #include "worng.cpp"
 #include "asm_code.cpp"
-#include "synctax_tree.cpp"
+#include "syntax_tree.cpp"
 
 
 class parser {
@@ -22,13 +22,13 @@ class parser {
         bool really_output_asm_code = false;
 
         //std::vector<statement> code;
-        //std::size_tlable = 0;
+        //std::size_tlabel = 0;
 
         //TODO
         //symbol_table table = symbol_table(output_file_path, really_output_asm_code);
         symbol_table* table;
         scanning     scan  = scanning(file_path);
-        synctax_tree tree;
+        syntax_tree tree;
         //std::unique_ptr<asm_code> asm_file  = std::make_unique<asm_code>(asm_code(fil))
         //asm_code* asm_file = nullptr;
         //
@@ -57,7 +57,7 @@ class parser {
         //void parser_expression_unit();
         //std::string parser_func_call(std::string name_func);
         //std::string get_var_time();
-        //std::string get_lable();
+        //std::string get_label();
 
         //前缀表达式转后缀表达式
         //本应该写在函数中，在类中减少内存反复分配
@@ -130,9 +130,9 @@ class parser {
 
         void print_mid_code();
         void print_asm_code_code();
-        void print_synctax_tree();
-        void move_synctax_tree();
-        std::vector<ast::node> &get_synctax_tree();
+        void print_syntax_tree();
+        void move_syntax_tree();
+        std::vector<ast::node> &get_syntax_tree();
 };
 
 

@@ -1,22 +1,23 @@
 {
-    "cmake.configureOnOpen": false,
-    "C_Cpp.errorSquiggles": "Enabled",
-    "files.associations": {
-      "bit": "cpp",
-      "limits": "cpp",
-      "numbers": "cpp",
-      "functional": "cpp",
-      "tuple": "cpp",
-      "type_traits": "cpp",
-      "optional": "cpp",
-      "istream": "cpp",
-      "ostream": "cpp",
-      "array": "cpp",
-      "utility": "cpp",
-      "string_view": "cpp",
-      "system_error": "cpp",
-      "*.inc": "cpp",
-      "*.def": "cpp",
-      "i1": "cpp"
-    }
+  "cmake.configureOnOpen": false,
+  "C_Cpp.errorSquiggles": "Enabled",
+  "files.associations": {
+    "bit": "cpp",
+    "limits": "cpp",
+    "numbers": "cpp",
+    "functional": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "optional": "cpp",
+    "istream": "cpp",
+    "ostream": "cpp",
+    "array": "cpp",
+    "utility": "cpp",
+    "string_view": "cpp",
+    "system_error": "cpp",
+    "*.inc": "cpp",
+    "*.def": "cpp",
+    "i1": "cpp",
+    "unordered_map": "cpp"
+  }
 }

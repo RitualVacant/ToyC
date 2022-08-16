@@ -89,7 +89,7 @@ class asm_code {
         bool register_is_used(register_name);
         //
         void asm_code_write_code(std::string symbol, std::string arg1, std::string arg2);
-        void asm_code_write_lable(std::string lable);
+        void asm_code_write_label(std::string label);
         void asm_code_write_mov(std::size_t size, std::string arg1, std::string arg2);
 };
 

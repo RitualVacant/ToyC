@@ -165,7 +165,7 @@ build clean: CLEAN
 
 
 #############################################
-# Print all primary targets available.
+# Print all primary targets availabel.
 
 build help: HELP
 

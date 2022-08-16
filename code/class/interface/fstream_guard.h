@@ -7,29 +7,30 @@
 namespace my {
 
 enum mode {
-    read,
-    wirte,
+  read,
+  wirte,
 };
 
 class fstream_guard {
-    private:
-        std::fstream fstream;
-    public:
-        explicit fstream_guard(std::string file_path, mode mode);
-        fstream_guard();
-        ~fstream_guard();
-        fstream_guard(fstream_guard const &)      = delete;
-        fstream_guard(fstream_guard&&)            = delete;
-        fstream_guard& operator=(fstream_guard&)  = delete;
-        fstream_guard& operator=(fstream_guard&&) = delete;
+private:
+  std::fstream fstream;
 
-        void open(std::string file_path, mode mode);
-        bool eof();
-        std::fstream& operator<<(std::string);
-        char get();
+public:
+  explicit fstream_guard(std::string file_path, mode mode);
+  fstream_guard();
+  ~fstream_guard();
+  fstream_guard(fstream_guard const&)       = delete;
+  fstream_guard(fstream_guard&&)            = delete;
+  fstream_guard& operator=(fstream_guard&)  = delete;
+  fstream_guard& operator=(fstream_guard&&) = delete;
+
+  void          open(std::string file_path, mode mode);
+  bool          eof();
+  std::fstream& operator<<(std::string);
+  char          get();
 };
 
-}
+}  // namespace my
 
 
 #endif
