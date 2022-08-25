@@ -798,7 +798,50 @@ llvm::Value* build_llvm_ir::build_assign_expression(
 // TODO
 build_llvm_ir::variable
 build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression) {
-  //
+  ast::idx idx_postfix_expression
+    = tree[idx_unary_expression].value.unary_expression.idx_postfix_expression;
+
+  ast::idx idx_primary_expression
+    = tree[idx_postfix_expression]
+        .value.postfix_expression.idx_primary_expression;
+
+  ast::idx idx_postfix_operator
+    = tree[idx_postfix_expression]
+        .value.postfix_expression.idx_postfix_operator;
+
+
+  // unary operator
+  // unary operator is exist
+  if (tree[idx_unary_expression].value.unary_expression.idx_unary_expression != ast::null) {
+    for (ast::idx i = idx_unary_expression; i != ast::null;
+         tree[i].value.unary_expression.idx_unary_expression) {
+      switch (tree[idx_unary_expression].value.unary_expression.unary_operator
+      ) {
+        case token::invalid:
+          break;
+        // &
+        case token::bit_and:
+          break;
+        // *
+        case token::times:
+          break;
+        // ++
+        case token::self_plus:
+          break;
+        // --
+        case token::self_minus:
+          break;
+        // ~
+        case token::bit_not:
+          break;
+        // !
+        case token::log_not:
+          break;
+        default:
+          SWITCH_ERROR
+      }
+    }
+  }
   if (tree[idx_unary_expression].value.unary_expression.unary_operator != token::invalid) {
   }
   //
@@ -813,16 +856,10 @@ build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression) {
              .value.unary_expression.idx_declaration_declarator) {
   }
 
-  ast::idx idx_postfix_expression
-    = tree[idx_unary_expression].value.unary_expression.idx_postfix_expression;
-
-  ast::idx idx_primary_expression
-    = tree[idx_postfix_expression]
-        .value.postfix_expression.idx_primary_expression;
-
-  ast::idx idx_postfix_operator
-    = tree[idx_postfix_expression]
-        .value.postfix_expression.idx_postfix_operator;
+  // postfix operator exist
+  // TODO
+  if (idx_postfix_operator != ast::null) {
+  }
 
   // TODO
   variable value_loc_and_type = find_value(std::string{
@@ -1248,24 +1285,20 @@ llvm::Value* build_llvm_ir::build_binary_expression(
         tree[idx_binary_expression].value.binary_expression.idx_right_node
       );
       break;
-      TODO
 
-        case token::div
-          : value_l
-            = build_binary_expression(
-              tree[idx_binary_expression].value.binary_expression.idx_left_node
-            );
+    case token::div:
+      value_l = build_binary_expression(
+        tree[idx_binary_expression].value.binary_expression.idx_left_node
+      );
       value_r = build_binary_expression(
         tree[idx_binary_expression].value.binary_expression.idx_right_node
       );
       break;
-      TODO
 
-        case token::mod
-          : value_l
-            = build_binary_expression(
-              tree[idx_binary_expression].value.binary_expression.idx_left_node
-            );
+    case token::mod:
+      value_l = build_binary_expression(
+        tree[idx_binary_expression].value.binary_expression.idx_left_node
+      );
       value_r = build_binary_expression(
         tree[idx_binary_expression].value.binary_expression.idx_right_node
       );
@@ -1312,7 +1345,9 @@ void build_llvm_ir::insert_func_symbol(
     fmt::print("redeclaration of {}", name);
     exit(0);
   }
-  func_symbol_table.insert({name, variable{ptr_var, ptr_type}});
+  func_symbol_table.insert({
+    name, variable{ptr_var, ptr_type}
+  });
   return;
 }
 
@@ -1326,7 +1361,9 @@ void build_llvm_ir::insert_symbol_symbol(
     fmt::print("redeclaration of {}", name);
     exit(0);
   }
-  func_symbol_table.insert({name, variable{ptr_var, ptr_type}});
+  func_symbol_table.insert({
+    name, variable{ptr_var, ptr_type}
+  });
   return;
 }
 

@@ -46,8 +46,8 @@ syntax_tree::insert(ast::node_type node_type) {
         case ast::node_type::primary_expression:
         case ast::node_type::statement:
         case ast::node_type::declare_function: {
-            //tree.back().value.declare_funcion.loc.line = line;
-            //tree.back().value.declare_funcion.loc.column = column;
+            //tree.back().value.declare_function.loc.line = line;
+            //tree.back().value.declare_function.loc.column = column;
 
         }
         case ast::node_type::declare_varible: {
@@ -183,12 +183,12 @@ void syntax_tree::trans_tree() {
        i          = tree[i]
              .value.declaration_or_definition
              .idx_next_declaration_or_definition) {
-    trans_declaration_or_definination(i);
+    trans_declaration_or_definition(i);
   }
   return;
 }
 
-void syntax_tree::trans_declaration_or_definination(
+void syntax_tree::trans_declaration_or_definition(
   ast::idx idx_declaration_or_definition
 ) {
   ast::idx idx_start_initial_declarator
@@ -355,7 +355,7 @@ void syntax_tree::trans_to_arrary_definition(ast::idx idx_initial_declarator) {
   tree[idx_initial_declarator].value.struct_defination.idx_struct_type
     = idx_now_declaration_declarator;
 
-  // struct idnentifer
+  // struct identifer
   tree[idx_initial_declarator].value.struct_defination.idx_struct_name
     = tree[tree[tree[idx_initial_declarator]
                   .value.initial_declarator.idx_declarator]
@@ -419,8 +419,8 @@ void syntax_tree::print_tree(std::string file_path) {
   dfs_print_tree(last_root_ptr);
   file_buffer += '}';
 
-  // earse extra comma in json file string
-  // just repalce comma with /n
+  // erase extra comma in json file string
+  // just replace comma with /n
   for (std::size_t i = 0, j = 1; j < file_buffer.size(); ++i, ++j) {
     if (file_buffer[i] == ',' && file_buffer[j] == '}') {
       file_buffer[i] = '\n';
@@ -483,7 +483,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       dfs_print_tree(
         tree[idx].value.assignment_expression.idx_unary_or_binary_expression
       );
-      print_json_class_head("next_assgin");
+      print_json_class_head("next_assign");
       dfs_print_tree(
         tree[idx].value.assignment_expression.idx_next_assignment_expression
       );
@@ -522,6 +522,12 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
           break;
         case token::invalid:
           print_json_value("void");
+          break;
+        case token::self_plus:
+          print_json_value("++");
+          break;
+        case token::self_minus:
+          print_json_value("--");
           break;
         default:
           std::cout << fmt::format(
@@ -653,13 +659,14 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       break;
     case ast::node_type::declare_function:
       print_json_class_head("declare_function");
-      dfs_print_tree(tree[idx].value.declare_funcion.idx_funcion_arguments);
-      dfs_print_tree(tree[idx].value.declare_funcion.idx_return_value_type);
+      dfs_print_tree(tree[idx].value.declare_function.idx_function_arguments);
+      dfs_print_tree(tree[idx].value.declare_function.idx_return_value_type);
       print_json_class_end();
       break;
     case ast::node_type::definition_function:
       print_json_class_head("definition_function");
-      dfs_print_tree(tree[idx].value.definition_function.idx_funcion_arguments);
+      dfs_print_tree(tree[idx].value.definition_function.idx_function_arguments
+      );
       dfs_print_tree(tree[idx].value.definition_function.idx_return_value_type);
       dfs_print_tree(tree[idx].value.definition_function.idx_compound_statement
       );
@@ -769,7 +776,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       break;
 
     case ast::node_type::identifier:
-      print_json_class_head("indentifier");
+      print_json_class_head("identifier");
       print_json_key_value("name", tree[idx].value.identifier.name);
       print_json_class_end();
       break;

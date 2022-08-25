@@ -41,7 +41,7 @@ set(CMAKE_GENERATOR "Ninja")
 #target_sources(ToyC PUBLIC ${source})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/ast)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/class/implement)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/class/implement)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/class/interface)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/error)
 

@@ -58,9 +58,52 @@
                 }
             },
             "block_28": {
-                "while_statement_29": {
-                    "binary_expression_34": {
-                        "operator": "<",
+                "expression_29": {
+                    "assignment_expression_34": {
+                        "assignment_type": "=",
+                        "binary_expression_46": {
+                            "operator": "-",
+                            "binary_expression_40": {
+                                "operator": "+",
+                                "unary_expression_35": {
+                                    "unary_expression_36": {
+                                        "postfix_expression_37": {
+                                            "postfix_operator_39": {},
+                                            "indentifier_38": {
+                                                "name": "b"
+                                            }
+                                        },
+                                        "is_sizeof": "false",
+                                        "unary_operator": "void"
+                                    },
+                                    "is_sizeof": "false",
+                                    "unary_operator": "++"
+                                },
+                                "unary_expression_41": {
+                                    "unary_expression_42": {
+                                        "postfix_expression_43": {
+                                            "postfix_operator_45": {},
+                                            "indentifier_44": {
+                                                "name": "c"
+                                            }
+                                        },
+                                        "is_sizeof": "false",
+                                        "unary_operator": "void"
+                                    },
+                                    "is_sizeof": "false",
+                                    "unary_operator": "++"
+                                }
+                            },
+                            "unary_expression_47": {
+                                "postfix_expression_48": {
+                                    "indentifier_49": {
+                                        "name": "d"
+                                    }
+                                },
+                                "is_sizeof": "false",
+                                "unary_operator": "void"
+                            }
+                        },
                         "unary_expression_30": {
                             "postfix_expression_31": {
                                 "postfix_operator_33": {},
@@ -71,78 +114,27 @@
                             "is_sizeof": "false",
                             "unary_operator": "void"
                         },
-                        "unary_expression_35": {
-                            "postfix_expression_36": {
-                                "postfix_operator_38": {},
-                                "indentifier_37": {
-                                    "name": "b"
-                                }
-                            },
-                            "is_sizeof": "false",
-                            "unary_operator": "void"
-                        }
-                    },
-                    "compound_statement_39": {
-                        "block_40": {
-                            "expression_41": {
-                                "assignment_expression_46": {
-                                    "assignment_type": "=",
-                                    "binary_expression_51": {
-                                        "operator": "+",
-                                        "unary_expression_47": {
-                                            "postfix_expression_48": {
-                                                "postfix_operator_50": {},
-                                                "indentifier_49": {
-                                                    "name": "a"
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        },
-                                        "unary_expression_52": {
-                                            "postfix_expression_53": {
-                                                "constant_54": {
-                                                    "value": "1"
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        }
-                                    },
-                                    "unary_expression_42": {
-                                        "postfix_expression_43": {
-                                            "postfix_operator_45": {},
-                                            "indentifier_44": {
-                                                "name": "a"
-                                            }
-                                        },
-                                        "is_sizeof": "false",
-                                        "unary_operator": "void"
-                                    },
-                                    "next_assgin_44": {}
-                                }
-                            }
-                        }
+                        "next_assgin_32": {}
                     }
                 }
             },
-            "block_56": {
-                "return_statement_57": {
-                    "binary_expression_62": {
+            "block_50": {
+                "return_statement_51": {
+                    "binary_expression_56": {
                         "operator": "+",
-                        "unary_expression_58": {
-                            "postfix_expression_59": {
-                                "postfix_operator_61": {},
-                                "indentifier_60": {
+                        "unary_expression_52": {
+                            "postfix_expression_53": {
+                                "postfix_operator_55": {},
+                                "indentifier_54": {
                                     "name": "a"
                                 }
                             },
                             "is_sizeof": "false",
                             "unary_operator": "void"
                         },
-                        "unary_expression_63": {
-                            "postfix_expression_64": {
-                                "indentifier_65": {
+                        "unary_expression_57": {
+                            "postfix_expression_58": {
+                                "indentifier_59": {
                                     "name": "b"
                                 }
                             },

@@ -1529,13 +1529,17 @@ ast::idx parser::parser_unary_expression() {
       break;
     }
 
+    case token::self_plus:
+    case token::self_minus:
     case token::bit_and:
     case token::times:
     case token::bit_not:
     case token::log_not: {
-      ast::idx idx_root = tree.creat_node(ast::node_type::unary_expression);
+      idx_root = tree.creat_node(ast::node_type::unary_expression);
+      tree[idx_root].value.unary_expression.unary_operator
+        = scan.get_current_token();
       scan.next_token();
-      tree[idx_root].value.unary_expression.idx_declaration_declarator
+      tree[idx_root].value.unary_expression.idx_unary_expression
         = parser_unary_expression();
       break;
     }
@@ -1581,6 +1585,7 @@ ast::idx parser::parser_unary_expression() {
     }
 
     case token::key_sizeof: {
+      // TODO really object after sizeof
       scan.next_token();
       if (scan.get_current_token() == token::l_par) {
         scan.next_token();
