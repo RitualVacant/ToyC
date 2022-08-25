@@ -2,6 +2,7 @@ int f1() {
   int a, b, c, d;
   if (a > b) {
     a = b;
+    b = a;
   }
   return a + b;
 }
