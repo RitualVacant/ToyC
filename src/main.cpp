@@ -1,11 +1,7 @@
-#include <string>
-
-std::string file_path        = "/home/lzj/code/cpp/script/test/i1";
-std::string output_file_path = "/home/lzj/code/cpp/script/test/o1";
-
-#include "build_llvm_ir.cpp"
+#include "build_llvm_ir.h"
 #include "fmt/core.h"
-#include "parser.cpp"
+#include "parser.h"
+#include <string>
 
 enum class mode : char {
   scan     = 's',

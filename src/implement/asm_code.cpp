@@ -1,7 +1,6 @@
 #ifndef ASM_FILE_CPP
 #define ASM_FILE_CPP
 
-#pragma once
 
 #include "asm_code.h"
 #include <sstream>

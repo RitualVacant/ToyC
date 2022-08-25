@@ -4,10 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}/code/class/implement",
-                "${workspaceFolder}/code/ast",
-                "${workspaceFolder}/code/error",
-                "${workspaceFolder}/code/class/interface"
+                "${workspaceFolder}/**"
             ],
             "defines": [],
             "cStandard": "c17",

@@ -2,13 +2,13 @@
 #define ASM_FILE_H
 
 #pragma once
-#include <fstream>
+#include "parser.h"
 #include "token.h"
-#include "parser.cpp"
+#include <fstream>
 
-//stack_frame of asm_code
-//in asm_code.h
-//all info
+// stack_frame of asm_code
+// in asm_code.h
+// all info
 /*
 struct stack_frame {
     std::string name;
@@ -40,7 +40,8 @@ enum class register_name : std::size_t{
     rbx,
     rcx,
 };
-std::size_t const sizeof_register_used = sizeof(register_name) / sizeof(std::size_t);
+std::size_t const sizeof_register_used = sizeof(register_name) /
+sizeof(std::size_t);
 
 class asm_code {
     private:
@@ -60,15 +61,15 @@ class asm_code {
         bool register_used[sizeof_register_used];
 
     public:
-        explicit asm_code(std::string &file_path, std::vector<statement> &&code,symbol_table* sign_);
-        ~asm_code();
-        asm_code(std::string const &)       = delete;
-        asm_code(std::string &&)            = delete;
-        asm_code& operator=(std::string &)  = delete;
-        asm_code& operator=(std::string &&) = delete;
+        explicit asm_code(std::string &file_path, std::vector<statement>
+&&code,symbol_table* sign_); ~asm_code(); asm_code(std::string const &)       =
+delete; asm_code(std::string &&)            = delete; asm_code&
+operator=(std::string &)  = delete; asm_code& operator=(std::string &&) =
+delete;
 
         //DROP现在构造函数中已经初始化
-        void get_code(std::vector<statement> &code, std::vector<func> &func_table);
+        void get_code(std::vector<statement> &code, std::vector<func>
+&func_table);
         //对中间代码进行翻译
         void read_code();
 
@@ -88,13 +89,13 @@ class asm_code {
         //DROP寄存器使用情况
         bool register_is_used(register_name);
         //
-        void asm_code_write_code(std::string symbol, std::string arg1, std::string arg2);
-        void asm_code_write_label(std::string label);
-        void asm_code_write_mov(std::size_t size, std::string arg1, std::string arg2);
+        void asm_code_write_code(std::string symbol, std::string arg1,
+std::string arg2); void asm_code_write_label(std::string label); void
+asm_code_write_mov(std::size_t size, std::string arg1, std::string arg2);
 };
 
-asm_code::asm_code(std::string &file_path_, std::vector<statement> &&code_, symbol_table* sign_)
-: file_path{file_path_}, code{code_} ,table{sign_} {
+asm_code::asm_code(std::string &file_path_, std::vector<statement> &&code_,
+symbol_table* sign_) : file_path{file_path_}, code{code_} ,table{sign_} {
     file.open(file_path, std::ofstream::out);
     if (!file.is_open()) {
         fmt::print("can't open file at {}", file_path);

@@ -1,9 +1,9 @@
 #ifndef syntax_TREE_CPP
 #define syntax_TREE_CPP
-#pragma once
+
 #include "syntax_tree.h"
 #include "declataror.h"
-#include "inner.cpp"
+#include "inner.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <stdlib.h>

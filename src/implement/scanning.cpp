@@ -1,18 +1,17 @@
 #ifndef SCANNING_CPP
 #define SCANNING_CPP
 
-#pragma once
 #include "scanning.h"
 #include "judge_char.h"
 #include "token.h"
 
-inline void scanning::get_next_char() {
+void scanning::get_next_char() {
   ++column;
   c = static_cast<char>(file.get());
   return;
 }
 
-inline std::tuple<token, std::string> scanning::to_number() {
+std::tuple<token, std::string> scanning::to_number() {
   std::string re;
   bool        is_double = false;
   re += c;
@@ -33,7 +32,7 @@ inline std::tuple<token, std::string> scanning::to_number() {
   }
 }
 
-inline std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
+std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
   std::string re;
   // bool is_key_word = false;
   re += c;
@@ -64,7 +63,7 @@ inline std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
 //     return std::make_tuple(token::class_string, re);
 // }
 
-inline std::tuple<token, std::string> scanning::to_comment() {
+std::tuple<token, std::string> scanning::to_comment() {
   std::string re;
   get_next_char();
   while (c != '\n') {
@@ -75,7 +74,7 @@ inline std::tuple<token, std::string> scanning::to_comment() {
   return std::make_tuple(token::comment, re);
 }
 
-inline std::tuple<token, std::string> scanning::to_char() {
+std::tuple<token, std::string> scanning::to_char() {
   get_next_char();
   std::string re;
   re += c;
@@ -373,6 +372,30 @@ std::tuple<token, std::string> scanning::next_token() {
   }
   get_next_char();
   return std::make_tuple(token::invalid, "");
+}
+
+//测试词法分析器函数
+void scanning::token_output() {
+  while (!file.eof()) {
+    auto a = next_token();
+    if (token_to_string.find(std::get<0>(a)) == token_to_string.end()) {
+      fmt::print("[token:] identif   [string:] \"{}\"\n", std::get<1>(a));
+    }
+    else if (token_to_string.find(std::get<0>(a)) == token_to_string.end()
+                    && key_words.find(std::get<1>(a)) != key_words.end()
+                )
+                {
+      fmt::print("can't print token cause it is not involved in token_to_string"
+      );
+      exit(0);
+    }
+    else {
+      fmt::print(
+        "[token:] {:10} [string:] \"{}\"\n", token_to_string.at(std::get<0>(a)),
+        std::get<1>(a)
+      );
+    }
+  }
 }
 
 token scanning::get_current_token(std::tuple<token, std::string>& tuple_) {

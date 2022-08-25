@@ -2,7 +2,7 @@
 #define SIGN_MAP_H
 
 #pragma once
-#include "parser.cpp"
+#include "parser.h"
 #include "token.h"
 #include <string>
 #include <tuple>
@@ -140,25 +140,5 @@ public:
   void init_loc_argu();
 };
 
-symbol_table::symbol_table(
-  std::string& file_path_,
-  bool         really_output_asm_code_
-)
-    : file_path(file_path_) {
-  if (really_output_asm_code_)
-    return;
-
-  file.open(file_path, std::ofstream::out);
-  if (!file.is_open()) {
-    fmt::print(fg(fmt::color::red), "\nfail to open the file!\n");
-    fmt::print(fg(fmt::color::red), "please check the output file's path\n");
-    fmt::print(fg(fmt::color::red), "--end--\n");
-    exit(1);
-  }
-}
-
-symbol_table::~symbol_table() {
-  file.close();
-}
 
 #endif

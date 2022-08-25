@@ -1,10 +1,29 @@
 #ifndef SIGN_MAP_CPP
 #define SIGN_MAP_CPP
 
-#pragma once
 #include "symbol_table.h"
 #include "token.h"
-#include "worng.cpp"
+
+symbol_table::symbol_table(
+  std::string& file_path_,
+  bool         really_output_asm_code_
+)
+    : file_path(file_path_) {
+  if (really_output_asm_code_)
+    return;
+
+  file.open(file_path, std::ofstream::out);
+  if (!file.is_open()) {
+    fmt::print(fg(fmt::color::red), "\nfail to open the file!\n");
+    fmt::print(fg(fmt::color::red), "please check the output file's path\n");
+    fmt::print(fg(fmt::color::red), "--end--\n");
+    exit(1);
+  }
+}
+
+symbol_table::~symbol_table() {
+  file.close();
+}
 
 void symbol_table::insert_func(func func_) {
   func_table.push_back(func_);
@@ -34,7 +53,7 @@ token symbol_table::find_var_class(std::string name) {
 //
 void symbol_table::push_global_sign(std::string& x) {
   if (global_sign.find(x) != global_sign.end()) {
-    worng::redefine(line, colume, {token::identif, x});
+    // worng::redefine(line, colume, {token::identif, x});
   }
   global_sign.insert(x);
   // if (global_sign.find(x) == global_sign.end()) {

@@ -1,9 +1,9 @@
 #ifndef BUILD_LLVM_IR_CPP
 #define BUILD_LLVM_IR_CPP
 
-#pragma once
 #include "build_llvm_ir.h"
-#include "parser.cpp"
+#include "inner.h"
+#include "parser.h"
 
 build_llvm_ir::build_llvm_ir() {
   tree    = std::move(parse.get_syntax_tree());

@@ -2,8 +2,8 @@
 #define BUILD_LLVM_IR_H
 
 #pragma once
-#include "parser.cpp"
-#include "syntax_tree.cpp"
+#include "parser.h"
+#include "syntax_tree.h"
 #include <vector>
 
 

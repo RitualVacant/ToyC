@@ -1,13 +1,26 @@
 #ifndef PARSER_CPP
 #  define PARSER_CPP
 
-#  pragma once
 #  include "parser.h"
 #  include "declataror.h"
-#  include "inner.cpp"
+#  include "inner.h"
 #  include "judge_char.h"
-#  include "syntax_tree.cpp"
+#  include "syntax_tree.h"
 #  include "token.h"
+
+
+parser::parser() {
+  scan.next_token();
+  while (!scan.file.eof()) {
+    ast::idx idx_root = parser_declaration_or_definition();
+    tree.connect(idx_root);
+  }
+};
+
+parser::~parser(){
+  // delete scan;
+  // delete asm_file;
+};
 
 /*
 void parser::parser_if_statement() {

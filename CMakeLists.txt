@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.13.4)
 
 project(ToyC VERSION 0.1.0 LANGUAGES CXX)
 enable_testing()
-add_executable(ToyC main.cpp)
+add_executable(ToyC ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 add_definitions("-std=c++20")
 
 include(ProcessorCount)
@@ -40,10 +40,20 @@ set(CMAKE_GENERATOR "Ninja")
 
 #target_sources(ToyC PUBLIC ${source})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/ast)
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/class/implement)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/class/interface)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/code/error)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ast)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/error)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/interface)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/var)
+
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/implement implib)
+add_library(implement STATIC ${implib})
+
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/ast astlib)
+add_library(ast STATIC ${astlib})
+
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/var varlib)
+add_library(var STATIC ${varlib})
+
 
 #
 #LLVM
@@ -67,7 +77,16 @@ llvm_map_components_to_libnames(llvm_libs support core irreader)
 #set(CMAKE_CXX_FLAGS_RELEASE "-O1 -Wall -g -lpython3.8")
 
 find_package(fmt CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt ${llvm_libs})
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+    fmt::fmt
+    ${llvm_libs}
+    implement
+    ast
+    var
+)
+
 #target_link_libraries(${PROJECT_NAME} PUBLIC ${llvm_libs})
 
 #target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt ${llvm_libs} ${source})
