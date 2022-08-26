@@ -311,7 +311,10 @@ void syntax_tree::trans_to_function(ast::idx idx) {
         }
         break;
       default:
-        fmt::print(fg(fmt::color::red), "node type {}\n", tree[i].type);
+        fmt::print(
+          fg(fmt::color::red), "node type {}\n",
+          static_cast<unsigned char>(tree[i].type)
+        );
         SWITCH_ERROR
     }
   }
@@ -532,7 +535,9 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
         default:
           std::cout << fmt::format(
             fg(fmt::color::red), "the operator is {}\n",
-            tree[idx].value.unary_expression.unary_operator
+            static_cast<unsigned int>(
+              tree[idx].value.unary_expression.unary_operator
+            )
           );
           SWITCH_ERROR
           break;
@@ -1005,7 +1010,10 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       break;
 
     default: {
-      fmt::print(fg(fmt::color::red), "add node type : {}\n", tree[idx].type);
+      fmt::print(
+        fg(fmt::color::red), "add node type : {}\n",
+        static_cast<unsigned char>(tree[idx].type)
+      );
       SWITCH_ERROR
     }
   }

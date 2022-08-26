@@ -1,7 +1,6 @@
 #ifndef FSTREAM_GUARD_CPP
 #define FSTREAM_GUARD_CPP
 
-#pragma once
 #include "fstream_guard.h"
 #include <fmt/color.h>
 #include <fmt/core.h>

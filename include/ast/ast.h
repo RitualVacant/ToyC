@@ -40,7 +40,7 @@ enum class declarator_limit : unsigned char { limit_empty, limit_Alignas };
 
 enum class declarator_sign : bool { sign_signed, sign_unsigned };
 
-enum class node_type {
+enum class node_type : unsigned char {
   type,
   expression,
   assignment_expression,

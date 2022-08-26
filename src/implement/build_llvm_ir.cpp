@@ -283,7 +283,10 @@ void build_llvm_ir::build_declaration_or_definition(
         }
         break;
       default:
-        fmt::print(fg(fmt::color::red), "node type {}\n", tree[i].type);
+        fmt::print(
+          fg(fmt::color::red), "node type {}\n",
+          static_cast<unsigned char>(tree[i].type)
+        );
         SWITCH_ERROR
     }
   }

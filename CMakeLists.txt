@@ -5,46 +5,41 @@ cmake_minimum_required(VERSION 3.13.4)
 #set(CMAKE_C_COMPILER "/usr/local/bin/clang")
 #set(CMAKE_CXX_COMPILER "/usr/bin/g++-11")
 #set(CMAKE_C_COMPILER "/usr/bin/g++-11")
-#set(VCPKG_ROOT "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
-#set(DCMAKE_TOOLCHAIN_FILE ${VCPKG_ROOT})
+
 
 project(ToyC VERSION 0.1.0 LANGUAGES CXX)
 enable_testing()
 add_executable(ToyC ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 add_definitions("-std=c++20")
 
-include(ProcessorCount)
-ProcessorCount(N)
-message("number of processors:"  ${N})
-set(CMAKE_BUILD_PAR)
+# set(VCPKG_ROOT "/home/lzj/software/vcpkg/scripts/buildsystems/vcpkg.cmake")
+# set(CMAKE_TOOLCHAIN_FILE ${VCPKG_ROOT})
 
+#include(ProcessorCount)
+#ProcessorCount(N)
+#message("number of processors:"  ${N})
+#set(CMAKE_BUILD_PAR)
+#set(CMAKE_BUILD_PARALLEL_LEVEL 12)
 #set(CMAKE_CODEBLOCKS_MAKE_ARGUMENTS -j12)
 
 message("cmake make program" ${CMAKE_MAKE_PROGRAM})
 #set(CMAKE_CXX_COMPILER_ID )
 #set(CMAKE_BUILD_TYPE Debug CACHE STRING "set build type to debug")
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_BUILD_PARALLEL_LEVEL 12)
 set(CXX_STANDARD 20)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_GENERATOR "Ninja")
 
-#file(GLOB_RECURSE source CONFIGURE_DEPENDS *.cpp *.h)
-#target_link_libraries(ToyC PUBLIC ./code)
 
-
-#add_subdirectory(code)
-#target_include_directories(ToyC PUBLIC ./code)
-
-#target_sources(ToyC PUBLIC ${source})
-
+# header files h
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ast)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/error)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/interface)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/var)
 
+# source files cpp
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/implement implib)
 add_library(implement STATIC ${implib})
 
@@ -54,9 +49,8 @@ add_library(ast STATIC ${astlib})
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/var varlib)
 add_library(var STATIC ${varlib})
 
-
 #
-#LLVM
+# LLVM packages
 #
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
@@ -74,10 +68,11 @@ add_definitions(${LLVM_DEFINITIONS_LIST})
 # that we wish to use
 llvm_map_components_to_libnames(llvm_libs support core irreader)
 # Link against LLVM libraries
-#set(CMAKE_CXX_FLAGS_RELEASE "-O1 -Wall -g -lpython3.8")
 
+# fmt
 find_package(fmt CONFIG REQUIRED)
 
+# link
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
     fmt::fmt
@@ -85,6 +80,8 @@ target_link_libraries(${PROJECT_NAME}
     implement
     ast
     var
+    # profiler
+    # unwind
 )
 
 #target_link_libraries(${PROJECT_NAME} PUBLIC ${llvm_libs})

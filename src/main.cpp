@@ -1,6 +1,7 @@
 #include "build_llvm_ir.h"
 #include "fmt/core.h"
 #include "parser.h"
+// #include <gperftools/profiler.h>
 #include <string>
 
 enum class mode : char {
@@ -24,6 +25,8 @@ void output_help_information();
 std::vector<std::string> command;
 
 int main(int argc, char* argv[]) {
+  // ProfilerStart("ToyC_profiler.prof");
+
   if (argc == 1) {
     fmt::print("path of input file  : ");
     // std::cin >> file_path;
@@ -32,11 +35,11 @@ int main(int argc, char* argv[]) {
     choose_mode_run();
   }
   else {
-    file_path        = argv[1];
-    output_file_path = argv[2];
-    parser p;
-    fmt::print("\nMyScript {} {}\nDone\n", file_path, output_file_path);
+    fmt::print("not support arguments now\n");
   }
+
+  // ProfilerStop();
+
   return 0;
 }
 
@@ -99,15 +102,15 @@ void choose_mode_run() {
 void output_help_information() {
   fmt::print("\n");
   fmt::print("size of node: {}B\n", sizeof(ast::node));
-  fmt::print("(s) scan         --lexical analysis and output the token\n");
-  fmt::print("(y) yes          --get the asm_code file\n");
-  fmt::print("(m) mid_code     --get transform code\n");
-  fmt::print("(t) tree         --print syntax tree1\n");
-  fmt::print("(b) \n");
-  fmt::print("(c) create       --create the\n");
-  fmt::print("(h) help         --print table\n");
-  fmt::print("(l) llvm         --output llvm ir\n");
-  fmt::print("(o) dot          --dot\n");
-  fmt::print("(q) quit         --quit\n");
+  fmt::print("-s  scan         lexical analysis and output the token\n");
+  fmt::print("-y  yes          get the asm_code file\n");
+  fmt::print("-m  mid_code     get transform code\n");
+  fmt::print("-t  tree         print syntax tree1\n");
+  fmt::print("-b  \n");
+  fmt::print("-c  create       create the\n");
+  fmt::print("-h  help         print table\n");
+  fmt::print("-l  llvm         output llvm ir\n");
+  fmt::print("-o  dot          dot\n");
+  fmt::print("-q  quit         quit\n");
   return;
 }
