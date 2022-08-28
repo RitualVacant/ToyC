@@ -68,7 +68,7 @@ syntax_tree::insert(ast::node_type node_type) {
 }
 */
 
-ast::node& syntax_tree::operator[](ast::idx idx) {
+ast::node &syntax_tree::operator[](ast::idx idx) {
   return tree[idx];
 }
 
@@ -170,7 +170,7 @@ ast::idx syntax_tree::creat_node(ast::node_type node_type) {
   return tree.size() - 1;
 }
 
-std::vector<ast::node>& syntax_tree::get_syntax_tree() {
+std::vector<ast::node> &syntax_tree::get_syntax_tree() {
   // DROP
   // trans_tree();
   return tree;
@@ -180,16 +180,13 @@ std::vector<ast::node>& syntax_tree::get_syntax_tree() {
 void syntax_tree::trans_tree() {
   print_trans_tree = true;
   for (ast::idx i = 1; i != ast::null;
-       i          = tree[i]
-             .value.declaration_or_definition
-             .idx_next_declaration_or_definition) {
+       i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition) {
     trans_declaration_or_definition(i);
   }
   return;
 }
 
-void syntax_tree::trans_declaration_or_definition(
-  ast::idx idx_declaration_or_definition
+void syntax_tree::trans_declaration_or_definition(ast::idx idx_declaration_or_definition
 ) {
   ast::idx idx_start_initial_declarator
     = tree[idx_declaration_or_definition]
@@ -199,15 +196,13 @@ void syntax_tree::trans_declaration_or_definition(
     = tree[idx_declaration_or_definition]
         .value.declaration_or_definition.idx_declaration_declarator;
 
-  idx_now_compound_statement
-    = tree[idx_declaration_or_definition]
-        .value.declaration_or_definition.idx_compound_statement;
+  idx_now_compound_statement = tree[idx_declaration_or_definition]
+                                 .value.declaration_or_definition.idx_compound_statement;
 
   // trans will cover the next idx value in declarator
   // j store next idx before next idx been covered
-  for (ast::idx i = idx_start_initial_declarator,
-                j
-                = tree[i].value.initial_declarator.idx_next_initial_declarator;
+  for (ast::idx i        = idx_start_initial_declarator,
+                j        = tree[i].value.initial_declarator.idx_next_initial_declarator;
        i != ast::null; i = j) {
     // std::cout << i << ' ' << j << std::endl;
     trans_each_initial_declarator(i);
@@ -215,8 +210,7 @@ void syntax_tree::trans_declaration_or_definition(
   return;
 }
 
-void syntax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator
-) {
+void syntax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
   switch (which_type(idx_initial_declarator)) {
     case type_decl_defi::array_decl:
       tree[idx_initial_declarator].type = ast::node_type::array_definintion;
@@ -237,8 +231,7 @@ void syntax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator
       trans_to_struct_definition(idx_initial_declarator);
       break;
     case type_decl_defi::var_decl:
-      tree[idx_initial_declarator].type
-        = ast::node_type::basic_type_declaration;
+      tree[idx_initial_declarator].type = ast::node_type::basic_type_declaration;
       trans_to_basic_type_declaration(idx_initial_declarator);
       break;
     default:
@@ -247,8 +240,7 @@ void syntax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator
   return;
 }
 
-syntax_tree::type_decl_defi
-syntax_tree::which_type(ast::idx idx_initial_declarator) {
+syntax_tree::type_decl_defi syntax_tree::which_type(ast::idx idx_initial_declarator) {
   ast::idx idx_direct_declarator
     = tree[tree[idx_initial_declarator].value.initial_declarator.idx_declarator]
         .value.declarator.idx_direct_declarator;
@@ -295,8 +287,7 @@ void syntax_tree::trans_to_function(ast::idx idx) {
   ast::idx idx_identifier;
 
   // because the function pointer
-  for (ast::idx i = idx_declarator;
-       tree[i].type != ast::node_type::identifier;) {
+  for (ast::idx i = idx_declarator; tree[i].type != ast::node_type::identifier;) {
     switch (tree[i].type) {
       case ast::node_type::declarator:
         i = tree[i].value.declarator.idx_direct_declarator;
@@ -312,8 +303,7 @@ void syntax_tree::trans_to_function(ast::idx idx) {
         break;
       default:
         fmt::print(
-          fg(fmt::color::red), "node type {}\n",
-          static_cast<unsigned char>(tree[i].type)
+          fg(fmt::color::red), "node type {}\n", static_cast<unsigned char>(tree[i].type)
         );
         SWITCH_ERROR
     }
@@ -339,8 +329,7 @@ void syntax_tree::trans_to_function(ast::idx idx) {
     = idx_now_declaration_declarator;
 
   // function body
-  tree[idx].value.function_declaration.idx_function_body
-    = idx_now_compound_statement;
+  tree[idx].value.function_declaration.idx_function_body = idx_now_compound_statement;
 
   // next declaration
   tree[idx].value.function_declaration.idx_next = idx_next_declarator;
@@ -355,33 +344,31 @@ void syntax_tree::trans_to_arrary_definition(ast::idx idx_initial_declarator) {
   tree[idx_initial_declarator].type = ast::node_type::struct_declaration;
 
   // type of struct
-  tree[idx_initial_declarator].value.struct_defination.idx_struct_type
+  tree[idx_initial_declarator].value.struct_definition.idx_struct_type
     = idx_now_declaration_declarator;
 
   // struct identifer
-  tree[idx_initial_declarator].value.struct_defination.idx_struct_name
-    = tree[tree[tree[idx_initial_declarator]
-                  .value.initial_declarator.idx_declarator]
+  tree[idx_initial_declarator].value.struct_definition.idx_struct_name
+    = tree[tree[tree[idx_initial_declarator].value.initial_declarator.idx_declarator]
              .value.declarator.idx_direct_declarator]
         .value.direct_declarator.idx_identifier;
 
   return;
 }
 void syntax_tree::trans_to_struct_definition(ast::idx idx_initial_declarator) {
-  tree[idx_initial_declarator].type = ast::node_type::struct_defination;
+  tree[idx_initial_declarator].type = ast::node_type::struct_definition;
 
   // type of struct
-  tree[idx_initial_declarator].value.struct_defination.idx_struct_type
+  tree[idx_initial_declarator].value.struct_definition.idx_struct_type
     = idx_now_declaration_declarator;
 
   // struct body
-  tree[idx_initial_declarator].value.struct_defination.idx_struct_body
+  tree[idx_initial_declarator].value.struct_definition.idx_struct_body
     = idx_now_compound_statement;
 
   // struct idnentifer
-  tree[idx_initial_declarator].value.struct_defination.idx_struct_name
-    = tree[tree[tree[idx_initial_declarator]
-                  .value.initial_declarator.idx_declarator]
+  tree[idx_initial_declarator].value.struct_definition.idx_struct_name
+    = tree[tree[tree[idx_initial_declarator].value.initial_declarator.idx_declarator]
              .value.declarator.idx_direct_declarator]
         .value.direct_declarator.idx_identifier;
 
@@ -400,8 +387,7 @@ void syntax_tree::trans_to_enum_definition(ast::idx idx) {
 
 void syntax_tree::connect(ast::idx idx) {
   if (last_root_ptr != ast::null) {
-    tree[last_root_ptr]
-      .value.declaration_or_definition.idx_next_declaration_or_definition
+    tree[last_root_ptr].value.declaration_or_definition.idx_next_declaration_or_definition
       = idx;
   }
   else {
@@ -481,14 +467,11 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
         default:
           SWITCH_ERROR
       }
-      dfs_print_tree(tree[idx].value.assignment_expression.idx_binary_expression
-      );
-      dfs_print_tree(
-        tree[idx].value.assignment_expression.idx_unary_or_binary_expression
+      dfs_print_tree(tree[idx].value.assignment_expression.idx_binary_expression);
+      dfs_print_tree(tree[idx].value.assignment_expression.idx_unary_or_binary_expression
       );
       print_json_class_head("next_assign");
-      dfs_print_tree(
-        tree[idx].value.assignment_expression.idx_next_assignment_expression
+      dfs_print_tree(tree[idx].value.assignment_expression.idx_next_assignment_expression
       );
       print_json_class_end();
       print_json_class_end();
@@ -496,8 +479,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::unary_expression:
       print_json_class_head("unary_expression");
-      dfs_print_tree(tree[idx].value.unary_expression.idx_declaration_declarator
-      );
+      dfs_print_tree(tree[idx].value.unary_expression.idx_declaration_declarator);
       dfs_print_tree(tree[idx].value.unary_expression.idx_postfix_expression);
       dfs_print_tree(tree[idx].value.unary_expression.idx_unary_expression);
 
@@ -535,9 +517,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
         default:
           std::cout << fmt::format(
             fg(fmt::color::red), "the operator is {}\n",
-            static_cast<unsigned int>(
-              tree[idx].value.unary_expression.unary_operator
-            )
+            static_cast<unsigned int>(tree[idx].value.unary_expression.unary_operator)
           );
           SWITCH_ERROR
           break;
@@ -670,18 +650,14 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       break;
     case ast::node_type::definition_function:
       print_json_class_head("definition_function");
-      dfs_print_tree(tree[idx].value.definition_function.idx_function_arguments
-      );
+      dfs_print_tree(tree[idx].value.definition_function.idx_function_arguments);
       dfs_print_tree(tree[idx].value.definition_function.idx_return_value_type);
-      dfs_print_tree(tree[idx].value.definition_function.idx_compound_statement
-      );
+      dfs_print_tree(tree[idx].value.definition_function.idx_compound_statement);
       print_json_class_end();
       break;
     case ast::node_type::initial_declarator_list:
       print_json_class_head("initial_declarator_list");
-      dfs_print_tree(
-        tree[idx].value.initial_declarator_list.idx_initial_declarator
-      );
+      dfs_print_tree(tree[idx].value.initial_declarator_list.idx_initial_declarator);
       print_json_class_end();
       break;
 
@@ -705,9 +681,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       print_json_class_head("initial_declarator");
       dfs_print_tree(tree[idx].value.initial_declarator.idx_declarator);
       dfs_print_tree(tree[idx].value.initial_declarator.idx_initializer);
-      dfs_print_tree(
-        tree[idx].value.initial_declarator.idx_next_initial_declarator
-      );
+      dfs_print_tree(tree[idx].value.initial_declarator.idx_next_initial_declarator);
       print_json_class_end();
       break;
 
@@ -717,8 +691,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       dfs_print_tree(tree[idx].value.direct_declarator.idx_declarator);
       dfs_print_tree(tree[idx].value.direct_declarator.idx_array_declarator);
       if (!print_trans_tree) {
-        dfs_print_tree(tree[idx].value.direct_declarator.idx_arguments_type_list
-        );
+        dfs_print_tree(tree[idx].value.direct_declarator.idx_arguments_type_list);
       }
       print_json_class_end();
       break;
@@ -726,8 +699,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
     case ast::node_type::array_declarator:
       print_json_class_head("array_declarator");
       dfs_print_tree(tree[idx].value.array_declarator.idx_constant);
-      dfs_print_tree(tree[idx].value.array_declarator.idx_next_array_declarator
-      );
+      dfs_print_tree(tree[idx].value.array_declarator.idx_next_array_declarator);
       print_json_class_end();
       break;
 
@@ -766,16 +738,11 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
         dfs_print_tree(
           tree[idx].value.declaration_or_definition.idx_declaration_declarator
         );
-        dfs_print_tree(
-          tree[idx].value.declaration_or_definition.idx_compound_statement
-        );
+        dfs_print_tree(tree[idx].value.declaration_or_definition.idx_compound_statement);
       }
+      dfs_print_tree(tree[idx].value.declaration_or_definition.idx_initial_declarator);
       dfs_print_tree(
-        tree[idx].value.declaration_or_definition.idx_initial_declarator
-      );
-      dfs_print_tree(
-        tree[idx]
-          .value.declaration_or_definition.idx_next_declaration_or_definition
+        tree[idx].value.declaration_or_definition.idx_next_declaration_or_definition
       );
       print_json_class_end();
       break;
@@ -788,21 +755,16 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::arguments_type_list:
       print_json_class_head("arguments_type_list");
-      dfs_print_tree(
-        tree[idx].value.arguments_type_list.idx_argument_declaration
-      );
+      dfs_print_tree(tree[idx].value.arguments_type_list.idx_argument_declaration);
       print_json_class_end();
       break;
 
     case ast::node_type::arguments_declaration:
       print_json_class_head("arguments_declaration");
-      dfs_print_tree(
-        tree[idx].value.arguments_declaration.idx_declaration_declarator
-      );
+      dfs_print_tree(tree[idx].value.arguments_declaration.idx_declaration_declarator);
       dfs_print_tree(tree[idx].value.arguments_declaration.idx_declarator);
       print_json_class_end();
-      dfs_print_tree(
-        tree[idx].value.arguments_declaration.idx_next_arguments_declaration
+      dfs_print_tree(tree[idx].value.arguments_declaration.idx_next_arguments_declaration
       );
       break;
 
@@ -822,16 +784,13 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::postfix_operator:
       print_json_class_head("postfix_operator");
-      dfs_print_tree(
-        tree[idx].value.postfix_operator.idx_array_idx_assignment_expression
+      dfs_print_tree(tree[idx].value.postfix_operator.idx_array_idx_assignment_expression
       );
       dfs_print_tree(tree[idx].value.postfix_operator.idx_identifier);
       dfs_print_tree(
-        tree[idx]
-          .value.postfix_operator.idx_func_call_assignment_expression_list
+        tree[idx].value.postfix_operator.idx_func_call_assignment_expression_list
       );
-      dfs_print_tree(tree[idx].value.postfix_operator.idx_next_postfix_operator
-      );
+      dfs_print_tree(tree[idx].value.postfix_operator.idx_next_postfix_operator);
       print_json_class_end();
       break;
 
@@ -846,11 +805,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
     case ast::node_type::for_statement:
       print_json_class_head("for_statement");
       dfs_print_tree(tree[idx].value.for_statement.idx_declaration);
-      dfs_print_tree(
-        tree[idx].value.for_statement.idx_conditional_assign_expression
-      );
-      dfs_print_tree(tree[idx].value.for_statement.idx_change_assign_expression
-      );
+      dfs_print_tree(tree[idx].value.for_statement.idx_conditional_assign_expression);
+      dfs_print_tree(tree[idx].value.for_statement.idx_change_assign_expression);
       dfs_print_tree(tree[idx].value.for_statement.idx_compound_statement);
       print_json_class_end();
       break;
@@ -878,6 +834,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       print_json_class_head("break_statement");
       print_json_class_end();
       break;
+
     case ast::node_type::default_label:
       print_json_class_head("default_label");
       print_json_class_end();
@@ -898,22 +855,22 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::struct_declaration:
       print_json_class_head("struct_declaration");
-      dfs_print_tree(tree[idx].value.struct_defination.idx_struct_type);
-      dfs_print_tree(tree[idx].value.struct_defination.idx_struct_name);
+      dfs_print_tree(tree[idx].value.struct_definition.idx_struct_type);
+      dfs_print_tree(tree[idx].value.struct_definition.idx_struct_name);
       print_json_class_end();
       break;
 
-    case ast::node_type::struct_defination:
-      print_json_class_head("struct_defination");
-      dfs_print_tree(tree[idx].value.struct_defination.idx_struct_type);
-      dfs_print_tree(tree[idx].value.struct_defination.idx_struct_name);
-      dfs_print_tree(tree[idx].value.struct_defination.idx_struct_body);
+    case ast::node_type::struct_definition:
+      print_json_class_head("struct_definition");
+      dfs_print_tree(tree[idx].value.struct_definition.idx_struct_type);
+      dfs_print_tree(tree[idx].value.struct_definition.idx_struct_name);
+      dfs_print_tree(tree[idx].value.struct_definition.idx_struct_body);
       print_json_class_end();
       break;
 
     case ast::node_type::declaration_declarator: {
       print_json_class_head("declaration_declarator");
-      auto& decl = tree[idx].value.declaration_declarator;
+      auto &decl = tree[idx].value.declaration_declarator;
       if (decl.sign == ast::declarator_sign::sign_signed) {
         print_json_key_value("sign", "true");
       }
@@ -988,14 +945,9 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
     case ast::node_type::function:
       print_json_class_head("function_declaration");
       dfs_print_tree(tree[idx].value.function_declaration.idx_function_name);
-      dfs_print_tree(
-        tree[idx].value.function_declaration.idx_function_declarator
-      );
-      dfs_print_tree(
-        tree[idx].value.function_declaration.idx_function_return_type
-      );
-      dfs_print_tree(
-        tree[idx].value.function_declaration.idx_function_arguments_type_list
+      dfs_print_tree(tree[idx].value.function_declaration.idx_function_declarator);
+      dfs_print_tree(tree[idx].value.function_declaration.idx_function_return_type);
+      dfs_print_tree(tree[idx].value.function_declaration.idx_function_arguments_type_list
       );
       dfs_print_tree(tree[idx].value.function_declaration.idx_function_body);
       dfs_print_tree(tree[idx].value.function_declaration.idx_next);
@@ -1004,8 +956,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::return_statement:
       print_json_class_head("return_statement");
-      dfs_print_tree(tree[idx].value.return_statement.idx_assignment_expression
-      );
+      dfs_print_tree(tree[idx].value.return_statement.idx_assignment_expression);
       print_json_class_end();
       break;
 
@@ -1020,7 +971,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
   return;
 }
 
-void syntax_tree::print_json_key_value(char const* key, char const* value) {
+void syntax_tree::print_json_key_value(char const *key, char const *value) {
   // file << "\"" << key << "\":\"" << value << "\",\n";
   auto str_key   = std::string(key);
   auto str_value = std::string(value);
@@ -1033,7 +984,7 @@ void syntax_tree::print_json_key_value(char const* key, char const* value) {
   return;
 }
 
-void syntax_tree::print_json_class_head(char const* value) {
+void syntax_tree::print_json_class_head(char const *value) {
   // file << "\"" <<  value << "\":{\n";
 
   // auto str_value = std::string(value);
@@ -1053,7 +1004,7 @@ void syntax_tree::print_json_class_end() {
   return;
 }
 
-void syntax_tree::print_json_key(char const* key) {
+void syntax_tree::print_json_key(char const *key) {
   // file << "\"" << key << "\":";
   // auto str_key = std::string(key);
   // file_buffer += fmt::format("\"{}\":", str_key);
@@ -1063,7 +1014,7 @@ void syntax_tree::print_json_key(char const* key) {
   return;
 }
 
-void syntax_tree::print_json_value(char const* value) {
+void syntax_tree::print_json_value(char const *value) {
   //
   // file << "\"" << value << "\",\n";
   // auto str_value = std::string(value);

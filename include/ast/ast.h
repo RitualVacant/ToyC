@@ -96,7 +96,7 @@ enum class node_type : unsigned char {
   enum_definition,
   array_definintion,
   struct_declaration,
-  struct_defination,
+  struct_definition,
   basic_type_declaration,
 
 };
@@ -398,7 +398,7 @@ struct struct_declaration {
   ast::idx idx_struct_type = ast::null;
   ast::idx idx_next        = ast::null;
 };
-struct struct_defination {
+struct struct_definition {
   ast::idx idx_struct_name = ast::null;
   ast::idx idx_struct_body = ast::null;
   ast::idx idx_struct_type = ast::null;
@@ -421,7 +421,7 @@ struct function_definition {
   ast::idx idx_next = ast::null;
 };
 
-struct arrary_definintion {
+struct arrary_definition {
   ast::idx idx_next = ast::null;
 };
 
@@ -478,9 +478,9 @@ union value {
   // trans node
   ast::function_declaration   function_declaration;
   ast::function_definition    function_definition;
-  ast::arrary_definintion     arrary_definintion;
+  ast::arrary_definition      arrary_definition;
   ast::struct_declaration     struct_declaration;
-  ast::struct_defination      struct_defination;
+  ast::struct_definition      struct_definition;
   ast::basic_type_declaration basic_type_declaration;
   ast::enum_definition        enum_definition;
 };

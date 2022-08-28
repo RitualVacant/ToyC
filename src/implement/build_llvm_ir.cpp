@@ -17,26 +17,20 @@ build_llvm_ir::build_llvm_ir() {
 
 build_llvm_ir::~build_llvm_ir() {}
 
-llvm::Type* build_llvm_ir::build_mult_declaration_or_definition(
-  ast::idx idx_declaration_or_definition
+llvm::Type *
+build_llvm_ir::build_mult_declaration_or_definition(ast::idx idx_declaration_or_definition
 ) {
-  for (ast::idx i
-       = idx_declaration_or_definition,
-       idx_declaration_declarator
-       = tree[i].value.declaration_or_definition.idx_declaration_declarator;
-
+  for (ast::idx i = idx_declaration_or_definition,
+                idx_declaration_declarator
+                = tree[i].value.declaration_or_definition.idx_declaration_declarator;
        i != ast::null;
-
-       i
-       = tree[i]
-           .value.declaration_or_definition.idx_next_declaration_or_definition,
-       idx_declaration_declarator
-       = tree[i].value.declaration_or_definition.idx_declaration_declarator) {
+       i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition,
+                idx_declaration_declarator
+                = tree[i].value.declaration_or_definition.idx_declaration_declarator) {
     now_compound_statement
       = tree[i].value.declaration_or_definition.idx_compound_statement;
 
-    for (ast::idx j
-         = tree[i].value.declaration_or_definition.idx_initial_declarator;
+    for (ast::idx j = tree[i].value.declaration_or_definition.idx_initial_declarator;
          j != ast::null;
          j = tree[j].value.initial_declarator.idx_next_initial_declarator) {
       build_declaration_or_definition(idx_declaration_declarator, j);
@@ -45,7 +39,7 @@ llvm::Type* build_llvm_ir::build_mult_declaration_or_definition(
   return nullptr;
 }
 
-llvm::Type* build_llvm_ir::build_declaration_declarator(ast::idx idx) {
+llvm::Type *build_llvm_ir::build_declaration_declarator(ast::idx idx) {
   switch (tree[idx].value.declaration_declarator.type) {
     case ast::declarator_type::type_struct:
       return llvm::StructType::get(*context);
@@ -69,16 +63,14 @@ llvm::Type* build_llvm_ir::build_declaration_declarator(ast::idx idx) {
   }
 }
 
-llvm::SmallVector<llvm::Type*>
+llvm::SmallVector<llvm::Type *>
 build_llvm_ir::build_arguments_type_list(ast::idx idx_argument_type_list) {
-  NODE_TYPE_WRONG(
-    tree[idx_argument_type_list].type, ast::node_type::arguments_type_list
-  )
+  NODE_TYPE_WRONG(tree[idx_argument_type_list].type, ast::node_type::arguments_type_list)
 
   // traverse each argument declaration in the arguments type list
-  llvm::SmallVector<llvm::Type*> arguments_type_list;
-  for (ast::idx i = tree[idx_argument_type_list]
-                      .value.arguments_type_list.idx_argument_declaration;
+  llvm::SmallVector<llvm::Type *> arguments_type_list;
+  for (ast::idx i
+       = tree[idx_argument_type_list].value.arguments_type_list.idx_argument_declaration;
        i != ast::null;
        i = tree[i].value.arguments_declaration.idx_next_arguments_declaration) {
     arguments_type_list.push_back(build_argument_declaration(i));
@@ -91,8 +83,7 @@ build_llvm_ir::build_arguments_type_list(ast::idx idx_argument_type_list) {
 // all type declarator
 // 1. array's pointer
 // 2.
-llvm::Type*
-build_llvm_ir::build_argument_declaration(ast::idx idx_argument_declaration) {
+llvm::Type *build_llvm_ir::build_argument_declaration(ast::idx idx_argument_declaration) {
   ast::idx idx_declaration_declarator
     = tree[idx_argument_declaration]
         .value.arguments_declaration.idx_declaration_declarator;
@@ -100,8 +91,7 @@ build_llvm_ir::build_argument_declaration(ast::idx idx_argument_declaration) {
   ast::idx idx_declarator
     = tree[idx_argument_declaration].value.arguments_declaration.idx_declarator;
 
-  llvm::Type* ptr_type_argument
-    = build_type(idx_declaration_declarator, idx_declarator);
+  llvm::Type *ptr_type_argument = build_type(idx_declaration_declarator, idx_declarator);
 
   return ptr_type_argument;
 }
@@ -111,32 +101,25 @@ build_llvm_ir::build_argument_declaration(ast::idx idx_argument_declaration) {
 //
 void build_llvm_ir::build_function_or_function_ptr(
   ast::idx    idx,
-  llvm::Type* ptr_declaration_declarator
+  llvm::Type *ptr_declaration_declarator
 ) {
   // llvm::SmallVector<llvm::Type*> func_args = build_arguments_type_list(idx);
   // llvm::FunctionType *ptr_func = llvm::FunctionType::get();
   return;
 }
 
-void build_llvm_ir::build_variable(
-  ast::idx    idx,
-  llvm::Type* ptr_declaration_declarator
-) {}
+void build_llvm_ir::build_variable(ast::idx idx, llvm::Type *ptr_declaration_declarator) {
+}
 
-llvm::Type* build_llvm_ir::build_array(
-  llvm::Type* ptr_unit_type,
-  ast::idx    idx_array_declarator
-) {
+llvm::Type *
+build_llvm_ir::build_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declarator) {
   ast::idx idx_next_array_declarator
-    = tree[idx_array_declarator]
-        .value.array_declarator.idx_next_array_declarator;
+    = tree[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
 
-  ast::idx idx_constant
-    = tree[idx_array_declarator].value.array_declarator.idx_constant;
+  ast::idx idx_constant = tree[idx_array_declarator].value.array_declarator.idx_constant;
   if (idx_next_array_declarator != ast::null) {
     return llvm::ArrayType::get(
-      build_array(ptr_unit_type, idx_next_array_declarator),
-      get_constant(idx_constant)
+      build_array(ptr_unit_type, idx_next_array_declarator), get_constant(idx_constant)
     );
   }
   else {
@@ -144,16 +127,14 @@ llvm::Type* build_llvm_ir::build_array(
   }
 }
 
-llvm::Type* build_llvm_ir::build_recurs_array(
-  llvm::Type* ptr_unit_type,
+llvm::Type *build_llvm_ir::build_recurs_array(
+  llvm::Type *ptr_unit_type,
   ast::idx    idx_array_declarator
 ) {
   ast::idx idx_next_array_declarator
-    = tree[idx_array_declarator]
-        .value.array_declarator.idx_next_array_declarator;
+    = tree[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
 
-  ast::idx idx_constant
-    = tree[idx_array_declarator].value.array_declarator.idx_constant;
+  ast::idx idx_constant = tree[idx_array_declarator].value.array_declarator.idx_constant;
   if (idx_next_array_declarator != ast::null) {
     return llvm::ArrayType::get(
       build_recurs_array(ptr_unit_type, idx_next_array_declarator),
@@ -172,9 +153,7 @@ bool build_llvm_ir::is_func_decl(ast::idx idx) {
         tree[idx].value.declaration_or_definition.idx_declaration_declarator
       );
     case ast::node_type::initial_declarator_list:
-      return is_func_decl(
-        tree[idx].value.initial_declarator_list.idx_initial_declarator
-      );
+      return is_func_decl(tree[idx].value.initial_declarator_list.idx_initial_declarator);
     case ast::node_type::initial_declarator:
       return is_func_decl(tree[idx].value.initial_declarator.idx_declarator);
     case ast::node_type::declarator:
@@ -238,8 +217,8 @@ bool build_llvm_ir::is_struct(ast::idx idx) {
 
 bool build_llvm_ir::is_union(ast::idx idx){NOT_REACHABLE}
 
-llvm::Type* build_llvm_ir::build_pointer(
-  llvm::Type* ptr_type_declaration_declarator,
+llvm::Type *build_llvm_ir::build_pointer(
+  llvm::Type *ptr_type_declaration_declarator,
   ast::idx    idx_declarator
 ) {
   for (auto i = tree[idx_declarator].value.declarator.is_ptr; i > 0; --i) {
@@ -258,17 +237,15 @@ void build_llvm_ir::build_declaration_or_definition(
   ast::idx idx_direct_declarator
     = tree[idx_declarator].value.declarator.idx_direct_declarator;
 
-  llvm::Type* ptr_type_declaration_declarator
+  llvm::Type *ptr_type_declaration_declarator
     = build_declaration_declarator(idx_declaration_declarator);
 
   // return type, var type, arrary unit type
-  llvm::Type* ptr_type
-    = build_pointer(ptr_type_declaration_declarator, idx_declarator);
+  llvm::Type *ptr_type = build_pointer(ptr_type_declaration_declarator, idx_declarator);
 
   // get function name
   ast::idx idx_identifier;
-  for (ast::idx i = idx_declarator;
-       tree[i].type != ast::node_type::identifier;) {
+  for (ast::idx i = idx_declarator; tree[i].type != ast::node_type::identifier;) {
     switch (tree[i].type) {
       case ast::node_type::declarator:
         i = tree[i].value.declarator.idx_direct_declarator;
@@ -284,8 +261,7 @@ void build_llvm_ir::build_declaration_or_definition(
         break;
       default:
         fmt::print(
-          fg(fmt::color::red), "node type {}\n",
-          static_cast<unsigned char>(tree[i].type)
+          fg(fmt::color::red), "node type {}\n", static_cast<unsigned char>(tree[i].type)
         );
         SWITCH_ERROR
     }
@@ -294,21 +270,17 @@ void build_llvm_ir::build_declaration_or_definition(
 
   // array or a pointer to array
   if (tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null) {
-    llvm::Type* ptr_unit_type = ptr_type;
+    llvm::Type *ptr_unit_type = ptr_type;
     ast::idx    idx_array_declarator
-      = tree[idx_direct_declarator]
-          .value.direct_declarator.idx_array_declarator;
-    llvm::Type* ptr_array_type
-      = build_array(ptr_unit_type, idx_array_declarator);
+      = tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator;
+    llvm::Type *ptr_array_type = build_array(ptr_unit_type, idx_array_declarator);
 
     // a pointer to array
-    while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator
-           != ast::null) {
-      idx_declarator
-        = tree[idx_direct_declarator].value.direct_declarator.idx_declarator;
+    while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null
+    ) {
+      idx_declarator = tree[idx_direct_declarator].value.direct_declarator.idx_declarator;
       build_pointer(ptr_array_type, idx_declarator);
-      idx_direct_declarator
-        = tree[idx_declarator].value.declarator.idx_direct_declarator;
+      idx_direct_declarator = tree[idx_declarator].value.declarator.idx_direct_declarator;
     }
     builder->CreateAlloca(ptr_array_type);
     return;
@@ -316,15 +288,13 @@ void build_llvm_ir::build_declaration_or_definition(
   // TODO
   // function
   else if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
-    llvm::Type* ptr_return_type = ptr_type;
+    llvm::Type *ptr_return_type = ptr_type;
     // get function type list
-    llvm::SmallVector<llvm::Type*> argument_type_list
-      = build_arguments_type_list(
-        tree[idx_direct_declarator]
-          .value.direct_declarator.idx_arguments_type_list
-      );
+    llvm::SmallVector<llvm::Type *> argument_type_list = build_arguments_type_list(
+      tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list
+    );
 
-    llvm::FunctionType* ptr_func_type
+    llvm::FunctionType *ptr_func_type
       = llvm::FunctionType::get(ptr_return_type, argument_type_list, false);
     // 1. a pointer to function
     if (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null) {
@@ -340,13 +310,13 @@ void build_llvm_ir::build_declaration_or_definition(
     // 2. a function
     else {
       // 3. a function declaration
-      llvm::Function* ptr_func = llvm::Function::Create(
+      llvm::Function *ptr_func = llvm::Function::Create(
         ptr_func_type, llvm::Function::ExternalLinkage, name, *module
       );
 
       // 4. a function definition
       if (now_compound_statement != ast::null) {
-        llvm::BasicBlock* ptr_block
+        llvm::BasicBlock *ptr_block
           = llvm::BasicBlock::Create(*context, get_label(), ptr_func);
         builder->SetInsertPoint(ptr_block);
         ptr_now_func  = ptr_func;
@@ -362,7 +332,7 @@ void build_llvm_ir::build_declaration_or_definition(
   }
   // var
   else {
-    llvm::Value* ptr_var = builder->CreateAlloca(ptr_type);
+    llvm::Value *ptr_var = builder->CreateAlloca(ptr_type);
     // TODO
     // which map
     insert_func_symbol(name, ptr_var, ptr_type);
@@ -373,38 +343,31 @@ void build_llvm_ir::build_declaration_or_definition(
   NOT_REACHABLE
 }
 
-llvm::Type* build_llvm_ir::build_type(
-  ast::idx idx_declaration_declarator,
-  ast::idx idx_declarator
-) {
-  llvm::Type* ptr_type_declaration_declarator
+llvm::Type *
+build_llvm_ir::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarator) {
+  llvm::Type *ptr_type_declaration_declarator
     = build_declaration_declarator(idx_declaration_declarator);
 
   // return type, var type, arrary unit type
-  llvm::Type* ptr_type
-    = build_pointer(ptr_type_declaration_declarator, idx_declarator);
+  llvm::Type *ptr_type = build_pointer(ptr_type_declaration_declarator, idx_declarator);
 
   ast::idx idx_direct_declarator
     = tree[idx_declarator].value.declarator.idx_direct_declarator;
 
   // array or a pointer to array
   if (tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null) {
-    llvm::Type* ptr_unit_type = ptr_type;
+    llvm::Type *ptr_unit_type = ptr_type;
     ast::idx    idx_array_declarator
-      = tree[idx_direct_declarator]
-          .value.direct_declarator.idx_array_declarator;
-    llvm::Type* ptr_array_type
-      = build_array(ptr_unit_type, idx_array_declarator);
+      = tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator;
+    llvm::Type *ptr_array_type = build_array(ptr_unit_type, idx_array_declarator);
 
     // a pointer to array
     ast::idx idx_declarator;
-    while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator
-           != ast::null) {
-      idx_declarator
-        = tree[idx_direct_declarator].value.direct_declarator.idx_declarator;
+    while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null
+    ) {
+      idx_declarator = tree[idx_direct_declarator].value.direct_declarator.idx_declarator;
       build_pointer(ptr_array_type, idx_declarator);
-      idx_direct_declarator
-        = tree[idx_declarator].value.declarator.idx_direct_declarator;
+      idx_direct_declarator = tree[idx_declarator].value.declarator.idx_direct_declarator;
     }
 
     return ptr_array_type;
@@ -412,15 +375,13 @@ llvm::Type* build_llvm_ir::build_type(
   // TODO
   // function
   else if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
-    llvm::Type* ptr_return_type = ptr_type;
+    llvm::Type *ptr_return_type = ptr_type;
     // get function type list
-    llvm::SmallVector<llvm::Type*> argument_type_list
-      = build_arguments_type_list(
-        tree[idx_direct_declarator]
-          .value.direct_declarator.idx_arguments_type_list
-      );
+    llvm::SmallVector<llvm::Type *> argument_type_list = build_arguments_type_list(
+      tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list
+    );
 
-    llvm::FunctionType* ptr_func_type
+    llvm::FunctionType *ptr_func_type
       = llvm::FunctionType::get(ptr_return_type, argument_type_list, false);
     return ptr_func_type;
   }
@@ -438,15 +399,13 @@ std::size_t build_llvm_ir::get_constant(ast::idx idx_constant) {
   return tree[idx_constant].value.constant.get_unsigned_int();
 }
 
-llvm::BasicBlock* build_llvm_ir::build_compound_statement(
+llvm::BasicBlock *build_llvm_ir::build_compound_statement(
   ast::idx          idx_compound_statement,
-  llvm::BasicBlock* ptr_block
+  llvm::BasicBlock *ptr_block
 ) {
-  ast::idx idx_block
-    = tree[idx_compound_statement].value.compound_statement.idx_block;
+  ast::idx idx_block = tree[idx_compound_statement].value.compound_statement.idx_block;
 
-  for (ast::idx i = idx_block; i != ast::null;
-       i          = tree[i].value.block.idx_next_block) {
+  for (ast::idx i = idx_block; i != ast::null; i = tree[i].value.block.idx_next_block) {
     build_block(i);
   }
   // TODO
@@ -494,17 +453,16 @@ void build_llvm_ir::build_if_statement(ast::idx idx_if_statement) {
   // builder->SetInsertPoint(ptr_block);
   ast::idx idx_assign_expression
     = tree[idx_if_statement].value.if_statement.idx_assign_expression;
-  ast::idx idx_else_body
-    = tree[idx_if_statement].value.if_statement.idx_else_body;
-  ast::idx idx_if_body = tree[idx_if_statement].value.if_statement.idx_if_body;
+  ast::idx idx_else_body = tree[idx_if_statement].value.if_statement.idx_else_body;
+  ast::idx idx_if_body   = tree[idx_if_statement].value.if_statement.idx_if_body;
 
-  llvm::BasicBlock* ptr_block_if_body
+  llvm::BasicBlock *ptr_block_if_body
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
   if (idx_else_body != ast::null) {
-    llvm::BasicBlock* ptr_block_else_body
+    llvm::BasicBlock *ptr_block_else_body
       = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
-    llvm::BasicBlock* ptr_statement_end
+    llvm::BasicBlock *ptr_statement_end
       = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
     build_assign_expression(
@@ -522,7 +480,7 @@ void build_llvm_ir::build_if_statement(ast::idx idx_if_statement) {
     builder->SetInsertPoint(ptr_statement_end);
   }
   else {
-    llvm::BasicBlock* ptr_block_statement_end
+    llvm::BasicBlock *ptr_block_statement_end
       = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
     build_assign_expression(
       idx_assign_expression, ptr_block_if_body, ptr_block_statement_end, false
@@ -544,11 +502,11 @@ void build_llvm_ir::build_while_statement(ast::idx idx_while_statement) {
   ast::idx idx_compound_statement
     = tree[idx_while_statement].value.while_statement.idx_compound_statement;
 
-  llvm::BasicBlock* ptr_while_condition
+  llvm::BasicBlock *ptr_while_condition
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
-  llvm::BasicBlock* ptr_while_body
+  llvm::BasicBlock *ptr_while_body
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
-  llvm::BasicBlock* ptr_while_body_end
+  llvm::BasicBlock *ptr_while_body_end
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
   // jump to while condition
@@ -576,15 +534,13 @@ void build_llvm_ir::build_switch_statement(ast::idx idx_switch_statement) {
 
 void build_llvm_ir::build_do_while_statement(ast::idx idx_do_while_statement) {
   ast::idx idx_assign_expression
-    = tree[idx_do_while_statement]
-        .value.do_while_statement.idx_assign_statement;
+    = tree[idx_do_while_statement].value.do_while_statement.idx_assign_statement;
   ast::idx idx_compound_statement
-    = tree[idx_do_while_statement]
-        .value.do_while_statement.idx_compound_statement;
+    = tree[idx_do_while_statement].value.do_while_statement.idx_compound_statement;
 
-  llvm::BasicBlock* ptr_do_while_body
+  llvm::BasicBlock *ptr_do_while_body
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
-  llvm::BasicBlock* ptr_do_while_body_end
+  llvm::BasicBlock *ptr_do_while_body_end
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
   builder->CreateBr(ptr_do_while_body);
 
@@ -602,6 +558,30 @@ void build_llvm_ir::build_do_while_statement(ast::idx idx_do_while_statement) {
 }
 
 void build_llvm_ir::build_for_statement(ast::idx idx_for_statement) {
+  /*
+   *
+   *  ; declare or assign expression
+   *  1:
+   *    int i = ...;
+   *    br label %2
+   *
+   *  ; conditional expression
+   *  2:
+   *
+   *    br ... label %3 label %4
+   *
+   *  ; compound statement
+   *  3:
+   *    ...
+   *    ; change value
+   *    ...
+   *    br label %2
+   *
+   *  ; for statement end
+   *  4:
+   *    ...
+   */
+
   ast::idx idx_change_assign_expression
     = tree[idx_for_statement].value.for_statement.idx_change_assign_expression;
 
@@ -609,26 +589,39 @@ void build_llvm_ir::build_for_statement(ast::idx idx_for_statement) {
     = tree[idx_for_statement].value.for_statement.idx_compound_statement;
 
   ast::idx idx_conditional_assign_expression
-    = tree[idx_for_statement]
-        .value.for_statement.idx_conditional_assign_expression;
+    = tree[idx_for_statement].value.for_statement.idx_conditional_assign_expression;
 
-  ast::idx idx_declaration
-    = tree[idx_for_statement].value.for_statement.idx_declaration;
+  ast::idx idx_declaration = tree[idx_for_statement].value.for_statement.idx_declaration;
 
-  llvm::BasicBlock* ptr_for_conditional_assign_expression
+  llvm::BasicBlock *ptr_for_conditional_assign_expression
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
-  llvm::BasicBlock* ptr_for_declaration
+  llvm::BasicBlock *ptr_for_compound_statement
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
-  llvm::BasicBlock* ptr_for_compound_statement
+  llvm::BasicBlock *ptr_for_end
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
-  llvm::BasicBlock* ptr_for_change_assign_expression
-    = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
+  // declarations
+  build_mult_declaration_or_definition(idx_declaration);
+  builder->CreateBr(ptr_for_conditional_assign_expression);
 
-  llvm::BasicBlock* ptr_for_end
-    = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
+  builder->SetInsertPoint(ptr_for_conditional_assign_expression);
+  // condition
+  build_assign_expression(
+    idx_conditional_assign_expression, ptr_for_compound_statement, ptr_for_end, false
+  );
+
+  builder->SetInsertPoint(ptr_for_compound_statement);
+  // compound statement
+  build_compound_statement(idx_compound_statement);
+  // change value
+  build_assign_expression(idx_change_assign_expression);
+  // jump to conditional expression
+  builder->CreateBr(ptr_for_conditional_assign_expression);
+
+  // for end
+  builder->SetInsertPoint(ptr_for_end);
 }
 
 void build_llvm_ir::build_return_statement(ast::idx idx_return_statement) {
@@ -647,10 +640,10 @@ void build_llvm_ir::build_expression(ast::idx idx_expression) {
   return;
 }
 
-llvm::Value* build_llvm_ir::build_assign_expression(
+llvm::Value *build_llvm_ir::build_assign_expression(
   ast::idx          idx_assign_expression,
-  llvm::BasicBlock* ptr_true_block,
-  llvm::BasicBlock* ptr_false_block,
+  llvm::BasicBlock *ptr_true_block,
+  llvm::BasicBlock *ptr_false_block,
   bool              is_return_value
 ) {
   // assign expression
@@ -665,15 +658,14 @@ llvm::Value* build_llvm_ir::build_assign_expression(
         .value.assignment_expression.idx_unary_or_binary_expression;
 
   ast::idx idx_binary_expression
-    = tree[idx_assign_expression]
-        .value.assignment_expression.idx_binary_expression;
+    = tree[idx_assign_expression].value.assignment_expression.idx_binary_expression;
 
   // just a binary expression without assign
-  llvm::Value* r_value = build_binary_expression(idx_binary_expression);
+  llvm::Value *r_value = build_binary_expression(idx_binary_expression);
   variable     l_value;
 
   for (ast::idx i = idx_assign_expression; i != ast::null;
-       i = tree[i].value.assignment_expression.idx_next_assignment_expression) {
+       i          = tree[i].value.assignment_expression.idx_next_assignment_expression) {
     l_value = build_unary_expression(
       tree[i].value.assignment_expression.idx_unary_or_binary_expression
     );
@@ -685,8 +677,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::plus_agn:  //+=
         builder->CreateStore(
           builder->CreateAdd(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -695,8 +686,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::minus_agn:  //-=
         builder->CreateStore(
           builder->CreateSub(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -705,8 +695,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::times_agn:  //*=
         builder->CreateStore(
           builder->CreateMul(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -715,8 +704,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::div_agn:  // /=
         builder->CreateStore(
           builder->CreateSDiv(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -729,8 +717,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::r_shift_agn:  //>>=
         builder->CreateStore(
           builder->CreateSDiv(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -739,8 +726,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::l_shift_agn:  //<<=
         builder->CreateStore(
           builder->CreateSDiv(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -749,8 +735,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::bit_and_agn:  //&=
         builder->CreateStore(
           builder->CreateSDiv(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -759,8 +744,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::bit_or_agn:  //|=
         builder->CreateStore(
           builder->CreateSDiv(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -769,8 +753,7 @@ llvm::Value* build_llvm_ir::build_assign_expression(
       case token::bit_xor_agn:  //^=
         builder->CreateStore(
           builder->CreateSDiv(
-            r_value,
-            builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
+            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
           ),
           l_value.ptr_value_ptr
         );
@@ -805,21 +788,28 @@ build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression) {
     = tree[idx_unary_expression].value.unary_expression.idx_postfix_expression;
 
   ast::idx idx_primary_expression
-    = tree[idx_postfix_expression]
-        .value.postfix_expression.idx_primary_expression;
+    = tree[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
 
-  ast::idx idx_postfix_operator
-    = tree[idx_postfix_expression]
-        .value.postfix_expression.idx_postfix_operator;
+  // postfix expression exist
+  if (idx_postfix_expression != ast::null) {
+  }
 
+  switch (tree[idx_primary_expression].type) {
+    case ast::node_type::identifier:
+      break;
+    case ast::node_type::constant:
+      fmt::print("const");
+      break;
+    default:
+      SWITCH_ERROR
+  }
 
   // unary operator
   // unary operator is exist
   if (tree[idx_unary_expression].value.unary_expression.idx_unary_expression != ast::null) {
     for (ast::idx i = idx_unary_expression; i != ast::null;
          tree[i].value.unary_expression.idx_unary_expression) {
-      switch (tree[idx_unary_expression].value.unary_expression.unary_operator
-      ) {
+      switch (tree[idx_unary_expression].value.unary_expression.unary_operator) {
         case token::invalid:
           break;
         // &
@@ -851,22 +841,19 @@ build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression) {
   else if (tree[idx_unary_expression].value.unary_expression.is_sizeof) {
   }
   //
-  else if (tree[idx_unary_expression]
-             .value.unary_expression.idx_postfix_expression) {
+  else if (tree[idx_unary_expression].value.unary_expression.idx_postfix_expression) {
   }
   // conversion
-  else if (tree[idx_unary_expression]
-             .value.unary_expression.idx_declaration_declarator) {
+  else if (tree[idx_unary_expression].value.unary_expression.idx_declaration_declarator) {
   }
 
   // postfix operator exist
   // TODO
-  if (idx_postfix_operator != ast::null) {
-  }
+
 
   // TODO
-  variable value_loc_and_type = find_value(std::string{
-    tree[idx_primary_expression].value.identifier.name});
+  variable value_loc_and_type
+    = find_value(std::string{tree[idx_primary_expression].value.identifier.name});
   return value_loc_and_type;
   // if (return_location_ptr) return value_loc_and_type.value;
   // return builder->CreateLoad(value_loc_and_type.type,
@@ -883,21 +870,18 @@ build_llvm_ir::variable build_llvm_ir::find_value(std::string name) {
   NOT_REACHABLE
 }
 
-llvm::Value*
-build_llvm_ir::build_primary_expression(ast::idx idx_primary_expression
+llvm::Value *build_llvm_ir::build_primary_expression(ast::idx idx_primary_expression
 ){NOT_REACHABLE}
 
-llvm::Value* build_llvm_ir::build_binary_expression(
+llvm::Value *build_llvm_ir::build_binary_expression(
   ast::idx          idx_binary_expression,
-  llvm::BasicBlock* ptr_true_block,
-  llvm::BasicBlock* ptr_false_block,
+  llvm::BasicBlock *ptr_true_block,
+  llvm::BasicBlock *ptr_false_block,
   bool              is_return_value
 ) {
   if (tree[idx_binary_expression].type == ast::node_type::unary_expression) {
     auto var_type_value = build_unary_expression(idx_binary_expression);
-    return builder->CreateLoad(
-      var_type_value.ptr_type, var_type_value.ptr_value_ptr
-    );
+    return builder->CreateLoad(var_type_value.ptr_type, var_type_value.ptr_value_ptr);
   }
 
   // llvm::Value *value_l
@@ -906,22 +890,20 @@ llvm::Value* build_llvm_ir::build_binary_expression(
   // llvm::Value *value_r
   //=
   // build_binary_expression(tree[idx_binary_expression].value.binary_expression.idx_right_node);
-  llvm::Value* value_l      = nullptr;
-  llvm::Value* value_r      = nullptr;
-  llvm::Value* return_value = nullptr;
+  llvm::Value *value_l      = nullptr;
+  llvm::Value *value_r      = nullptr;
+  llvm::Value *return_value = nullptr;
 
   switch (tree[idx_binary_expression].value.binary_expression.token_operator) {
     // TODO
     // float num
     case token::log_and: {
       auto i = idx_binary_expression;
-      for (;
-           tree[i].type == ast::node_type::binary_expression
-           && tree[i].value.binary_expression.token_operator == token::log_and;
+      for (; tree[i].type == ast::node_type::binary_expression
+             && tree[i].value.binary_expression.token_operator == token::log_and;
            i = tree[i].value.binary_expression.idx_right_node) {
-        ast::idx idx_left_node = tree[i].value.binary_expression.idx_left_node;
-        ast::idx idx_right_node
-          = tree[i].value.binary_expression.idx_right_node;
+        ast::idx idx_left_node  = tree[i].value.binary_expression.idx_left_node;
+        ast::idx idx_right_node = tree[i].value.binary_expression.idx_right_node;
 
         if (tree[idx_left_node].type == ast::node_type::binary_expression
             && (tree[idx_left_node].value.binary_expression.token_operator
@@ -931,17 +913,14 @@ llvm::Value* build_llvm_ir::build_binary_expression(
           auto ptr_next_true_block
             = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
-          build_binary_expression(
-            idx_left_node, ptr_next_true_block, ptr_false_block
-          );
+          build_binary_expression(idx_left_node, ptr_next_true_block, ptr_false_block);
 
           builder->SetInsertPoint(ptr_next_true_block);
         }
         else {
           // left node
-          value_l = build_binary_expression(
-            tree[i].value.binary_expression.idx_left_node
-          );
+          value_l
+            = build_binary_expression(tree[i].value.binary_expression.idx_left_node);
           // judge left node
           auto ret_val = builder->CreateICmpNE(
             value_l, llvm::ConstantInt::get(value_l->getType(), 0)
@@ -965,10 +944,9 @@ llvm::Value* build_llvm_ir::build_binary_expression(
         return nullptr;
       }
       else {
-        llvm::Value* last_right_value = build_binary_expression(i);
-        llvm::Value* ret_val          = builder->CreateICmpNE(
-                   last_right_value,
-                   llvm::ConstantInt::get(last_right_value->getType(), 0)
+        llvm::Value *last_right_value = build_binary_expression(i);
+        llvm::Value *ret_val          = builder->CreateICmpNE(
+                   last_right_value, llvm::ConstantInt::get(last_right_value->getType(), 0)
                  );
         // jump
         builder->CreateCondBr(ret_val, ptr_true_block, ptr_false_block);
@@ -1033,9 +1011,8 @@ llvm::Value* build_llvm_ir::build_binary_expression(
         // if expression tree's root node's operator is || or &&
         // node don't need to compute the binary expression's return value
         // only jump to the T/F blocks
-        ast::idx idx_left_node = tree[i].value.binary_expression.idx_left_node;
-        ast::idx idx_right_node
-          = tree[i].value.binary_expression.idx_right_node;
+        ast::idx idx_left_node  = tree[i].value.binary_expression.idx_left_node;
+        ast::idx idx_right_node = tree[i].value.binary_expression.idx_right_node;
         if (tree[idx_left_node].type == ast::node_type::binary_expression
             && (tree[idx_left_node].value.binary_expression.token_operator
                   == token::log_or
@@ -1045,9 +1022,7 @@ llvm::Value* build_llvm_ir::build_binary_expression(
           auto ptr_next_false_block
             = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
-          build_binary_expression(
-            idx_left_node, ptr_true_block, ptr_next_false_block
-          );
+          build_binary_expression(idx_left_node, ptr_true_block, ptr_next_false_block);
 
           // start false block
           builder->SetInsertPoint(ptr_next_false_block);
@@ -1078,10 +1053,9 @@ llvm::Value* build_llvm_ir::build_binary_expression(
         return nullptr;
       }
       else {
-        llvm::Value* last_right_value = build_binary_expression(i);
-        llvm::Value* ret_val          = builder->CreateICmpNE(
-                   last_right_value,
-                   llvm::ConstantInt::get(last_right_value->getType(), 0)
+        llvm::Value *last_right_value = build_binary_expression(i);
+        llvm::Value *ret_val          = builder->CreateICmpNE(
+                   last_right_value, llvm::ConstantInt::get(last_right_value->getType(), 0)
                  );
         // jump
         builder->CreateCondBr(ret_val, ptr_true_block, ptr_false_block);
@@ -1320,28 +1294,26 @@ llvm::Value* build_llvm_ir::build_binary_expression(
   return return_value;
 }
 
-llvm::Value* build_llvm_ir::build_log_and_chain(ast::idx idx_log_and_operator) {
+llvm::Value *build_llvm_ir::build_log_and_chain(ast::idx idx_log_and_operator) {
   if (tree[idx_log_and_operator].value.binary_expression.token_operator != token::log_and) {
     return build_binary_expression(idx_log_and_operator);
   }
-  ast::idx l_value
-    = tree[idx_log_and_operator].value.binary_expression.idx_left_node;
-  ast::idx r_value
-    = tree[idx_log_and_operator].value.binary_expression.idx_right_node;
+  ast::idx l_value = tree[idx_log_and_operator].value.binary_expression.idx_left_node;
+  ast::idx r_value = tree[idx_log_and_operator].value.binary_expression.idx_right_node;
 
   build_log_and_chain(l_value);
   build_log_and_chain(r_value);
   return nullptr;
 }
 
-llvm::Value* build_llvm_ir::build_log_or_chain(ast::idx idx_log_or_operator) {
+llvm::Value *build_llvm_ir::build_log_or_chain(ast::idx idx_log_or_operator) {
   return nullptr;
 }
 
 void build_llvm_ir::insert_func_symbol(
   std::string  name,
-  llvm::Value* ptr_var,
-  llvm::Type*  ptr_type
+  llvm::Value *ptr_var,
+  llvm::Type  *ptr_type
 ) {
   if (func_symbol_table.find(name) != func_symbol_table.end()
       || global_symbol_table.find(name) != global_symbol_table.end()) {
@@ -1356,8 +1328,8 @@ void build_llvm_ir::insert_func_symbol(
 
 void build_llvm_ir::insert_symbol_symbol(
   std::string  name,
-  llvm::Value* ptr_var,
-  llvm::Type*  ptr_type
+  llvm::Value *ptr_var,
+  llvm::Type  *ptr_type
 ) {
   if (func_symbol_table.find(name) != func_symbol_table.end()
       || global_symbol_table.find(name) != global_symbol_table.end()) {
