@@ -1,4 +1,7 @@
 /home/lzj/code/cpp/script/cmake-build-debug/CMakeFiles/ToyC.dir
+/home/lzj/code/cpp/script/cmake-build-debug/CMakeFiles/implement.dir
+/home/lzj/code/cpp/script/cmake-build-debug/CMakeFiles/ast.dir
+/home/lzj/code/cpp/script/cmake-build-debug/CMakeFiles/var.dir
 /home/lzj/code/cpp/script/cmake-build-debug/CMakeFiles/intrinsics_gen.dir
 /home/lzj/code/cpp/script/cmake-build-debug/CMakeFiles/omp_gen.dir
 /home/lzj/code/cpp/script/cmake-build-debug/CMakeFiles/acc_gen.dir

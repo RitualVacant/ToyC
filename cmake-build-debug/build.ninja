@@ -47,15 +47,17 @@ cmake_ninja_workdir = /home/lzj/code/cpp/script/cmake-build-debug/
 #############################################
 # Order-only phony target for ToyC
 
-build cmake_object_order_depends_target_ToyC: phony || CMakeFiles/ToyC.dir
+build cmake_object_order_depends_target_ToyC: phony || cmake_object_order_depends_target_ast cmake_object_order_depends_target_implement cmake_object_order_depends_target_var
 
-build CMakeFiles/ToyC.dir/main.cpp.o: CXX_COMPILER__ToyC_Debug /home/lzj/code/cpp/script/main.cpp || cmake_object_order_depends_target_ToyC
-  DEFINES = -DFMT_LOCALE -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
-  DEP_FILE = CMakeFiles/ToyC.dir/main.cpp.o.d
+build CMakeFiles/ToyC.dir/src/main.cpp.o: CXX_COMPILER__ToyC_Debug /home/lzj/code/cpp/script/src/main.cpp || cmake_object_order_depends_target_ToyC
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/ToyC.dir/src/main.cpp.o.d
   FLAGS = -g   -std=c++20
-  INCLUDES = -I/home/lzj/code/cpp/script/code/ast -I/home/lzj/code/cpp/script/code/class/implement -I/home/lzj/code/cpp/script/code/class/interface -I/home/lzj/code/cpp/script/code/error
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
   OBJECT_DIR = CMakeFiles/ToyC.dir
-  OBJECT_FILE_DIR = CMakeFiles/ToyC.dir
+  OBJECT_FILE_DIR = CMakeFiles/ToyC.dir/src
+  TARGET_COMPILE_PDB = CMakeFiles/ToyC.dir/
+  TARGET_PDB = ToyC.pdb
 
 
 # =============================================================================
@@ -65,14 +67,233 @@ build CMakeFiles/ToyC.dir/main.cpp.o: CXX_COMPILER__ToyC_Debug /home/lzj/code/cp
 #############################################
 # Link the executable ToyC
 
-build ToyC: CXX_EXECUTABLE_LINKER__ToyC_Debug CMakeFiles/ToyC.dir/main.cpp.o | /usr/local/lib/libfmt.a /usr/local/lib/libLLVMSupport.a /usr/local/lib/libLLVMCore.a /usr/local/lib/libLLVMIRReader.a /usr/local/lib/libLLVMAsmParser.a /usr/local/lib/libLLVMBitReader.a /usr/local/lib/libLLVMCore.a /usr/local/lib/libLLVMBinaryFormat.a /usr/local/lib/libLLVMRemarks.a /usr/local/lib/libLLVMBitstreamReader.a /usr/local/lib/libLLVMSupport.a /usr/local/lib/libLLVMDemangle.a
+build ToyC: CXX_EXECUTABLE_LINKER__ToyC_Debug CMakeFiles/ToyC.dir/src/main.cpp.o | /usr/local/lib/libfmt.a /usr/local/lib/libLLVMSupport.a /usr/local/lib/libLLVMCore.a /usr/local/lib/libLLVMIRReader.a libimplement.a libast.a libvar.a /usr/local/lib/libLLVMAsmParser.a /usr/local/lib/libLLVMBitReader.a /usr/local/lib/libLLVMCore.a /usr/local/lib/libLLVMBinaryFormat.a /usr/local/lib/libLLVMRemarks.a /usr/local/lib/libLLVMBitstreamReader.a /usr/local/lib/libLLVMSupport.a /usr/local/lib/libLLVMDemangle.a || libast.a libimplement.a libvar.a
   FLAGS = -g
-  LINK_LIBRARIES = /usr/local/lib/libfmt.a  /usr/local/lib/libLLVMSupport.a  /usr/local/lib/libLLVMCore.a  /usr/local/lib/libLLVMIRReader.a  /usr/local/lib/libLLVMAsmParser.a  /usr/local/lib/libLLVMBitReader.a  /usr/local/lib/libLLVMCore.a  /usr/local/lib/libLLVMBinaryFormat.a  /usr/local/lib/libLLVMRemarks.a  /usr/local/lib/libLLVMBitstreamReader.a  /usr/local/lib/libLLVMSupport.a  -lrt  -ldl  -lm  /usr/local/lib/libLLVMDemangle.a
+  LINK_LIBRARIES = /usr/local/lib/libfmt.a  /usr/local/lib/libLLVMSupport.a  /usr/local/lib/libLLVMCore.a  /usr/local/lib/libLLVMIRReader.a  libimplement.a  libast.a  libvar.a  /usr/local/lib/libLLVMAsmParser.a  /usr/local/lib/libLLVMBitReader.a  /usr/local/lib/libLLVMCore.a  /usr/local/lib/libLLVMBinaryFormat.a  /usr/local/lib/libLLVMRemarks.a  /usr/local/lib/libLLVMBitstreamReader.a  /usr/local/lib/libLLVMSupport.a  -lrt  -ldl  -lm  /usr/local/lib/libLLVMDemangle.a
   OBJECT_DIR = CMakeFiles/ToyC.dir
   POST_BUILD = :
   PRE_LINK = :
+  TARGET_COMPILE_PDB = CMakeFiles/ToyC.dir/
   TARGET_FILE = ToyC
-  TARGET_PDB = ToyC.dbg
+  TARGET_PDB = ToyC.pdb
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target implement
+
+
+#############################################
+# Order-only phony target for implement
+
+build cmake_object_order_depends_target_implement: phony || CMakeFiles/implement.dir
+
+build CMakeFiles/implement.dir/src/implement/asm_code.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/asm_code.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/asm_code.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/build_llvm_ir.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/build_llvm_ir.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/build_llvm_ir.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/fstream_guard.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/fstream_guard.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/fstream_guard.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/life.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/life.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/life.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/parser.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/parser.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/parser.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/scanning.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/scanning.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/scanning.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/symbol_table.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/symbol_table.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/symbol_table.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/syntax_tree.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/syntax_tree.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/syntax_tree.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+build CMakeFiles/implement.dir/src/implement/value.cpp.o: CXX_COMPILER__implement_Debug /home/lzj/code/cpp/script/src/implement/value.cpp || cmake_object_order_depends_target_implement
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/implement.dir/src/implement/value.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/implement.dir
+  OBJECT_FILE_DIR = CMakeFiles/implement.dir/src/implement
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_PDB = libimplement.pdb
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target implement
+
+
+#############################################
+# Link the static library libimplement.a
+
+build libimplement.a: CXX_STATIC_LIBRARY_LINKER__implement_Debug CMakeFiles/implement.dir/src/implement/asm_code.cpp.o CMakeFiles/implement.dir/src/implement/build_llvm_ir.cpp.o CMakeFiles/implement.dir/src/implement/fstream_guard.cpp.o CMakeFiles/implement.dir/src/implement/life.cpp.o CMakeFiles/implement.dir/src/implement/parser.cpp.o CMakeFiles/implement.dir/src/implement/scanning.cpp.o CMakeFiles/implement.dir/src/implement/symbol_table.cpp.o CMakeFiles/implement.dir/src/implement/syntax_tree.cpp.o CMakeFiles/implement.dir/src/implement/value.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = CMakeFiles/implement.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_COMPILE_PDB = CMakeFiles/implement.dir/implement.pdb
+  TARGET_FILE = libimplement.a
+  TARGET_PDB = libimplement.pdb
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target ast
+
+
+#############################################
+# Order-only phony target for ast
+
+build cmake_object_order_depends_target_ast: phony || CMakeFiles/ast.dir
+
+build CMakeFiles/ast.dir/src/ast/ast.cpp.o: CXX_COMPILER__ast_Debug /home/lzj/code/cpp/script/src/ast/ast.cpp || cmake_object_order_depends_target_ast
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/ast.dir/src/ast/ast.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/ast.dir
+  OBJECT_FILE_DIR = CMakeFiles/ast.dir/src/ast
+  TARGET_COMPILE_PDB = CMakeFiles/ast.dir/ast.pdb
+  TARGET_PDB = libast.pdb
+
+build CMakeFiles/ast.dir/src/ast/declataror.cpp.o: CXX_COMPILER__ast_Debug /home/lzj/code/cpp/script/src/ast/declataror.cpp || cmake_object_order_depends_target_ast
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/ast.dir/src/ast/declataror.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/ast.dir
+  OBJECT_FILE_DIR = CMakeFiles/ast.dir/src/ast
+  TARGET_COMPILE_PDB = CMakeFiles/ast.dir/ast.pdb
+  TARGET_PDB = libast.pdb
+
+build CMakeFiles/ast.dir/src/ast/judge_char.cpp.o: CXX_COMPILER__ast_Debug /home/lzj/code/cpp/script/src/ast/judge_char.cpp || cmake_object_order_depends_target_ast
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/ast.dir/src/ast/judge_char.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/ast.dir
+  OBJECT_FILE_DIR = CMakeFiles/ast.dir/src/ast
+  TARGET_COMPILE_PDB = CMakeFiles/ast.dir/ast.pdb
+  TARGET_PDB = libast.pdb
+
+build CMakeFiles/ast.dir/src/ast/token.cpp.o: CXX_COMPILER__ast_Debug /home/lzj/code/cpp/script/src/ast/token.cpp || cmake_object_order_depends_target_ast
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/ast.dir/src/ast/token.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/ast.dir
+  OBJECT_FILE_DIR = CMakeFiles/ast.dir/src/ast
+  TARGET_COMPILE_PDB = CMakeFiles/ast.dir/ast.pdb
+  TARGET_PDB = libast.pdb
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target ast
+
+
+#############################################
+# Link the static library libast.a
+
+build libast.a: CXX_STATIC_LIBRARY_LINKER__ast_Debug CMakeFiles/ast.dir/src/ast/ast.cpp.o CMakeFiles/ast.dir/src/ast/declataror.cpp.o CMakeFiles/ast.dir/src/ast/judge_char.cpp.o CMakeFiles/ast.dir/src/ast/token.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = CMakeFiles/ast.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_COMPILE_PDB = CMakeFiles/ast.dir/ast.pdb
+  TARGET_FILE = libast.a
+  TARGET_PDB = libast.pdb
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target var
+
+
+#############################################
+# Order-only phony target for var
+
+build cmake_object_order_depends_target_var: phony || CMakeFiles/var.dir
+
+build CMakeFiles/var.dir/src/var/global_var.cpp.o: CXX_COMPILER__var_Debug /home/lzj/code/cpp/script/src/var/global_var.cpp || cmake_object_order_depends_target_var
+  DEFINES = -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
+  DEP_FILE = CMakeFiles/var.dir/src/var/global_var.cpp.o.d
+  FLAGS = -g   -std=c++20
+  INCLUDES = -I/home/lzj/code/cpp/script/include/ast -I/home/lzj/code/cpp/script/include/error -I/home/lzj/code/cpp/script/include/interface -I/home/lzj/code/cpp/script/include/var
+  OBJECT_DIR = CMakeFiles/var.dir
+  OBJECT_FILE_DIR = CMakeFiles/var.dir/src/var
+  TARGET_COMPILE_PDB = CMakeFiles/var.dir/var.pdb
+  TARGET_PDB = libvar.pdb
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target var
+
+
+#############################################
+# Link the static library libvar.a
+
+build libvar.a: CXX_STATIC_LIBRARY_LINKER__var_Debug CMakeFiles/var.dir/src/var/global_var.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = CMakeFiles/var.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_COMPILE_PDB = CMakeFiles/var.dir/var.pdb
+  TARGET_FILE = libvar.a
+  TARGET_PDB = libvar.pdb
 
 
 #############################################
@@ -97,7 +318,7 @@ build acc_gen: phony
 # Utility command for test
 
 build CMakeFiles/test.util: CUSTOM_COMMAND
-  COMMAND = cd /home/lzj/code/cpp/script/cmake-build-debug && /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/bin/ctest --force-new-ctest-process
+  COMMAND = cd /home/lzj/code/cpp/script/cmake-build-debug && /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/bin/ctest --force-new-ctest-process
   DESC = Running tests...
   pool = console
   restat = 1
@@ -109,7 +330,7 @@ build test: phony CMakeFiles/test.util
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/lzj/code/cpp/script/cmake-build-debug && /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/bin/ccmake -S/home/lzj/code/cpp/script -B/home/lzj/code/cpp/script/cmake-build-debug
+  COMMAND = cd /home/lzj/code/cpp/script/cmake-build-debug && /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/bin/ccmake -S/home/lzj/code/cpp/script -B/home/lzj/code/cpp/script/cmake-build-debug
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -121,7 +342,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/lzj/code/cpp/script/cmake-build-debug && /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/lzj/code/cpp/script -B/home/lzj/code/cpp/script/cmake-build-debug
+  COMMAND = cd /home/lzj/code/cpp/script/cmake-build-debug && /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/lzj/code/cpp/script -B/home/lzj/code/cpp/script/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -131,6 +352,12 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
+build ast: phony libast.a
+
+build implement: phony libimplement.a
+
+build var: phony libvar.a
+
 # =============================================================================
 # Folder targets.
 
@@ -139,7 +366,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /home/lzj/code/cpp/script/cmake-build-debug
 
-build all: phony ToyC
+build all: phony ToyC libimplement.a libast.a libvar.a
 
 # =============================================================================
 # Built-in targets
@@ -148,14 +375,14 @@ build all: phony ToyC
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../CMakeLists.txt /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeGenericSystem.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-Clang-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/UnixPaths.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/ProcessorCount.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/llvm/LLVM-Config.cmake /usr/local/lib/cmake/llvm/LLVMConfig.cmake /usr/local/lib/cmake/llvm/LLVMConfigVersion.cmake /usr/local/lib/cmake/llvm/LLVMExports-release.cmake /usr/local/lib/cmake/llvm/LLVMExports.cmake CMakeCache.txt CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXCompiler.cmake.in /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXCompilerABI.cpp /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCompilerIdDetection.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCXXCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompileFeatures.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompilerABI.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompilerId.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineSystem.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeFindBinUtils.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeGenericSystem.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeParseImplicitIncludeInfo.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeParseImplicitLinkInfo.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeParseLibraryArchitecture.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystem.cmake.in /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeTestCXXCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeTestCompilerCommon.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/ADSP-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/ARMCC-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/ARMClang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/AppleClang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Borland-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompilerInternal.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Cray-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Embarcadero-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Fujitsu-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GHS-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU-FindBinUtils.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/HP-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IAR-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Intel-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/MSVC-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/NVHPC-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/NVIDIA-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/PGI-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/PathScale-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/SCO-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/TI-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Watcom-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/XL-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Internal/FeatureTesting.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-Determine-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/UnixPaths.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/llvm/LLVM-Config.cmake /usr/local/lib/cmake/llvm/LLVMConfig.cmake /usr/local/lib/cmake/llvm/LLVMConfigVersion.cmake /usr/local/lib/cmake/llvm/LLVMExports-release.cmake /usr/local/lib/cmake/llvm/LLVMExports.cmake CMakeCache.txt CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../CMakeLists.txt /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeGenericSystem.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-Clang-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/Platform/UnixPaths.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3345.126/bin/cmake/linux/share/cmake-3.23/Modules/ProcessorCount.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/llvm/LLVM-Config.cmake /usr/local/lib/cmake/llvm/LLVMConfig.cmake /usr/local/lib/cmake/llvm/LLVMConfigVersion.cmake /usr/local/lib/cmake/llvm/LLVMExports-release.cmake /usr/local/lib/cmake/llvm/LLVMExports.cmake CMakeCache.txt CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake: phony
+build ../CMakeLists.txt /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXCompiler.cmake.in /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXCompilerABI.cpp /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCXXInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeCompilerIdDetection.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCXXCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompileFeatures.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompilerABI.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineCompilerId.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeDetermineSystem.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeFindBinUtils.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeGenericSystem.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeParseImplicitIncludeInfo.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeParseImplicitLinkInfo.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeParseLibraryArchitecture.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystem.cmake.in /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeTestCXXCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/CMakeTestCompilerCommon.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/ADSP-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/ARMCC-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/ARMClang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/AppleClang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Borland-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompilerInternal.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Cray-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Embarcadero-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Fujitsu-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GHS-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU-FindBinUtils.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/HP-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IAR-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Intel-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/MSVC-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/NVHPC-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/NVIDIA-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/PGI-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/PathScale-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/SCO-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/TI-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/Watcom-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/XL-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Internal/FeatureTesting.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-Determine-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU-CXX.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux-GNU.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/Linux.cmake /home/lzj/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.3739.54/bin/cmake/linux/share/cmake-3.23/Modules/Platform/UnixPaths.cmake /usr/local/lib/cmake/fmt/fmt-config-version.cmake /usr/local/lib/cmake/fmt/fmt-config.cmake /usr/local/lib/cmake/fmt/fmt-targets-release.cmake /usr/local/lib/cmake/fmt/fmt-targets.cmake /usr/local/lib/cmake/llvm/LLVM-Config.cmake /usr/local/lib/cmake/llvm/LLVMConfig.cmake /usr/local/lib/cmake/llvm/LLVMConfigVersion.cmake /usr/local/lib/cmake/llvm/LLVMExports-release.cmake /usr/local/lib/cmake/llvm/LLVMExports.cmake CMakeCache.txt CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake: phony
 
 
 #############################################
@@ -165,7 +392,7 @@ build clean: CLEAN
 
 
 #############################################
-# Print all primary targets availabel.
+# Print all primary targets available.
 
 build help: HELP
 

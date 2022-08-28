@@ -1,4 +1,24 @@
 # ninja log v5
-0	27	1660578822715084291	build.ninja	32187f621cfea68b
+0	27	1661517125219405336	build.ninja	32187f621cfea68b
 3683	3950	1660577798130488575	ToyC	cabb2f048eb1c015
-1	3682	1660577797854483414	CMakeFiles/ToyC.dir/main.cpp.o	ae4a3af8e2baa940
+1	807	1661517136715394411	CMakeFiles/implement.dir/src/implement/life.cpp.o	16d25f2c7c5e8ffa
+807	825	1661517136735394392	CMakeFiles/implement.dir/src/implement/value.cpp.o	994bc619b81b476b
+0	1316	1661517137227393932	CMakeFiles/implement.dir/src/implement/asm_code.cpp.o	23581cf048b8940d
+1316	1332	1661517137243393917	CMakeFiles/ast.dir/src/ast/declataror.cpp.o	5036b9333e1b3b6a
+825	1486	1661517137395393775	CMakeFiles/ast.dir/src/ast/ast.cpp.o	c9c56a1918e15f4a
+1486	1501	1661517137411393760	CMakeFiles/ast.dir/src/ast/token.cpp.o	7df6396d04ad791d
+1	1711	1661517137619393566	CMakeFiles/implement.dir/src/implement/scanning.cpp.o	77f27a5566584dc9
+1501	1962	1661517137871393331	CMakeFiles/var.dir/src/var/global_var.cpp.o	5f5f08bfed745762
+1963	1971	1661517137883393319	libvar.a	6e0ad3722043d580
+1332	2470	1661517138379392856	CMakeFiles/ast.dir/src/ast/judge_char.cpp.o	5b7ea52a0a2b21f3
+2470	2484	1661517138395392842	libast.a	95e7f1a11e2ac1d3
+1	2717	1661517138623392629	CMakeFiles/implement.dir/src/implement/fstream_guard.cpp.o	efa58cef221bcb9f
+1	2748	1661517138655392600	CMakeFiles/implement.dir/src/implement/parser.cpp.o	51d89d71115c9b6e
+2	3090	1661517138995392283	CMakeFiles/implement.dir/src/implement/symbol_table.cpp.o	cc9feff6abe3181
+2	3491	1661517139399391907	CMakeFiles/implement.dir/src/implement/syntax_tree.cpp.o	4d4650794522ff57
+0	4435	1661517140343391031	CMakeFiles/ToyC.dir/src/main.cpp.o	32066f569225c5a3
+1	5927	1661517141831389654	CMakeFiles/implement.dir/src/implement/build_llvm_ir.cpp.o	e33fb619a0ab0431
+5927	6019	1661517141927389565	libimplement.a	bf6c868d416d8f8f
+6019	6376	1661517142283389237	ToyC	1c8e4c2544fd293
+1	3351	1661518262415189897	CMakeFiles/ToyC.dir/src/main.cpp.o	32066f569225c5a3
+3351	3694	1661518262755189961	ToyC	1c8e4c2544fd293
