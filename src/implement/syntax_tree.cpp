@@ -8,11 +8,14 @@
 #include <fmt/format.h>
 #include <stdlib.h>
 
+namespace toy_c {
+
 syntax_tree::syntax_tree() {
   if (reserve_tree) {
     tree.reserve(sizeof_syntax_tree_init);
   }
   tree.push_back({});
+  constant_node_tree.push_back({});
 }
 
 syntax_tree::~syntax_tree() {
@@ -24,6 +27,12 @@ syntax_tree::~syntax_tree() {
   // if (done == -1) {
   //     fmt::print("output json tree");
   // }
+}
+
+toy_c::syntax_tree &syntax_tree::operator=(const toy_c::syntax_tree &&syntax_tree) {
+  tree               = std::move(syntax_tree.tree);
+  constant_node_tree = std::move(syntax_tree.constant_node_tree);
+  return *this;
 }
 
 /*
@@ -72,11 +81,19 @@ ast::node &syntax_tree::operator[](ast::idx idx) {
   return tree[idx];
 }
 
+ast::constant_node &syntax_tree::get_constant(ast::idx idx_constant) {
+  return constant_node_tree[idx_constant];
+}
 
-// TODO
+ast::idx syntax_tree::create_constant_node(ast::node_type node_type, std::string value) {
+  constant_node_tree.push_back(ast::constant_node{node_type, value});
+  return constant_node_tree.size() - 1;
+}
+
 ast::idx syntax_tree::creat_node(ast::node_type node_type) {
   tree.push_back({});
   tree.back().type = node_type;
+  return tree.size() - 1;
   /*
   switch (node_type) {
       case ast::node_type::type:
@@ -167,14 +184,8 @@ ast::idx syntax_tree::creat_node(ast::node_type node_type) {
           SWITCH_ERROR
   }
   */
-  return tree.size() - 1;
 }
 
-std::vector<ast::node> &syntax_tree::get_syntax_tree() {
-  // DROP
-  // trans_tree();
-  return tree;
-}
 
 //
 void syntax_tree::trans_tree() {
@@ -539,6 +550,47 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       print_json_class_end();
       break;
 
+    case ast::node_type::primary_expression: {
+      print_json_class_head("primary_expression");
+      ast::idx idx_constant
+        = tree[idx].value.primary_expression.idx_constant != ast::null;
+      if (idx_constant != ast::null) {
+        switch (constant_node_tree[idx_constant].type) {
+          case ast::node_type::constant_integer_number:
+            print_json_key_value(
+              "constant_integer_number", constant_node_tree[idx_constant].value.c_str()
+            );
+            break;
+          case ast::node_type::constant_float_number:
+            print_json_key_value(
+              "constant_float_number", constant_node_tree[idx_constant].value.c_str()
+            );
+            break;
+          case ast::node_type::constant_negative_float_number:
+            print_json_key_value(
+              "constant_negative_float_number",
+              constant_node_tree[idx_constant].value.c_str()
+            );
+            break;
+          case ast::node_type::constant_negative_integer_number:
+            print_json_key_value(
+              "constant_negative_integer_number",
+              constant_node_tree[idx_constant].value.c_str()
+            );
+            break;
+          default:
+            PRINT_NODE_TYPE(constant_node_tree[idx_constant].type)
+            SWITCH_ERROR
+        }
+      }
+      else {
+        dfs_print_tree(tree[idx].value.primary_expression.idx_identifier);
+        dfs_print_tree(tree[idx].value.primary_expression.idx_expression);
+      }
+      print_json_class_end();
+      break;
+    }
+
     case ast::node_type::binary_expression:
       print_json_class_head("binary_expression");
       print_json_key("operator");
@@ -784,6 +836,25 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::postfix_operator:
       print_json_class_head("postfix_operator");
+      switch (tree[idx].value.postfix_operator.postfix_operator) {
+        case token::ver:
+          print_json_key_value("postfix_operator", "->");
+          return;
+        case token::period:
+          print_json_key_value("postfix_operator", ".");
+          return;
+        case token::self_plus:
+          print_json_key_value("postfix_operator", "++");
+          return;
+        case token::self_minus:
+          print_json_key_value("postfix_operator", "--");
+          return;
+        case token::invalid:
+          break;
+        default:
+          PRINT_TOKEN(tree[idx].value.postfix_operator.postfix_operator)
+          SWITCH_ERROR
+      }
       dfs_print_tree(tree[idx].value.postfix_operator.idx_array_idx_assignment_expression
       );
       dfs_print_tree(tree[idx].value.postfix_operator.idx_identifier);
@@ -1024,5 +1095,7 @@ void syntax_tree::print_json_value(char const *value) {
   file_buffer += "\",";
   return;
 }
+
+}  // namespace toy_c
 
 #endif

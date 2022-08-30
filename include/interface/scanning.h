@@ -14,6 +14,8 @@
 #include <string>
 #include <tuple>
 
+namespace toy_c {
+
 // line in the source code    loc: script/code/header/class/scanning.h
 static unsigned int line = 1;
 // column in the source code  loc: script/code/header/class/scanning.h
@@ -28,36 +30,37 @@ private:
 
   void get_next_char();
 
-  std::tuple<token, std::string> to_number();
+  std::tuple<token, std::string> to_number(bool is_negative = false);
   std::tuple<token, std::string> to_keyword_or_indentif();
   std::tuple<token, std::string> to_comment();
   std::tuple<token, std::string> to_char();
   // std::tuple<token, std::string> to_string();
 
 public:
-  my::fstream_guard              file;
+  toy_c::fstream_guard           file;
   std::tuple<token, std::string> now_token;
   std::tuple<token, std::string> last_token;
   std::tuple<token, std::string> pre_token;
 
-  explicit scanning(std::string& file_path_) : file_path(file_path_) {
-    file.open(file_path, my::mode::read);
+  explicit scanning(std::string &file_path_) : file_path(file_path_) {
+    file.open(file_path, toy_c::mode::read);
     c = file.get();
   };
   ~scanning(){};
 
-  scanning(scanning const&)       = delete;
-  scanning(scanning&&)            = default;
-  scanning& operator=(scanning&)  = delete;
-  scanning& operator=(scanning&&) = delete;
+  scanning(scanning const &)       = delete;
+  scanning(scanning &&)            = default;
+  scanning &operator=(scanning &)  = delete;
+  scanning &operator=(scanning &&) = delete;
 
   std::tuple<token, std::string> next_token();
   token                          get_pre_token();
   token                          get_current_token();
-  token       get_current_token(std::tuple<token, std::string>& tuple_);
+  token       get_current_token(std::tuple<token, std::string> &tuple_);
   std::string get_current_value();
-  std::string get_current_value(std::tuple<token, std::string>& tuple_);
+  std::string get_current_value(std::tuple<token, std::string> &tuple_);
   void        token_output();
 };
 
+}  // namespace toy_c
 #endif

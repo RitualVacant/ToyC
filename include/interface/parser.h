@@ -14,7 +14,7 @@
 #include <string>
 #include <tuple>
 
-
+namespace toy_c {
 class parser {
 private:
   // yes or no
@@ -27,8 +27,8 @@ private:
   // symbol_table table = symbol_table(output_file_path,
   // really_output_asm_code);
   // symbol_table* table;
-  scanning    scan = scanning(file_path);
-  syntax_tree tree;
+  toy_c::scanning    scan = toy_c::scanning(file_path);
+  toy_c::syntax_tree tree;
   // std::unique_ptr<asm_code> asm_file  =
   // std::make_unique<asm_code>(asm_code(fil)) asm_code* asm_file = nullptr;
   //
@@ -123,17 +123,18 @@ private:
 public:
   explicit parser();
   ~parser();
-  parser(parser const&)       = delete;
-  parser(parser&&)            = delete;
-  parser& operator=(parser&)  = delete;
-  parser& operator=(parser&&) = delete;
+  parser(parser const &)       = delete;
+  parser(parser &&)            = delete;
+  parser &operator=(parser &)  = delete;
+  parser &operator=(parser &&) = delete;
 
-  void                    print_mid_code();
-  void                    print_asm_code_code();
-  void                    print_syntax_tree();
-  void                    move_syntax_tree();
-  std::vector<ast::node>& get_syntax_tree();
+  void                print_mid_code();
+  void                print_asm_code_code();
+  void                print_syntax_tree();
+  void                move_syntax_tree();
+  toy_c::syntax_tree &get_syntax_tree();
 };
 
+}  // namespace toy_c
 
 #endif

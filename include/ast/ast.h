@@ -4,6 +4,7 @@
 #pragma once
 #include "token.h"
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 //#include <variant>
@@ -99,7 +100,13 @@ enum class node_type : unsigned char {
   struct_definition,
   basic_type_declaration,
 
+  constant_float_number,
+  constant_integer_number,
+  constant_negative_integer_number,
+  constant_negative_float_number,
+  constant_string,
 };
+
 using idx = std::size_t;
 idx const null{0};
 using idef = std::size_t;
@@ -197,7 +204,7 @@ enum const_type {
   string_const,
 };
 
-// constant
+// DROP
 struct constant {
   char const_value[array_in_struct_size] = {};
 
@@ -216,10 +223,6 @@ struct constant {
     return val;
   }
 };
-
-struct constant_int {};
-struct constant_flaot {};
-struct constant_string {};
 
 // expression
 
@@ -249,7 +252,14 @@ struct postfix_expression {
   ast::idx idx_postfix_operator   = ast::null;
 };
 
+struct primary_expression {
+  ast::idx idx_identifier = ast::null;
+  ast::idx idx_constant   = ast::null;
+  ast::idx idx_expression = ast::null;
+};
+
 struct postfix_operator {
+  // . -> ++ --
   token    postfix_operator                         = token::invalid;
   ast::idx idx_array_idx_assignment_expression      = ast::null;
   ast::idx idx_identifier                           = ast::null;
@@ -257,6 +267,8 @@ struct postfix_operator {
   ast::idx idx_next_postfix_operator                = ast::null;
 };
 
+// TODO
+// constant
 struct case_label {
   ast::idx const_expression = ast::null;
 };
@@ -386,7 +398,7 @@ struct return_statement {
 };
 
 
-//
+// DROP
 // those nodes is second step trans nods
 //
 
@@ -441,8 +453,6 @@ union value {
   ast::declarator                declarator;
   ast::operators                 operators;
   ast::constant                  constant;
-  ast::constant_flaot            constant_flaot;
-  ast::constant_string           constant_string;
   ast::assignment_expression     assignment_expression;
   ast::conditional_expression    conditional_expression;
   ast::binary_expression         binary_expression;
@@ -475,6 +485,9 @@ union value {
   ast::return_statement          return_statement;
   ast::break_statement           break_statement;
   ast::array_declarator          array_declarator;
+  ast::primary_expression        primary_expression;
+
+  // DROP
   // trans node
   ast::function_declaration   function_declaration;
   ast::function_definition    function_definition;
@@ -491,6 +504,12 @@ struct node {
   ast::node_loction node_loction;
   ast::idx          next;
 };
+
+struct constant_node {
+  ast::node_type type;
+  std::string    value;
+};
+
 }  // namespace ast
 
 

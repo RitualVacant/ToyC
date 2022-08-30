@@ -111,7 +111,7 @@ enum class token : unsigned int {
   comment,  //#
   end,      //;
 
-  identif,  //标识符
+  identify,  //标识符
   key_auto,
   key_const,
   key_enum,

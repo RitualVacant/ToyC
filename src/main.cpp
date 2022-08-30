@@ -24,7 +24,7 @@ void output_help_information();
 // main func
 std::vector<std::string> command;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   // ProfilerStart("ToyC_profiler.prof");
 
   if (argc == 1) {
@@ -55,22 +55,22 @@ void choose_mode_run() {
     choose_mode = static_cast<mode>(in);
     switch (choose_mode) {
       case mode::scan: {
-        scanning s(file_path);
+        toy_c::scanning s(file_path);
         s.token_output();
         break;
       }
       case mode::tree: {
-        parser p;
+        toy_c::parser p;
         p.print_syntax_tree();
         break;
       }
       case mode::mid: {
-        parser p;
+        toy_c::parser p;
         // p.print_mid_code();
         break;
       }
       case mode::yes: {
-        parser p;
+        toy_c::parser p;
         break;
       }
       case mode::help: {
@@ -78,7 +78,7 @@ void choose_mode_run() {
         break;
       }
       case mode::llvm_ir: {
-        build_llvm_ir ir;
+        toy_c::build_llvm_ir ir;
         ir.output_llvm_ir();
         break;
       }

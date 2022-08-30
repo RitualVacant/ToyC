@@ -439,7 +439,7 @@ trans_to_loc(code[i].arg2)); continue;
             case token::end: {  //;
                 continue;
             }
-            case token::identif: {//标识符
+            case token::identify: {//标识符
                 continue;
             }
             case token::key_if: {      //if

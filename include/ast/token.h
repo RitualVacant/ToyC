@@ -50,8 +50,10 @@ enum class token : unsigned int {
 
   arrary_unit,  // TODO 数组运算到底要不要分出类型， 这里暂时不分用这个代替
 
+  // DROP
   r_int,
   r_double,
+
   r_char,
   r_bool,
 
@@ -111,7 +113,13 @@ enum class token : unsigned int {
   comment,  //#
   end,      //;
 
-  identif,  //标识符
+  constant_integer_number,
+  constant_negative_integer_number,
+  constant_float_number,
+  constant_negative_float_number,
+  constant_string,
+
+  identify,  //标识符
   key_auto,
   key_const,
   key_enum,

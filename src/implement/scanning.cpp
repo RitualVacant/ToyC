@@ -2,8 +2,11 @@
 #define SCANNING_CPP
 
 #include "scanning.h"
+#include "inner.h"
 #include "judge_char.h"
 #include "token.h"
+
+namespace toy_c {
 
 void scanning::get_next_char() {
   ++column;
@@ -11,7 +14,7 @@ void scanning::get_next_char() {
   return;
 }
 
-std::tuple<token, std::string> scanning::to_number() {
+std::tuple<token, std::string> scanning::to_number(bool is_negative) {
   std::string re;
   bool        is_double = false;
   re += c;
@@ -23,12 +26,24 @@ std::tuple<token, std::string> scanning::to_number() {
     get_next_char();
   }
   if (is_double) {
-    now_token = std::make_tuple(token::r_double, re);
-    return std::make_tuple(token::r_double, re);
+    if (is_negative) {
+      now_token = std::make_tuple(token::constant_negative_float_number, re);
+      return now_token;
+    }
+    else {
+      now_token = std::make_tuple(token::constant_float_number, re);
+      return now_token;
+    }
   }
   else {
-    now_token = std::make_tuple(token::r_int, re);
-    return std::make_tuple(token::r_int, re);
+    if (is_negative) {
+      now_token = std::make_tuple(token::constant_negative_integer_number, re);
+      return now_token;
+    }
+    else {
+      now_token = std::make_tuple(token::constant_integer_number, re);
+      return now_token;
+    }
   }
 }
 
@@ -42,8 +57,8 @@ std::tuple<token, std::string> scanning::to_keyword_or_indentif() {
     get_next_char();
   }
   if (key_words.find(re) == key_words.end()) {
-    now_token = std::make_tuple(token::identif, re);
-    return std::make_tuple(token::identif, re);
+    now_token = std::make_tuple(token::identify, re);
+    return std::make_tuple(token::identify, re);
   }
   else {
     now_token = std::make_tuple(key_words.at(re), re);
@@ -181,22 +196,30 @@ std::tuple<token, std::string> scanning::next_token() {
       }
 
     case '-':
+      // -=
       get_next_char();
       if (c == '=') {
         get_next_char();
         now_token = std::make_tuple(token::minus_agn, "-=");
         return std::make_tuple(token::minus_agn, "-=");
       }
+      // --
       else if (c == '-') {
         get_next_char();
         now_token = std::make_tuple(token::self_minus, "--");
         return now_token;
       }
+      // ->
       else if (c == '>') {
         get_next_char();
         now_token = std::make_tuple(token::ver, "->");
         return std::make_tuple(token::ver, "->");
       }
+      // negative number
+      else if (is_number(c)) {
+        return to_number(true);
+      }
+      // signal -
       else {
         now_token = std::make_tuple(token::minus, "-");
         return std::make_tuple(token::minus, "-");
@@ -356,9 +379,34 @@ std::tuple<token, std::string> scanning::next_token() {
         return now_token;
       }
 
-      // case '#': return to_comment();
 
-      // case '"': return to_string();
+    // TODO
+    // case after / eg: " '
+    case '"': {
+      get_next_char();
+      std::string str;
+      while (c != '"') {
+        if (c == '/') {
+          get_next_char();
+          switch (c) {
+            case '"':
+              str += '"';
+            case '\'':
+              str += '\'';
+            default:
+              SWITCH_ERROR
+          }
+        }
+        else {
+          str += c;
+          get_next_char();
+        }
+      }
+      // eat last "
+      get_next_char();
+      return std::make_tuple(token::constant_string, str);
+    }
+
 
     case '\'':
       return to_char();
@@ -376,17 +424,17 @@ std::tuple<token, std::string> scanning::next_token() {
 
 //测试词法分析器函数
 void scanning::token_output() {
+  /*
   while (!file.eof()) {
     auto a = next_token();
     if (token_to_string.find(std::get<0>(a)) == token_to_string.end()) {
-      fmt::print("[token:] identif   [string:] \"{}\"\n", std::get<1>(a));
+      fmt::print("[token:] identify   [string:] \"{}\"\n", std::get<1>(a));
     }
     else if (token_to_string.find(std::get<0>(a)) == token_to_string.end()
                     && key_words.find(std::get<1>(a)) != key_words.end()
                 )
                 {
-      fmt::print("can't print token cause it is not involved in token_to_string"
-      );
+      fmt::print("can't print token cause it is not involved in token_to_string");
       exit(0);
     }
     else {
@@ -396,9 +444,21 @@ void scanning::token_output() {
       );
     }
   }
+  */
+  while (!file.eof()) {
+    auto a = next_token();
+    if (std::get<0>(a) == token::identify) {
+      fmt::print("token: {:30} string: {:30}\n", "identify", std::get<1>(a));
+    }
+    else {
+      fmt::print(
+        "token: {:30} string: {:30}\n", token_to_string.at(std::get<0>(a)), std::get<1>(a)
+      );
+    }
+  }
 }
 
-token scanning::get_current_token(std::tuple<token, std::string>& tuple_) {
+token scanning::get_current_token(std::tuple<token, std::string> &tuple_) {
   return std::get<0>(tuple_);
 }
 
@@ -406,8 +466,7 @@ token scanning::get_current_token() {
   return std::get<0>(now_token);
 }
 
-std::string scanning::get_current_value(std::tuple<token, std::string>& tuple_
-) {
+std::string scanning::get_current_value(std::tuple<token, std::string> &tuple_) {
   return std::get<1>(tuple_);
 }
 
@@ -415,4 +474,5 @@ std::string scanning::get_current_value() {
   return std::get<1>(now_token);
 }
 
+}  // namespace toy_c
 #endif

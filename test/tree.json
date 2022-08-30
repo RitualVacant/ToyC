@@ -1,73 +1,265 @@
-{"declaration_or_definition_1":{"declaration_declarator_2":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"compound_statement_8":{"block_9":{"declaration_or_definition_10":{"declaration_declarator_11":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"initial_declarator_12":{"declarator_13":{"is_pointer":"0","direct_declarator_14":{"identifier_15":{"name":"a"
-}
-}
-},"initial_declarator_16":{"declarator_17":{"is_pointer":"0","direct_declarator_18":{"identifier_19":{"name":"b"
-}
-}
-}
-}
-}
-}
-},"block_20":{"for_statement_21":{"declaration_or_definition_22":{"declaration_declarator_23":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"initial_declarator_24":{"declarator_25":{"is_pointer":"0","direct_declarator_26":{"identifier_27":{"name":"i"
-}
-}
-},"initializer_28":{"unary_expression_29":{"postfix_expression_30":{"constant_31":{"value":"1"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-},"binary_expression_36":{"operator":"<","unary_expression_32":{"postfix_expression_33":{"postfix_operator_35":{},"identifier_34":{"name":"i"
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"unary_expression_37":{"postfix_expression_38":{"identifier_39":{"name":"b"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-},"assignment_expression_44":{"assignment_type":"=","binary_expression_49":{"operator":"+","unary_expression_45":{"postfix_expression_46":{"postfix_operator_48":{},"identifier_47":{"name":"i"
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"unary_expression_50":{"postfix_expression_51":{"postfix_operator_53":{},"identifier_52":{"name":"b"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-},"unary_expression_40":{"postfix_expression_41":{"postfix_operator_43":{},"identifier_42":{"name":"i"
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"next_assign_42":{}
-},"compound_statement_54":{"block_55":{"expression_56":{"assignment_expression_61":{"assignment_type":"=","binary_expression_66":{"operator":"+","unary_expression_62":{"postfix_expression_63":{"postfix_operator_65":{},"identifier_64":{"name":"b"
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"unary_expression_67":{"postfix_expression_68":{"identifier_69":{"name":"i"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-},"unary_expression_57":{"postfix_expression_58":{"postfix_operator_60":{},"identifier_59":{"name":"a"
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"next_assign_59":{}
-}
-}
-}
-}
-}
-},"block_71":{"return_statement_72":{"binary_expression_77":{"operator":"+","unary_expression_73":{"postfix_expression_74":{"postfix_operator_76":{},"identifier_75":{"name":"a"
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"unary_expression_78":{"postfix_expression_79":{"identifier_80":{"name":"b"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-}
-},"initial_declarator_3":{"declarator_4":{"is_pointer":"0","direct_declarator_5":{"identifier_6":{"name":"f1"
-},"arguments_type_list_7":{}
-}
-}
-}
-}
+{
+    "declaration_or_definition_1": {
+        "declaration_declarator_2": {
+            "sign": "true",
+            "type": "int",
+            "limit": "empty",
+            "store": "empty"
+        },
+        "compound_statement_8": {
+            "block_9": {
+                "declaration_or_definition_10": {
+                    "declaration_declarator_11": {
+                        "sign": "true",
+                        "type": "int",
+                        "limit": "empty",
+                        "store": "empty"
+                    },
+                    "initial_declarator_12": {
+                        "declarator_13": {
+                            "is_pointer": "0",
+                            "direct_declarator_14": {
+                                "identifier_15": {
+                                    "name": "a"
+                                }
+                            }
+                        },
+                        "initial_declarator_16": {
+                            "declarator_17": {
+                                "is_pointer": "0",
+                                "direct_declarator_18": {
+                                    "identifier_19": {
+                                        "name": "b"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "block_20": {
+                "declaration_or_definition_21": {
+                    "declaration_declarator_22": {
+                        "sign": "true",
+                        "type": "int",
+                        "limit": "empty",
+                        "store": "empty"
+                    },
+                    "initial_declarator_23": {
+                        "declarator_24": {
+                            "is_pointer": "0",
+                            "direct_declarator_25": {
+                                "identifier_26": {
+                                    "name": "c"
+                                },
+                                "array_declarator_27": {
+                                    "unary_expression_28": {
+                                        "postfix_expression_29": {
+                                            "postfix_operator_31": {},
+                                            "primary_expression_30": {
+                                                "constant_integer_number": "10"
+                                            }
+                                        },
+                                        "is_sizeof": "false",
+                                        "unary_operator": "void"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "block_32": {
+                "for_statement_33": {
+                    "declaration_or_definition_34": {
+                        "declaration_declarator_35": {
+                            "sign": "true",
+                            "type": "int",
+                            "limit": "empty",
+                            "store": "empty"
+                        },
+                        "initial_declarator_36": {
+                            "declarator_37": {
+                                "is_pointer": "0",
+                                "direct_declarator_38": {
+                                    "identifier_39": {
+                                        "name": "i"
+                                    }
+                                }
+                            },
+                            "initializer_40": {
+                                "unary_expression_41": {
+                                    "postfix_expression_42": {
+                                        "primary_expression_43": {
+                                            "constant_integer_number": "10"
+                                        }
+                                    },
+                                    "is_sizeof": "false",
+                                    "unary_operator": "void"
+                                }
+                            }
+                        }
+                    },
+                    "binary_expression_49": {
+                        "operator": "<",
+                        "unary_expression_44": {
+                            "postfix_expression_45": {
+                                "postfix_operator_48": {},
+                                "primary_expression_46": {
+                                    "identifier_47": {
+                                        "name": "i"
+                                    }
+                                }
+                            },
+                            "is_sizeof": "false",
+                            "unary_operator": "void"
+                        },
+                        "unary_expression_50": {
+                            "postfix_expression_51": {
+                                "primary_expression_52": {
+                                    "identifier_53": {
+                                        "name": "b"
+                                    }
+                                }
+                            },
+                            "is_sizeof": "false",
+                            "unary_operator": "void"
+                        }
+                    },
+                    "assignment_expression_59": {
+                        "assignment_type": "=",
+                        "binary_expression_65": {
+                            "operator": "+",
+                            "unary_expression_60": {
+                                "postfix_expression_61": {
+                                    "postfix_operator_64": {},
+                                    "primary_expression_62": {
+                                        "identifier_63": {
+                                            "name": "i"
+                                        }
+                                    }
+                                },
+                                "is_sizeof": "false",
+                                "unary_operator": "void"
+                            },
+                            "unary_expression_66": {
+                                "postfix_expression_67": {
+                                    "postfix_operator_70": {},
+                                    "primary_expression_68": {
+                                        "identifier_69": {
+                                            "name": "b"
+                                        }
+                                    }
+                                },
+                                "is_sizeof": "false",
+                                "unary_operator": "void"
+                            }
+                        },
+                        "unary_expression_54": {
+                            "postfix_expression_55": {
+                                "postfix_operator_58": {},
+                                "primary_expression_56": {
+                                    "identifier_57": {
+                                        "name": "i"
+                                    }
+                                }
+                            },
+                            "is_sizeof": "false",
+                            "unary_operator": "void"
+                        },
+                        "next_assign_57": {}
+                    },
+                    "compound_statement_71": {
+                        "block_72": {
+                            "expression_73": {
+                                "assignment_expression_79": {
+                                    "assignment_type": "=",
+                                    "binary_expression_85": {
+                                        "operator": "+",
+                                        "unary_expression_80": {
+                                            "postfix_expression_81": {
+                                                "postfix_operator_84": {},
+                                                "primary_expression_82": {
+                                                    "identifier_83": {
+                                                        "name": "b"
+                                                    }
+                                                }
+                                            },
+                                            "is_sizeof": "false",
+                                            "unary_operator": "void"
+                                        },
+                                        "unary_expression_86": {
+                                            "postfix_expression_87": {
+                                                "primary_expression_88": {
+                                                    "identifier_89": {
+                                                        "name": "i"
+                                                    }
+                                                }
+                                            },
+                                            "is_sizeof": "false",
+                                            "unary_operator": "void"
+                                        }
+                                    },
+                                    "unary_expression_74": {
+                                        "postfix_expression_75": {
+                                            "postfix_operator_78": {},
+                                            "primary_expression_76": {
+                                                "identifier_77": {
+                                                    "name": "a"
+                                                }
+                                            }
+                                        },
+                                        "is_sizeof": "false",
+                                        "unary_operator": "void"
+                                    },
+                                    "next_assign_77": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "block_91": {
+                "return_statement_92": {
+                    "binary_expression_98": {
+                        "operator": "+",
+                        "unary_expression_93": {
+                            "postfix_expression_94": {
+                                "postfix_operator_97": {},
+                                "primary_expression_95": {
+                                    "identifier_96": {
+                                        "name": "a"
+                                    }
+                                }
+                            },
+                            "is_sizeof": "false",
+                            "unary_operator": "void"
+                        },
+                        "unary_expression_99": {
+                            "postfix_expression_100": {
+                                "primary_expression_101": {
+                                    "identifier_102": {
+                                        "name": "b"
+                                    }
+                                }
+                            },
+                            "is_sizeof": "false",
+                            "unary_operator": "void"
+                        }
+                    }
+                }
+            }
+        },
+        "initial_declarator_3": {
+            "declarator_4": {
+                "is_pointer": "0",
+                "direct_declarator_5": {
+                    "identifier_6": {
+                        "name": "f1"
+                    },
+                    "arguments_type_list_7": {}
+                }
+            }
+        }
+    }
 }

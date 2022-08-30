@@ -5,7 +5,7 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 
-namespace my {
+namespace toy_c {
 
 fstream_guard::fstream_guard(std::string file_path, mode mode) {
   open(file_path, mode);
@@ -26,9 +26,7 @@ void fstream_guard::open(std::string file_path, mode mode) {
   }
 
   if (!fstream.is_open()) {
-    fmt::print(
-      fg(fmt::color(fmt::color::red)), "can't open file at {}\n", file_path
-    );
+    fmt::print(fg(fmt::color(fmt::color::red)), "can't open file at {}\n", file_path);
     fmt::print(fg(fmt::color(fmt::color::red)), "please check the path\n");
     exit(0);
   }
@@ -38,7 +36,7 @@ bool fstream_guard::eof() {
   return fstream.eof();
 }
 
-std::fstream& fstream_guard::operator<<(std::string str) {
+std::fstream &fstream_guard::operator<<(std::string str) {
   fstream << str;
   return fstream;
 }
@@ -47,5 +45,5 @@ char fstream_guard::get() {
   return fstream.get();
 }
 
-}  // namespace my
+}  // namespace toy_c
 #endif

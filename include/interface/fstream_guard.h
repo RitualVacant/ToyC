@@ -4,7 +4,7 @@
 #pragma once
 #include <fstream>
 
-namespace my {
+namespace toy_c {
 
 enum mode {
   read,
@@ -19,18 +19,18 @@ public:
   explicit fstream_guard(std::string file_path, mode mode);
   fstream_guard();
   ~fstream_guard();
-  fstream_guard(fstream_guard const&)       = delete;
-  fstream_guard(fstream_guard&&)            = delete;
-  fstream_guard& operator=(fstream_guard&)  = delete;
-  fstream_guard& operator=(fstream_guard&&) = delete;
+  fstream_guard(fstream_guard const &)       = delete;
+  fstream_guard(fstream_guard &&)            = delete;
+  fstream_guard &operator=(fstream_guard &)  = delete;
+  fstream_guard &operator=(fstream_guard &&) = delete;
 
   void          open(std::string file_path, mode mode);
   bool          eof();
-  std::fstream& operator<<(std::string);
+  std::fstream &operator<<(std::string);
   char          get();
 };
 
-}  // namespace my
+}  // namespace toy_c
 
 
 #endif

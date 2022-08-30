@@ -4,10 +4,7 @@
 #include "symbol_table.h"
 #include "token.h"
 
-symbol_table::symbol_table(
-  std::string& file_path_,
-  bool         really_output_asm_code_
-)
+symbol_table::symbol_table(std::string &file_path_, bool really_output_asm_code_)
     : file_path(file_path_) {
   if (really_output_asm_code_)
     return;
@@ -51,9 +48,9 @@ token symbol_table::find_var_class(std::string name) {
 //
 //
 //
-void symbol_table::push_global_sign(std::string& x) {
+void symbol_table::push_global_sign(std::string &x) {
   if (global_sign.find(x) != global_sign.end()) {
-    // worng::redefine(line, colume, {token::identif, x});
+    // worng::redefine(line, colume, {token::identify, x});
   }
   global_sign.insert(x);
   // if (global_sign.find(x) == global_sign.end()) {
@@ -73,7 +70,7 @@ void symbol_table::pop_func() {
 }
 
 //在栈中寻找
-bool symbol_table::find(std::tuple<token, std::string>& x) {
+bool symbol_table::find(std::tuple<token, std::string> &x) {
   // for (std::size_t i = sign_stack.size() - 1; i >= 0 && sign_stack[i].Token
   // != token::invalid; --i) {
   //     if (sign_stack[i].name == std::get<1>(x)) return true;
@@ -82,7 +79,7 @@ bool symbol_table::find(std::tuple<token, std::string>& x) {
 }
 
 //在栈中寻找
-bool symbol_table::find(std::string& x) {
+bool symbol_table::find(std::string &x) {
   // for (std::size_t i = sign_stack.size() - 1; i >= 0 && sign_stack[i].Token
   // != token::invalid; --i) {
   //     if (sign_stack[i].name == x) return true;
@@ -90,7 +87,7 @@ bool symbol_table::find(std::string& x) {
   return false;
 }
 
-std::size_t symbol_table::at(std::tuple<token, std::string>& x) {
+std::size_t symbol_table::at(std::tuple<token, std::string> &x) {
   // std::size_t re;
   // for (int i = sign_stack.size() - 1; i > 0 && sign_stack[i].Token !=
   // token::invalid; --i) {
@@ -101,7 +98,7 @@ std::size_t symbol_table::at(std::tuple<token, std::string>& x) {
   return 0;
 }
 
-std::size_t symbol_table::at(std::string& x) {
+std::size_t symbol_table::at(std::string &x) {
   // std::size_t re;
   // for (int i = sign_stack.size() - 1; i > 0 && sign_stack[i].Token !=
   // token::invalid; --i) {
@@ -119,14 +116,14 @@ bool symbol_table::find_argu(std::string name) {
   return false;
 }
 
-bool symbol_table::find_func(std::string& x) {
+bool symbol_table::find_func(std::string &x) {
   // for (int i = 0; i < func_table.size(); ++i) {
   //     if (func_table[i].name == x) return true;
   // }
   return false;
 }
 
-std::string symbol_table::find_local(std::string& name) {
+std::string symbol_table::find_local(std::string &name) {
   if (find(name)) {
     return fmt::format("[rbp - {}]", at(name));
   }

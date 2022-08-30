@@ -5,12 +5,15 @@
 #include "inner.h"
 #include "parser.h"
 
+namespace toy_c {
+
 build_llvm_ir::build_llvm_ir() {
   tree    = std::move(parse.get_syntax_tree());
   context = std::make_unique<llvm::LLVMContext>();
   module  = std::make_unique<llvm::Module>("text_module", *context);
   builder = std::make_unique<llvm::IRBuilder<>>(*context);
 
+  // enable in llvm 15.0.0
   // context->setOpaquePointers(false);
   build_mult_declaration_or_definition(1);
 }
@@ -119,12 +122,17 @@ build_llvm_ir::build_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declara
   ast::idx idx_constant = tree[idx_array_declarator].value.array_declarator.idx_constant;
   if (idx_next_array_declarator != ast::null) {
     return llvm::ArrayType::get(
-      build_array(ptr_unit_type, idx_next_array_declarator), get_constant(idx_constant)
+      build_array(ptr_unit_type, idx_next_array_declarator), build_uint64(idx_constant)
     );
   }
   else {
-    return llvm::ArrayType::get(ptr_unit_type, get_constant(idx_constant));
+    return llvm::ArrayType::get(ptr_unit_type, build_uint64(idx_constant));
   }
+}
+
+std::uint64_t build_llvm_ir::build_uint64(ast::idx idx_) {
+  // TODO
+  return 5;
 }
 
 llvm::Type *build_llvm_ir::build_recurs_array(
@@ -138,11 +146,11 @@ llvm::Type *build_llvm_ir::build_recurs_array(
   if (idx_next_array_declarator != ast::null) {
     return llvm::ArrayType::get(
       build_recurs_array(ptr_unit_type, idx_next_array_declarator),
-      get_constant(idx_constant)
+      build_uint64(idx_constant)
     );
   }
   else {
-    return llvm::ArrayType::get(ptr_unit_type, get_constant(idx_constant));
+    return llvm::ArrayType::get(ptr_unit_type, build_uint64(idx_constant));
   }
 }
 
@@ -296,6 +304,8 @@ void build_llvm_ir::build_declaration_or_definition(
 
     llvm::FunctionType *ptr_func_type
       = llvm::FunctionType::get(ptr_return_type, argument_type_list, false);
+    ptr_now_func_type = ptr_func_type;
+
     // 1. a pointer to function
     if (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null) {
       while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator
@@ -335,7 +345,7 @@ void build_llvm_ir::build_declaration_or_definition(
     llvm::Value *ptr_var = builder->CreateAlloca(ptr_type);
     // TODO
     // which map
-    insert_func_symbol(name, ptr_var, ptr_type);
+    insert_func_symbol(name, ptr_var);
   }
 
   return;
@@ -393,11 +403,6 @@ build_llvm_ir::build_type(ast::idx idx_declaration_declarator, ast::idx idx_decl
   NOT_REACHABLE
 }
 
-// TODO
-std::size_t build_llvm_ir::get_constant(ast::idx idx_constant) {
-  return 4;
-  return tree[idx_constant].value.constant.get_unsigned_int();
-}
 
 llvm::BasicBlock *build_llvm_ir::build_compound_statement(
   ast::idx          idx_compound_statement,
@@ -616,7 +621,7 @@ void build_llvm_ir::build_for_statement(ast::idx idx_for_statement) {
   // compound statement
   build_compound_statement(idx_compound_statement);
   // change value
-  build_assign_expression(idx_change_assign_expression);
+  build_assign_expression(idx_change_assign_expression, nullptr);
   // jump to conditional expression
   builder->CreateBr(ptr_for_conditional_assign_expression);
 
@@ -635,7 +640,7 @@ void build_llvm_ir::build_function(ast::idx idx_function_declaration) {}
 void build_llvm_ir::build_expression(ast::idx idx_expression) {
   for (ast::idx i = idx_expression; i != ast::null;
        i          = tree[i].value.expression.idx_next_expression) {
-    build_assign_expression(tree[i].value.expression.idx_assignment_expression);
+    build_assign_expression(tree[i].value.expression.idx_assignment_expression, nullptr);
   }
   return;
 }
@@ -653,16 +658,14 @@ llvm::Value *build_llvm_ir::build_assign_expression(
     );
   }
 
-  ast::idx idx_unary_or_binary_expression
-    = tree[idx_assign_expression]
-        .value.assignment_expression.idx_unary_or_binary_expression;
 
   ast::idx idx_binary_expression
     = tree[idx_assign_expression].value.assignment_expression.idx_binary_expression;
 
   // just a binary expression without assign
-  llvm::Value *r_value = build_binary_expression(idx_binary_expression);
-  variable     l_value;
+  // if
+  llvm::Value *r_value = build_binary_expression(idx_binary_expression, nullptr);
+  llvm::Value *l_value;
 
   for (ast::idx i = idx_assign_expression; i != ast::null;
        i          = tree[i].value.assignment_expression.idx_next_assignment_expression) {
@@ -671,42 +674,34 @@ llvm::Value *build_llvm_ir::build_assign_expression(
     );
     switch (tree[i].value.assignment_expression.assignment_type) {
       case token::assign:  //=
-        builder->CreateStore(r_value, l_value.ptr_value_ptr);
+        builder->CreateStore(r_value, l_value);
         break;
 
       case token::plus_agn:  //+=
         builder->CreateStore(
-          builder->CreateAdd(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateAdd(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
       case token::minus_agn:  //-=
         builder->CreateStore(
-          builder->CreateSub(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateSub(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
       case token::times_agn:  //*=
         builder->CreateStore(
-          builder->CreateMul(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateMul(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
       case token::div_agn:  // /=
         builder->CreateStore(
-          builder->CreateSDiv(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateSDiv(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
@@ -716,46 +711,36 @@ llvm::Value *build_llvm_ir::build_assign_expression(
 
       case token::r_shift_agn:  //>>=
         builder->CreateStore(
-          builder->CreateSDiv(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateSDiv(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
       case token::l_shift_agn:  //<<=
         builder->CreateStore(
-          builder->CreateSDiv(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateSDiv(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
       case token::bit_and_agn:  //&=
         builder->CreateStore(
-          builder->CreateSDiv(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateSDiv(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
       case token::bit_or_agn:  //|=
         builder->CreateStore(
-          builder->CreateSDiv(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateSDiv(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
       case token::bit_xor_agn:  //^=
         builder->CreateStore(
-          builder->CreateSDiv(
-            r_value, builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr)
-          ),
-          l_value.ptr_value_ptr
+          builder->CreateSDiv(r_value, builder->CreateLoad(l_value->getType(), l_value)),
+          l_value
         );
         break;
 
@@ -766,13 +751,13 @@ llvm::Value *build_llvm_ir::build_assign_expression(
     // TODO
     //
     if (tree[i].value.assignment_expression.idx_next_assignment_expression != ast::null) {
-      r_value = builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr);
+      r_value = builder->CreateLoad(l_value->getType(), l_value);
     }
   }
 
   // jump
   if (!is_return_value) {
-    auto l_val = builder->CreateLoad(l_value.ptr_type, l_value.ptr_value_ptr);
+    auto l_val = builder->CreateLoad(l_value->getType(), l_value);
     builder->CreateCondBr(
       builder->CreateICmpNE(l_val, llvm::ConstantInt::get(l_val->getType(), 0)),
       ptr_true_block, ptr_false_block
@@ -782,85 +767,82 @@ llvm::Value *build_llvm_ir::build_assign_expression(
 }
 
 // TODO
-build_llvm_ir::variable
-build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression) {
+llvm::Value *build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression) {
+  //----------------------------------------------------------------
+  // 1. sizeof
+  //----------------------------------------------------------------
+  if (tree[idx_unary_expression].value.unary_expression.is_sizeof) {
+    // TODO
+  }
+
   ast::idx idx_postfix_expression
     = tree[idx_unary_expression].value.unary_expression.idx_postfix_expression;
 
   ast::idx idx_primary_expression
     = tree[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
 
-  // postfix expression exist
+  //----------------------------------------------------------------
+  // 2. unary operator
+  //----------------------------------------------------------------
+  if (tree[idx_unary_expression].value.unary_expression.unary_operator != token::invalid) {
+    build_unary_expression(idx_unary_expression);
+  }
+  //----------------------------------------------------------------
+  // 3. postfix expression
+  //----------------------------------------------------------------
   if (idx_postfix_expression != ast::null) {
+    return build_postfix_expression(idx_postfix_expression);
   }
 
-  switch (tree[idx_primary_expression].type) {
-    case ast::node_type::identifier:
+  //----------------------------------------------------------------
+  // 4. declaration declarator
+  // conversion
+  //----------------------------------------------------------------
+  if (tree[idx_unary_expression].value.unary_expression.idx_declaration_declarator) {
+    // TODO
+  }
+}
+
+llvm::Value *build_llvm_ir::build_unary_operator(ast::idx idx_unary_expression) {
+  llvm::Value *idx_unary_expression_value = build_unary_expression(
+    tree[idx_unary_expression].value.unary_expression.idx_unary_expression
+  );
+
+  // TODO
+  switch (tree[idx_unary_expression].value.unary_expression.unary_operator) {
+    case token::invalid:
+      NOT_REACHABLE
       break;
-    case ast::node_type::constant:
-      fmt::print("const");
+    // &
+    case token::bit_and:
+      NOT_REACHABLE
+      break;
+    // *
+    case token::times:
+      NOT_REACHABLE
+      break;
+    // ++
+    case token::self_plus:
+      NOT_REACHABLE
+      break;
+    // --
+    case token::self_minus:
+      NOT_REACHABLE
+      break;
+    // ~
+    case token::bit_not:
+      NOT_REACHABLE
+      break;
+    // !
+    case token::log_not:
+      NOT_REACHABLE
       break;
     default:
       SWITCH_ERROR
   }
-
-  // unary operator
-  // unary operator is exist
-  if (tree[idx_unary_expression].value.unary_expression.idx_unary_expression != ast::null) {
-    for (ast::idx i = idx_unary_expression; i != ast::null;
-         tree[i].value.unary_expression.idx_unary_expression) {
-      switch (tree[idx_unary_expression].value.unary_expression.unary_operator) {
-        case token::invalid:
-          break;
-        // &
-        case token::bit_and:
-          break;
-        // *
-        case token::times:
-          break;
-        // ++
-        case token::self_plus:
-          break;
-        // --
-        case token::self_minus:
-          break;
-        // ~
-        case token::bit_not:
-          break;
-        // !
-        case token::log_not:
-          break;
-        default:
-          SWITCH_ERROR
-      }
-    }
-  }
-  if (tree[idx_unary_expression].value.unary_expression.unary_operator != token::invalid) {
-  }
-  //
-  else if (tree[idx_unary_expression].value.unary_expression.is_sizeof) {
-  }
-  //
-  else if (tree[idx_unary_expression].value.unary_expression.idx_postfix_expression) {
-  }
-  // conversion
-  else if (tree[idx_unary_expression].value.unary_expression.idx_declaration_declarator) {
-  }
-
-  // postfix operator exist
-  // TODO
-
-
-  // TODO
-  variable value_loc_and_type
-    = find_value(std::string{tree[idx_primary_expression].value.identifier.name});
-  return value_loc_and_type;
-  // if (return_location_ptr) return value_loc_and_type.value;
-  // return builder->CreateLoad(value_loc_and_type.type,
-  // value_loc_and_type.value);
 }
 
-build_llvm_ir::variable build_llvm_ir::find_value(std::string name) {
+llvm::Value *build_llvm_ir::find_value(std::string name) {
   if (func_symbol_table.find(name) != func_symbol_table.end()) {
     return func_symbol_table.at(name);
   }
@@ -868,6 +850,111 @@ build_llvm_ir::variable build_llvm_ir::find_value(std::string name) {
     return global_symbol_table.at(name);
   }
   NOT_REACHABLE
+}
+
+llvm::Value *build_llvm_ir::build_postfix_expression(ast::idx idx_postfix_expression) {
+  ast::idx idx_primary_expression
+    = tree[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
+
+  //--------------------------------
+  // primary expression
+  //--------------------------------
+  llvm::Value *primary_expression_value;
+  //------------
+  // identifier
+  //------------
+  if (tree[idx_primary_expression].value.primary_expression.idx_identifier != ast::null) {
+    // TODO
+    ast::idx idx_idntifier
+      = tree[idx_primary_expression].value.primary_expression.idx_identifier;
+    primary_expression_value = find_value(tree[idx_idntifier].value.identifier.name);
+  }
+  //------------
+  // constant
+  //------------
+  else if (tree[idx_primary_expression].value.primary_expression.idx_constant != ast::null) {
+    primary_expression_value
+      = build_constant(tree[idx_primary_expression].value.primary_expression.idx_constant
+      );
+  }
+  //------------
+  // expression
+  //------------
+  else {
+    primary_expression_value = build_binary_expression(idx_postfix_expression);
+  }
+
+  //--------------------------------
+  // exist postfix operator
+  //--------------------------------
+  llvm::Value *postfix_expression_value = primary_expression_value;
+  if (tree[idx_postfix_expression].value.postfix_expression.idx_postfix_operator != ast::null) {
+    ast::idx idx_postfix_operator
+      = tree[idx_postfix_expression].value.postfix_expression.idx_postfix_operator;
+    while (idx_postfix_operator != ast::null) {
+      switch (tree[idx_postfix_operator].value.postfix_operator.postfix_operator) {
+        // TODO
+        // ++
+        case token::self_plus:
+          break;
+        // --
+        case token::self_minus:
+          break;
+        // ->
+        case token::ver:
+          break;
+        // .
+        case token::period:
+          break;
+        // array [] or function call ()
+        case token::invalid:
+          break;
+        default:
+          SWITCH_ERROR
+      }
+      idx_postfix_operator
+        = tree[idx_postfix_operator].value.postfix_operator.idx_next_postfix_operator;
+    }
+  }
+  return postfix_expression_value;
+}
+
+llvm::Value *build_llvm_ir::build_constant(ast::idx idx_constant) {
+  llvm::Type *type;
+
+  switch (tree.get_constant(idx_constant).type) {
+    case ast::node_type::constant_string:
+      // TODO
+      // string
+      return llvm::ConstantDataArray::getString(
+        *context, tree.get_constant(idx_constant).value
+      );
+
+    // TODO
+    // signed and unsigned
+    case ast::node_type::constant_negative_float_number:
+      return llvm::ConstantFP::get(
+        type, std::stoull(tree.get_constant(idx_constant).value)
+      );
+
+    case ast::node_type::constant_float_number:
+      return llvm::ConstantFP::get(
+        type, std::stoull(tree.get_constant(idx_constant).value)
+      );
+
+    case ast::node_type::constant_integer_number:
+      return llvm::ConstantInt::get(
+        type, std::stoull(tree.get_constant(idx_constant).value), false
+      );
+
+    case ast::node_type::constant_negative_integer_number:
+      return llvm::ConstantInt::get(
+        type, std::stoull(tree.get_constant(idx_constant).value), true
+      );
+
+    default:
+      SWITCH_ERROR
+  }
 }
 
 llvm::Value *build_llvm_ir::build_primary_expression(ast::idx idx_primary_expression
@@ -880,8 +967,8 @@ llvm::Value *build_llvm_ir::build_binary_expression(
   bool              is_return_value
 ) {
   if (tree[idx_binary_expression].type == ast::node_type::unary_expression) {
-    auto var_type_value = build_unary_expression(idx_binary_expression);
-    return builder->CreateLoad(var_type_value.ptr_type, var_type_value.ptr_value_ptr);
+    llvm::Value *value = build_unary_expression(idx_binary_expression);
+    return builder->CreateLoad(value->getType(), value);
   }
 
   // llvm::Value *value_l
@@ -1310,39 +1397,28 @@ llvm::Value *build_llvm_ir::build_log_or_chain(ast::idx idx_log_or_operator) {
   return nullptr;
 }
 
-void build_llvm_ir::insert_func_symbol(
-  std::string  name,
-  llvm::Value *ptr_var,
-  llvm::Type  *ptr_type
-) {
+void build_llvm_ir::insert_func_symbol(std::string name, llvm::Value *ptr_var) {
   if (func_symbol_table.find(name) != func_symbol_table.end()
       || global_symbol_table.find(name) != global_symbol_table.end()) {
     fmt::print("redeclaration of {}", name);
     exit(0);
   }
-  func_symbol_table.insert({
-    name, variable{ptr_var, ptr_type}
-  });
-  return;
+  func_symbol_table.insert({name, ptr_var});
 }
 
-void build_llvm_ir::insert_symbol_symbol(
-  std::string  name,
-  llvm::Value *ptr_var,
-  llvm::Type  *ptr_type
-) {
+void build_llvm_ir::insert_symbol_symbol(std::string name, llvm::Value *ptr_var) {
   if (func_symbol_table.find(name) != func_symbol_table.end()
       || global_symbol_table.find(name) != global_symbol_table.end()) {
     fmt::print("redeclaration of {}", name);
     exit(0);
   }
-  func_symbol_table.insert({
-    name, variable{ptr_var, ptr_type}
-  });
-  return;
+  func_symbol_table.insert({name, ptr_var});
 }
 
 std::string build_llvm_ir::get_label() {
   return std::to_string(++label_num);
 }
+
+}  // namespace toy_c
+
 #endif
