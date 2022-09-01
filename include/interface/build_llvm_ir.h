@@ -110,11 +110,12 @@ private:
   std::uint64_t build_uint64(ast::idx idx_);
 
 
+  void analysis_and_assign_type_to_node(ast::idx idx_assign_expression);
   // func for analysis node type and assign type to node
-  llvm::Type *analysis_and_assign_type_to_node(
-    ast::idx    idx_binary_or_unary_expression,
+  llvm::Type *recursion_analysis_and_assign_type_to_node(
+    ast::idx    idx_binary_unary_expression,
     llvm::Type *left_value_type,
-    llvm::Type *father_node_type = nullptr
+    llvm::Type *father_node_type
   );
   void
   assign_type_to_all_son_node(ast::idx idx_binary_or_unary_expression, llvm::Type *type);

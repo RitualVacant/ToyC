@@ -640,18 +640,21 @@ void build_llvm_ir::build_function(ast::idx idx_function_declaration) {}
 void build_llvm_ir::build_expression(ast::idx idx_expression) {
   for (ast::idx i = idx_expression; i != ast::null;
        i          = tree[i].value.expression.idx_next_expression) {
-    build_assign_expression(tree[i].value.expression.idx_assignment_expression, nullptr);
+    build_assign_expression(tree[i].value.expression.idx_assignment_expression);
   }
   return;
 }
 
 llvm::Value *build_llvm_ir::build_assign_expression(
   ast::idx          idx_assign_expression,
-  llvm::BasicBlock *ptr_true_block,
-  llvm::BasicBlock *ptr_false_block,
-  bool              is_return_value
+  llvm::BasicBlock *ptr_true_block,   // = nullptr,
+  llvm::BasicBlock *ptr_false_block,  // = nullptr,
+  bool              is_return_value   // = true
 ) {
-  // assign expression
+  // preceding analysis node's type
+  analysis_and_assign_type_to_node(idx_assign_expression);
+
+  // is an binary expression
   if (tree[idx_assign_expression].type == ast::node_type::binary_expression) {
     return build_binary_expression(
       idx_assign_expression, ptr_true_block, ptr_false_block, is_return_value
@@ -659,6 +662,7 @@ llvm::Value *build_llvm_ir::build_assign_expression(
   }
 
 
+  // is an assign expression
   ast::idx idx_binary_expression
     = tree[idx_assign_expression].value.assignment_expression.idx_binary_expression;
 
@@ -1436,41 +1440,117 @@ std::string build_llvm_ir::get_label() {
   return std::to_string(++label_num);
 }
 
-llvm::Type *build_llvm_ir::analysis_and_assign_type_to_node(
+
+void build_llvm_ir::analysis_and_assign_type_to_node(ast::idx idx_assign_expression) {
+  // is an binary expression
+  if (tree[idx_assign_expression].type == ast::node_type::binary_expression) {
+    recursion_analysis_and_assign_type_to_node(idx_assign_expression, nullptr, nullptr);
+  }
+  // TODO unary expression
+
+  ast::idx    idx_left_of_assign_operator   = ast::null;
+  ast::idx    idx_right_of_assign_operator  = ast::null;
+  llvm::Type *type_left_of_assign_operator  = nullptr;
+  llvm::Type *type_right_of_assign_operator = nullptr;
+
+  //
+  // assign expression
+  // a -= b += c = 4;
+  //              ^
+  //              | just last location expression's type is unknown,
+  //              | the expression in front of it must be l_value which with type has been
+  //              \ | define.
+  // so in this aspect just recurse and analysis the last node which idx is the first \
+  // in chain of assignment node, but every expression node must with a type make behind \
+  // procedure easier, so every node's number unary_expression, and the first node's
+  // binary \ _expression will be assign in recurse
+  //
+  // the assign expression chain had been reverse when parser it.
+  //
+  // +-------+    +------+    +------+
+  // | 4 c = | -> | b += | -> | a -= |
+  // +-------+    +------+    +------+
+  //   | |          |           |
+  //   | unary      unary       unary
+  //   binary
+  //
+
+
+  for (ast::idx i = idx_assign_expression; i != ast::null;
+       i          = tree[i].value.assignment_expression.idx_next_assignment_expression) {
+    idx_left_of_assign_operator
+      = tree[i].value.assignment_expression.idx_binary_expression;
+    idx_right_of_assign_operator
+      = tree[i].value.assignment_expression.idx_unary_or_binary_expression;
+
+    type_left_of_assign_operator = recursion_analysis_and_assign_type_to_node(
+      idx_left_of_assign_operator, nullptr, nullptr
+    );
+
+    type_right_of_assign_operator = recursion_analysis_and_assign_type_to_node(
+      idx_right_of_assign_operator, type_left_of_assign_operator, nullptr
+    );
+  }
+}
+
+llvm::Type *build_llvm_ir::recursion_analysis_and_assign_type_to_node(
   ast::idx    idx_binary_or_unary_expression,
   llvm::Type *left_value_type,
   llvm::Type *father_node_type
 ) {
-  ast::idx idx_left_node
-    = tree[idx_binary_or_unary_expression].value.binary_expression.idx_left_node;
-  ast::idx idx_right_node
-    = tree[idx_binary_or_unary_expression].value.binary_expression.idx_right_node;
-  // binary expression
+  // -----------------------------
+  // is an binary expression
+  // -----------------------------
   if (tree[idx_binary_or_unary_expression].type == ast::node_type::binary_expression) {
-    llvm::Type *l_node_type
-      = analysis_and_assign_type_to_node(idx_left_node, left_value_type);
-    llvm::Type *r_node_type
-      = analysis_and_assign_type_to_node(idx_right_node, left_value_type);
+    ast::idx idx_left_node
+      = tree[idx_binary_or_unary_expression].value.binary_expression.idx_left_node;
+    ast::idx idx_right_node
+      = tree[idx_binary_or_unary_expression].value.binary_expression.idx_right_node;
+
+    llvm::Type *type_of_this_binary_expression_node = nullptr;
+
+    llvm::Type *l_node_type = recursion_analysis_and_assign_type_to_node(
+      idx_left_node, left_value_type, nullptr
+    );
+    llvm::Type *r_node_type = recursion_analysis_and_assign_type_to_node(
+      idx_right_node, left_value_type, nullptr
+    );
 
     // judge left or right node's type
-    // son node has specific type
+    // one side of son node has specific type
     if (l_node_type != nullptr || r_node_type != nullptr) {
       // both left and right node's type is the same type
       if (l_node_type == r_node_type) {
         return l_node_type;
+      }
+      // l_node_type is unknown
+      else if (l_node_type == nullptr) {
+      }
+      // r_node_type is unknown
+      else if (r_node_type == nullptr) {
       }
       // left and right node's type is different
       else {
         // TODO
       }
     }
-    // son node don't have type
+    // both left and right node's type is unknown
+    // assign all son node left_value_type
     else {
-      assign_type_to_all_son_node(idx_binary_or_unary_expression, left_value_type);
+      type_of_this_binary_expression_node = left_value_type;
+      assign_type_to_all_son_node(
+        idx_binary_or_unary_expression, type_of_this_binary_expression_node
+      );
     }
+    // TODO assign type of this node
   }
-  // unary expression
+  // -----------------------------
+  // is an unary expression
+  // -----------------------------
+  else if (tree[idx_binary_or_unary_expression].type == ast::node_type::unary_expression) {
+  }
   else {
+    NOT_REACHABLE
   }
 }
 

@@ -23,7 +23,7 @@ token: comma                          string: ,
 token: constant_float_number          string: 1.0
 token: r_big_par                      string: }
 token: end                            string: ;
-token: identify                       string: unsigned
+token: key_unsigned                   string: unsigned
 token: key_int                        string: int
 token: identify                       string: c
 token: l_mid_par                      string: [

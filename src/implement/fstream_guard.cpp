@@ -45,5 +45,9 @@ char fstream_guard::get() {
   return fstream.get();
 }
 
+bool fstream_guard::is_open() {
+  return fstream.is_open();
+}
+
 }  // namespace toy_c
 #endif

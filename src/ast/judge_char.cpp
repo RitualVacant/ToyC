@@ -149,6 +149,8 @@ std::unordered_map<std::string, token> key_words{
   {"char",       token::key_char      },
   {"long",       token::key_long      },
   {"void",       token::key_void      },
+  {"unsigned",   token::key_unsigned  },
+  {"signed",     token::key_signed    },
   {"extern",     token::key_extern    },
 
   {"switch",     token::key_switch    },

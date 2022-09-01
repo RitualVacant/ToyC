@@ -16,7 +16,6 @@
 
 namespace toy_c {
 
-
 class scanning {
 private:
   char        c;

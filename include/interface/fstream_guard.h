@@ -8,7 +8,7 @@ namespace toy_c {
 
 enum mode {
   read,
-  wirte,
+  write,
 };
 
 class fstream_guard {
@@ -26,6 +26,7 @@ public:
 
   void          open(std::string input_file_path, mode mode);
   bool          eof();
+  bool          is_open();
   std::fstream &operator<<(std::string);
   char          get();
 };

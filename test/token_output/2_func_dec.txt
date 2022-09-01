@@ -1,6 +1,8 @@
-token: key_int                        string: int
-token: identify                       string: main
-token: l_par                          string: (
-token: r_par                          string: )
-token: l_big_par                      string: {
-token: r_big_par                      string: }
+{"declaration_or_definition_1":{"declaration_declarator_2":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"compound_statement_8":{},"initial_declarator_3":{"declarator_4":{"is_pointer":"0","direct_declarator_5":{"identifier_6":{"name":"main"
+},"arguments_type_list_7":{}
+}
+}
+}
+}
+}

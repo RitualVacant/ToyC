@@ -1,0 +1,67 @@
+{
+    "declaration_or_definition_1": {
+        "declaration_declarator_2": {
+            "sign": "true",
+            "type": "int",
+            "limit": "empty",
+            "store": "empty"
+        },
+        "compound_statement_8": {
+            "block_9": {
+                "declaration_or_definition_10": {
+                    "declaration_declarator_11": {
+                        "sign": "false",
+                        "type": "int",
+                        "limit": "empty",
+                        "store": "empty"
+                    },
+                    "initial_declarator_12": {
+                        "declarator_13": {
+                            "is_pointer": "0",
+                            "direct_declarator_14": {
+                                "identifier_15": {
+                                    "name": "a"
+                                }
+                            }
+                        },
+                        "initializer_16": {
+                            "unary_expression_17": {
+                                "postfix_expression_18": {
+                                    "primary_expression_19": {
+                                        "constant_integer_number": "0"
+                                    }
+                                },
+                                "is_sizeof": "false",
+                                "unary_operator": "void"
+                            }
+                        }
+                    }
+                }
+            },
+            "block_20": {
+                "return_statement_21": {
+                    "unary_expression_22": {
+                        "postfix_expression_23": {
+                            "primary_expression_24": {
+                                "constant_integer_number": "0"
+                            }
+                        },
+                        "is_sizeof": "false",
+                        "unary_operator": "void"
+                    }
+                }
+            }
+        },
+        "initial_declarator_3": {
+            "declarator_4": {
+                "is_pointer": "0",
+                "direct_declarator_5": {
+                    "identifier_6": {
+                        "name": "main"
+                    },
+                    "arguments_type_list_7": {}
+                }
+            }
+        }
+    }
+}

@@ -21,6 +21,7 @@ private:
   bool reserve_tree     = false;
   bool print_trans_tree = false;
 
+  // DROP
   enum type_decl_defi {
     func_decl,
     func_defi,
@@ -33,9 +34,8 @@ private:
 
   std::size_t now_idx;
 
-  ast::idx     last_root_ptr = ast::null;
-  std::fstream file;
-  // std::string  input_file_path{"/home/lzj/code/program/script/test/tree.json"};
+  ast::idx last_root_ptr = ast::null;
+
   std::string file_buffer;
 
   std::vector<ast::node>          tree;
@@ -73,7 +73,7 @@ public:
 
   void connect(ast::idx ptr);
   void earse(ast::idx idx);
-  void print_tree(std::string input_file_path);
+  void print_tree();
   void to_json();
   void trans_tree();
 

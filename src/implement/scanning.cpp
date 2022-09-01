@@ -447,7 +447,7 @@ void scanning::token_output() {
   }
   */
 
-  toy_c::fstream_guard output_file(output_file_path, toy_c::mode::wirte);
+  toy_c::fstream_guard output_file(output_file_path, toy_c::mode::write);
   while (!file.eof()) {
     auto a = next_token();
     if (std::get<0>(a) == token::identify) {

@@ -3,6 +3,7 @@
 
 #include "syntax_tree.h"
 #include "declataror.h"
+#include "global_var.h"
 #include "inner.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
@@ -407,8 +408,8 @@ void syntax_tree::connect(ast::idx idx) {
   return;
 }
 
-void syntax_tree::print_tree(std::string input_file_path) {
-  file.open(input_file_path, std::fstream::out);
+void syntax_tree::print_tree() {
+  toy_c::fstream_guard file(output_file_path, toy_c::mode::write);
   if (!file.is_open()) {
     fmt::print("can't open file in syntax_tree");
     exit(0);
@@ -428,7 +429,6 @@ void syntax_tree::print_tree(std::string input_file_path) {
   }
 
   file << file_buffer;
-  file.close();
 
   return;
 }

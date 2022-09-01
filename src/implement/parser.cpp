@@ -1085,9 +1085,7 @@ toy_c::syntax_tree &parser::get_syntax_tree() {
 }
 
 void parser::print_syntax_tree() {
-  tree.print_tree("/home/lzj/code/cpp/script/test/tree.json");
-  tree.trans_tree();
-  tree.print_tree("/home/lzj/code/cpp/script/test/tree1.json");
+  tree.print_tree();
 }
 
 ast::idx parser::parser_declaration_or_definition() {
