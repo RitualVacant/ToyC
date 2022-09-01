@@ -27,7 +27,7 @@ private:
   // symbol_table table = symbol_table(output_file_path,
   // really_output_asm_code);
   // symbol_table* table;
-  toy_c::scanning    scan = toy_c::scanning(file_path);
+  toy_c::scanning    scan = toy_c::scanning(input_file_path);
   toy_c::syntax_tree tree;
   // std::unique_ptr<asm_code> asm_file  =
   // std::make_unique<asm_code>(asm_code(fil)) asm_code* asm_file = nullptr;

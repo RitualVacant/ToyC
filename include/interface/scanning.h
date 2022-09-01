@@ -16,16 +16,12 @@
 
 namespace toy_c {
 
-// line in the source code    loc: script/code/header/class/scanning.h
-static unsigned int line = 1;
-// column in the source code  loc: script/code/header/class/scanning.h
-static unsigned int column = 1;
 
 class scanning {
 private:
   char        c;
   std::size_t num_token = 0;  // the number of token in this script file
-  std::string file_path;
+  std::string input_file_path;
   bool        really_next_token = true;
 
   void get_next_char();
@@ -35,6 +31,8 @@ private:
   std::tuple<token, std::string> to_comment();
   std::tuple<token, std::string> to_char();
   // std::tuple<token, std::string> to_string();
+  std::size_t line   = 1;
+  std::size_t column = 1;
 
 public:
   toy_c::fstream_guard           file;
@@ -42,8 +40,8 @@ public:
   std::tuple<token, std::string> last_token;
   std::tuple<token, std::string> pre_token;
 
-  explicit scanning(std::string &file_path_) : file_path(file_path_) {
-    file.open(file_path, toy_c::mode::read);
+  explicit scanning(std::string &file_path_) : input_file_path(file_path_) {
+    file.open(input_file_path, toy_c::mode::read);
     c = file.get();
   };
   ~scanning(){};
@@ -60,6 +58,9 @@ public:
   std::string get_current_value();
   std::string get_current_value(std::tuple<token, std::string> &tuple_);
   void        token_output();
+
+  std::size_t get_line();
+  std::size_t get_column();
 };
 
 }  // namespace toy_c

@@ -766,13 +766,30 @@ llvm::Value *build_llvm_ir::build_assign_expression(
   return r_value;
 }
 
+// TODO this func return a constant value
+// so needs a constant type
+llvm::Value *
+build_llvm_ir::build_compute_unary_expression_size(ast::idx idx_unary_expression) {}
+llvm::Value *build_llvm_ir::build_compute_declarator_size(ast::idx idx_declarator) {}
+
 // TODO
 llvm::Value *build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression) {
   //----------------------------------------------------------------
   // 1. sizeof
   //----------------------------------------------------------------
   if (tree[idx_unary_expression].value.unary_expression.is_sizeof) {
-    // TODO
+    // unary_expression
+    if (tree[idx_unary_expression].type == ast::node_type::unary_expression) {
+      return build_compute_unary_expression_size(
+        tree[idx_unary_expression].value.unary_expression.idx_unary_expression
+      );
+    }
+    // declarator
+    else {
+      return build_compute_declarator_size(
+        tree[idx_unary_expression].value.unary_expression.idx_declaration_declarator
+      );
+    }
   }
 
   ast::idx idx_postfix_expression
@@ -785,7 +802,7 @@ llvm::Value *build_llvm_ir::build_unary_expression(ast::idx idx_unary_expression
   // 2. unary operator
   //----------------------------------------------------------------
   if (tree[idx_unary_expression].value.unary_expression.unary_operator != token::invalid) {
-    build_unary_expression(idx_unary_expression);
+    return build_unary_expression(idx_unary_expression);
   }
   //----------------------------------------------------------------
   // 3. postfix expression
@@ -1417,6 +1434,56 @@ void build_llvm_ir::insert_symbol_symbol(std::string name, llvm::Value *ptr_var)
 
 std::string build_llvm_ir::get_label() {
   return std::to_string(++label_num);
+}
+
+llvm::Type *build_llvm_ir::analysis_and_assign_type_to_node(
+  ast::idx    idx_binary_or_unary_expression,
+  llvm::Type *left_value_type,
+  llvm::Type *father_node_type
+) {
+  ast::idx idx_left_node
+    = tree[idx_binary_or_unary_expression].value.binary_expression.idx_left_node;
+  ast::idx idx_right_node
+    = tree[idx_binary_or_unary_expression].value.binary_expression.idx_right_node;
+  // binary expression
+  if (tree[idx_binary_or_unary_expression].type == ast::node_type::binary_expression) {
+    llvm::Type *l_node_type
+      = analysis_and_assign_type_to_node(idx_left_node, left_value_type);
+    llvm::Type *r_node_type
+      = analysis_and_assign_type_to_node(idx_right_node, left_value_type);
+
+    // judge left or right node's type
+    // son node has specific type
+    if (l_node_type != nullptr || r_node_type != nullptr) {
+      // both left and right node's type is the same type
+      if (l_node_type == r_node_type) {
+        return l_node_type;
+      }
+      // left and right node's type is different
+      else {
+        // TODO
+      }
+    }
+    // son node don't have type
+    else {
+      assign_type_to_all_son_node(idx_binary_or_unary_expression, left_value_type);
+    }
+  }
+  // unary expression
+  else {
+  }
+}
+
+void build_llvm_ir::assign_type_to_all_son_node(
+  ast::idx    idx_binary_or_unary_expression,
+  llvm::Type *type
+) {
+  // binary expression
+  if (tree[idx_binary_or_unary_expression].type == ast::node_type::binary_expression) {
+  }
+  // unary expression
+  else {
+  }
 }
 
 }  // namespace toy_c

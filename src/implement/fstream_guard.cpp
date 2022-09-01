@@ -7,8 +7,8 @@
 
 namespace toy_c {
 
-fstream_guard::fstream_guard(std::string file_path, mode mode) {
-  open(file_path, mode);
+fstream_guard::fstream_guard(std::string input_file_path, mode mode) {
+  open(input_file_path, mode);
 }
 
 fstream_guard::fstream_guard() {}

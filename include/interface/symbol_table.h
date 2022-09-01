@@ -26,12 +26,7 @@ struct statement {
   std::string arg1;
   std::string arg2;
   std::string result;
-  statement(
-    token       symbol_,
-    std::string arg1_,
-    std::string arg2_,
-    std::string result_
-  )
+  statement(token symbol_, std::string arg1_, std::string arg2_, std::string result_)
       : symbol(symbol_), arg1(arg1_), arg2(arg2_), result(result_){};
 };
 
@@ -59,10 +54,10 @@ struct func {
   std::string           name_return;
 
   func(
-    std::string&           name_,
-    std::vector<arg_info>& argu_,
-    token&                 class_reture_,
-    std::string&           name_return_
+    std::string           &name_,
+    std::vector<arg_info> &argu_,
+    token                 &class_reture_,
+    std::string           &name_return_
   )
       : name(name_), argu(argu_), class_reture(class_reture_),
         name_return(name_return_){};
@@ -88,46 +83,45 @@ private:
   //貌似已经被弃用，符号表
   std::vector<frame> symbol_stack;  //符号表
   //传参时在寄存器中的参数的寄存器列表
-  std::vector<std::string> argu_register_loc
-    = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+  std::vector<std::string> argu_register_loc = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
 public:
   //函数表
   std::vector<func> func_table;
 
   std::fstream file;
-  std::string  file_path;
+  std::string  input_file_path;
 
 
-  explicit symbol_table(std::string& file_path_, bool really_output_asm_code_);
+  explicit symbol_table(std::string &file_path_, bool really_output_asm_code_);
   ~symbol_table();
-  symbol_table(symbol_table&)             = delete;
-  symbol_table(symbol_table&&)            = default;
-  symbol_table& operator=(symbol_table&)  = delete;
-  symbol_table& operator=(symbol_table&&) = delete;
+  symbol_table(symbol_table &)             = delete;
+  symbol_table(symbol_table &&)            = default;
+  symbol_table &operator=(symbol_table &)  = delete;
+  symbol_table &operator=(symbol_table &&) = delete;
 
   //符号表
   // DROP在栈中寻找
-  bool find(std::tuple<token, std::string>& x);
+  bool find(std::tuple<token, std::string> &x);
   // DROP在栈中寻找
-  bool find(std::string& x);
+  bool find(std::string &x);
   // DROP返回在栈中的偏移量
-  std::size_t at(std::tuple<token, std::string>& x);
+  std::size_t at(std::tuple<token, std::string> &x);
   // DROP返回在栈中的偏移量
-  std::size_t at(std::string& x);
+  std::size_t at(std::string &x);
   // DROP在函数参数表中寻找
   bool find_argu(std::string name);
   // DROP返回变量，或者是函数参数在汇编中的字符串表达
-  std::string find_local(std::string& name);
+  std::string find_local(std::string &name);
 
   //在函数表中寻找函数
-  bool find_func(std::string& name);
+  bool find_func(std::string &name);
 
   void  push_var(frame x);
   void  clear_symbol_stack();
   token find_var_class(std::string name);
 
-  void push_global_sign(std::string& x);
+  void push_global_sign(std::string &x);
 
   //把函数插入函数表,TODO并把now_arge替换成这个函数的参数表
   void insert_func(func);

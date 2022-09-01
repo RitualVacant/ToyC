@@ -45,7 +45,7 @@ sizeof(std::size_t);
 
 class asm_code {
     private:
-        std::string file_path;
+        std::string input_file_path;
         std::fstream file;
         std::vector<statement> code;
 
@@ -61,7 +61,7 @@ class asm_code {
         bool register_used[sizeof_register_used];
 
     public:
-        explicit asm_code(std::string &file_path, std::vector<statement>
+        explicit asm_code(std::string &input_file_path, std::vector<statement>
 &&code,symbol_table* sign_); ~asm_code(); asm_code(std::string const &)       =
 delete; asm_code(std::string &&)            = delete; asm_code&
 operator=(std::string &)  = delete; asm_code& operator=(std::string &&) =
@@ -95,10 +95,10 @@ asm_code_write_mov(std::size_t size, std::string arg1, std::string arg2);
 };
 
 asm_code::asm_code(std::string &file_path_, std::vector<statement> &&code_,
-symbol_table* sign_) : file_path{file_path_}, code{code_} ,table{sign_} {
-    file.open(file_path, std::ofstream::out);
+symbol_table* sign_) : input_file_path{file_path_}, code{code_} ,table{sign_} {
+    file.open(input_file_path, std::ofstream::out);
     if (!file.is_open()) {
-        fmt::print("can't open file at {}", file_path);
+        fmt::print("can't open file at {}", input_file_path);
         exit(0);
     }
     read_code();

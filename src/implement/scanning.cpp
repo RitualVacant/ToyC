@@ -2,6 +2,7 @@
 #define SCANNING_CPP
 
 #include "scanning.h"
+#include "global_var.h"
 #include "inner.h"
 #include "judge_char.h"
 #include "token.h"
@@ -445,14 +446,16 @@ void scanning::token_output() {
     }
   }
   */
+
+  toy_c::fstream_guard output_file(output_file_path, toy_c::mode::wirte);
   while (!file.eof()) {
     auto a = next_token();
     if (std::get<0>(a) == token::identify) {
-      fmt::print("token: {:30} string: {:30}\n", "identify", std::get<1>(a));
+      output_file << fmt::format("token: {:30} string: {}\n", "identify", std::get<1>(a));
     }
     else {
-      fmt::print(
-        "token: {:30} string: {:30}\n", token_to_string.at(std::get<0>(a)), std::get<1>(a)
+      output_file << fmt::format(
+        "token: {:30} string: {}\n", token_to_string.at(std::get<0>(a)), std::get<1>(a)
       );
     }
   }
@@ -472,6 +475,13 @@ std::string scanning::get_current_value(std::tuple<token, std::string> &tuple_) 
 
 std::string scanning::get_current_value() {
   return std::get<1>(now_token);
+}
+
+std::size_t scanning::get_line() {
+  return line;
+}
+std::size_t scanning::get_column() {
+  return column;
 }
 
 }  // namespace toy_c

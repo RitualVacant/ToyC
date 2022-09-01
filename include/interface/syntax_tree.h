@@ -35,7 +35,7 @@ private:
 
   ast::idx     last_root_ptr = ast::null;
   std::fstream file;
-  // std::string  file_path{"/home/lzj/code/program/script/test/tree.json"};
+  // std::string  input_file_path{"/home/lzj/code/program/script/test/tree.json"};
   std::string file_buffer;
 
   std::vector<ast::node>          tree;
@@ -73,7 +73,7 @@ public:
 
   void connect(ast::idx ptr);
   void earse(ast::idx idx);
-  void print_tree(std::string file_path);
+  void print_tree(std::string input_file_path);
   void to_json();
   void trans_tree();
 

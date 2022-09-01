@@ -13,7 +13,7 @@
 #define PRINT_TOKEN_IN_SCAN                                                              \
   fmt::print(                                                                            \
     fg(fmt::color::red), "the token is:{} line:{} column:{}\n",                          \
-    scan.get_current_value(), toy_c::line, toy_c::column                                 \
+    scan.get_current_value(), scan.get_line(), scan.get_column()                         \
   );
 
 #define PRINT_TOKEN(token)                                                               \

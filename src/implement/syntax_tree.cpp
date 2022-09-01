@@ -407,8 +407,8 @@ void syntax_tree::connect(ast::idx idx) {
   return;
 }
 
-void syntax_tree::print_tree(std::string file_path) {
-  file.open(file_path, std::fstream::out);
+void syntax_tree::print_tree(std::string input_file_path) {
+  file.open(input_file_path, std::fstream::out);
   if (!file.is_open()) {
     fmt::print("can't open file in syntax_tree");
     exit(0);

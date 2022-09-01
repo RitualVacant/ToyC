@@ -5,11 +5,11 @@
 #include "token.h"
 
 symbol_table::symbol_table(std::string &file_path_, bool really_output_asm_code_)
-    : file_path(file_path_) {
+    : input_file_path(file_path_) {
   if (really_output_asm_code_)
     return;
 
-  file.open(file_path, std::ofstream::out);
+  file.open(input_file_path, std::ofstream::out);
   if (!file.is_open()) {
     fmt::print(fg(fmt::color::red), "\nfail to open the file!\n");
     fmt::print(fg(fmt::color::red), "please check the output file's path\n");

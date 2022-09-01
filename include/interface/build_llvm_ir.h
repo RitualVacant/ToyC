@@ -102,10 +102,23 @@ private:
   llvm::Value *build_primary_expression(ast::idx idx_primary_expression);
   llvm::Value *build_constant(ast::idx idx_constant);
   llvm::Value *build_unary_operator(ast::idx idx_unary_expression);
+  llvm::Value *build_compute_unary_expression_size(ast::idx idx_unary_expression);
+  llvm::Value *build_compute_declarator_size(ast::idx idx_declarator);
 
   // TODO
   // idx type is unknow
   std::uint64_t build_uint64(ast::idx idx_);
+
+
+  // func for analysis node type and assign type to node
+  llvm::Type *analysis_and_assign_type_to_node(
+    ast::idx    idx_binary_or_unary_expression,
+    llvm::Type *left_value_type,
+    llvm::Type *father_node_type = nullptr
+  );
+  void
+  assign_type_to_all_son_node(ast::idx idx_binary_or_unary_expression, llvm::Type *type);
+
 
   // DROP
   llvm::Value *build_log_and_chain(ast::idx idx_log_and_operator);

@@ -3,7 +3,8 @@
 
 #include <string>
 
-extern std::string file_path;
+
+extern std::string input_file_path;
 extern std::string output_file_path;
 
 #endif

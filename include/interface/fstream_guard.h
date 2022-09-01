@@ -24,7 +24,7 @@ public:
   fstream_guard &operator=(fstream_guard &)  = delete;
   fstream_guard &operator=(fstream_guard &&) = delete;
 
-  void          open(std::string file_path, mode mode);
+  void          open(std::string input_file_path, mode mode);
   bool          eof();
   std::fstream &operator<<(std::string);
   char          get();

@@ -1,7 +1,8 @@
 #include "build_llvm_ir.h"
 #include "fmt/core.h"
 #include "parser.h"
-// #include <gperftools/profiler.h>
+#include <gflags/gflags.h>
+#include <map>
 #include <string>
 
 enum class mode : char {
@@ -16,31 +17,101 @@ enum class mode : char {
   llvm_opt = 'o'
 };
 
-// dec
+//
+DEFINE_string(i, "", "input file path");
+DEFINE_string(o, "", "output file path");
+DEFINE_string(m, "", "mode");
+
 
 void choose_mode_run();
 void output_help_information();
+void gflags_choose_mode_run();
 
 // main func
 std::vector<std::string> command;
 
 int main(int argc, char *argv[]) {
-  // ProfilerStart("ToyC_profiler.prof");
-
   if (argc == 1) {
     fmt::print("path of input file  : ");
-    // std::cin >> file_path;
+    input_file_path = "/home/lzj/code/cpp/script/test/debug/1.c";
+    // std::cin >> input_file_path;
     fmt::print("path of output file : ");
+    output_file_path = "/home/lzj/code/cpp/script/test/debug/1";
     // std::cin >> output_file_path;
     choose_mode_run();
   }
   else {
-    fmt::print("not support arguments now\n");
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+    gflags_choose_mode_run();
+    fmt::print("DONE\n");
   }
 
-  // ProfilerStop();
-
   return 0;
+}
+
+void gflags_choose_mode_run() {
+  const std::map<std::string, mode> str_to_char_mode{
+    {"scan",  mode::scan    },
+    {"yes",   mode::yes     },
+    {"mid",   mode::mid     },
+    {"quit",  mode::quit    },
+    {"help",  mode::help    },
+    {"debug", mode::debug   },
+    {"tree",  mode::tree    },
+    {"ir ",   mode::llvm_ir },
+    {"opt",   mode::llvm_opt}
+  };
+
+  input_file_path  = FLAGS_i;
+  output_file_path = FLAGS_o;
+
+  if (str_to_char_mode.find(FLAGS_m) == str_to_char_mode.end()) {
+    fmt::print(fg(fmt::color::red), "unknow mode : {}\n", FLAGS_m);
+    exit(0);
+  }
+
+  switch (str_to_char_mode.at(FLAGS_m)) {
+    case mode::scan: {
+      toy_c::scanning s(input_file_path);
+      s.token_output();
+      break;
+    }
+    case mode::tree: {
+      toy_c::parser p;
+      p.print_syntax_tree();
+      break;
+    }
+    case mode::mid: {
+      toy_c::parser p;
+      // p.print_mid_code();
+      break;
+    }
+    case mode::yes: {
+      toy_c::parser p;
+      break;
+    }
+    case mode::help: {
+      output_help_information();
+      break;
+    }
+    case mode::llvm_ir: {
+      toy_c::build_llvm_ir ir;
+      ir.output_llvm_ir();
+      break;
+    }
+    case mode::llvm_opt: {
+      int done = system("opt -dot-cfg -S ./../test/llvm.ll");
+      if (done == 127) {
+        fmt::print("done");
+      }
+      if (done == -1) {
+        fmt::print("no");
+      }
+      break;
+    }
+    default:
+      fmt::print("unknown mode");
+  }
 }
 
 // def
@@ -55,7 +126,7 @@ void choose_mode_run() {
     choose_mode = static_cast<mode>(in);
     switch (choose_mode) {
       case mode::scan: {
-        toy_c::scanning s(file_path);
+        toy_c::scanning s(input_file_path);
         s.token_output();
         break;
       }
@@ -93,7 +164,7 @@ void choose_mode_run() {
         break;
       }
       default:
-        break;
+        fmt::print("unknown mode");
     }
   }
   return;

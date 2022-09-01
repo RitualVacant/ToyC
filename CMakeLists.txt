@@ -72,10 +72,16 @@ llvm_map_components_to_libnames(llvm_libs support core irreader)
 # fmt
 find_package(fmt CONFIG REQUIRED)
 
+# gflags
+find_package(gflags REQUIRED)
+message(STATUS "Using gflags-config.cmake in ${gflags_DIR}")
+
 # link
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(
+    ${PROJECT_NAME}
     PUBLIC
     fmt::fmt
+    gflags
     ${llvm_libs}
     implement
     ast
