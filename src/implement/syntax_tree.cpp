@@ -79,6 +79,16 @@ syntax_tree::insert(ast::node_type node_type) {
 */
 
 ast::node &syntax_tree::operator[](ast::idx idx) {
+#ifdef DEBUG
+  if (idx == ast::null) {
+    fmt::print(fg(fmt::color::red), "ast::idx error : ast::idx can't be ast::null\n");
+    exit(0);
+  }
+  if (idx >= tree.size()) {
+    fmt::print(fg(fmt::color::red), "ast::idx error : ast::idx out of range\n");
+    exit(0);
+  }
+#endif
   return tree[idx];
 }
 
@@ -555,33 +565,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       ast::idx idx_constant
         = tree[idx].value.primary_expression.idx_constant != ast::null;
       if (idx_constant != ast::null) {
-        switch (constant_node_tree[idx_constant].type) {
-          case ast::node_type::constant_integer_number:
-            print_json_key_value(
-              "constant_integer_number", constant_node_tree[idx_constant].value.c_str()
-            );
-            break;
-          case ast::node_type::constant_float_number:
-            print_json_key_value(
-              "constant_float_number", constant_node_tree[idx_constant].value.c_str()
-            );
-            break;
-          case ast::node_type::constant_negative_float_number:
-            print_json_key_value(
-              "constant_negative_float_number",
-              constant_node_tree[idx_constant].value.c_str()
-            );
-            break;
-          case ast::node_type::constant_negative_integer_number:
-            print_json_key_value(
-              "constant_negative_integer_number",
-              constant_node_tree[idx_constant].value.c_str()
-            );
-            break;
-          default:
-            PRINT_NODE_TYPE(constant_node_tree[idx_constant].type)
-            SWITCH_ERROR
-        }
+        print_json_constant(idx_constant);
       }
       else {
         dfs_print_tree(tree[idx].value.primary_expression.idx_identifier);
@@ -694,6 +678,32 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       dfs_print_tree(tree[idx].value.initializer.idx_initializer_list);
       print_json_class_end();
       break;
+
+    case ast::node_type::initializer_list:
+      for (ast::idx i = idx; i != ast::null;
+           i          = tree[i].value.initializer_list.idx_next_initializer_list) {
+        // std::cout << " " << i << " "
+        //           << tree[i].value.initializer_list.idx_next_initializer_list
+        //           << std::endl;
+
+        print_json_class_head("initializer_list");
+        dfs_print_tree(tree[i].value.initializer_list.idx_head_initializer_list_node);
+        dfs_print_tree(tree[i].value.initializer_list.idx_son_initializer_list);
+        print_json_class_end();
+      }
+      // std::cout << "--------------" << std::endl;
+      break;
+
+    case ast::node_type::initializer_list_node:
+      for (ast::idx i = idx; i != ast::null;
+           i = tree[i].value.initializer_list_node.idx_next_initializer_list_node) {
+        now_idx = i;
+        print_json_class_head("initializer_list_node");
+        print_json_constant(tree[i].value.initializer_list_node.idx_constant);
+        print_json_class_end();
+      }
+      break;
+
     case ast::node_type::declare_function:
       print_json_class_head("declare_function");
       dfs_print_tree(tree[idx].value.declare_function.idx_function_arguments);
@@ -1042,26 +1052,25 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
   return;
 }
 
-void syntax_tree::print_json_key_value(char const *key, char const *value) {
+void syntax_tree::print_json_key_value(std::string key, std::string value) {
   // file << "\"" << key << "\":\"" << value << "\",\n";
-  auto str_key   = std::string(key);
-  auto str_value = std::string(value);
-  file_buffer += fmt::format("\"{}\":\"{}\",", str_key, str_value);
+
+  file_buffer += fmt::format("\"{}\":\"{}\",", key, value);
   // file_buffer += "\"";
-  // file_buffer += std::string(key);
+  // file_buffer += key;
   // file_buffer += "\":\"";
-  // file_buffer += std::string(value);
+  // file_buffer += value;
   // file_buffer += "\",";
   return;
 }
 
-void syntax_tree::print_json_class_head(char const *value) {
+void syntax_tree::print_json_class_head(std::string value) {
   // file << "\"" <<  value << "\":{\n";
 
   // auto str_value = std::string(value);
   // file_buffer += fmt::format("\"{}\":{", str_value);
   file_buffer += "\"";
-  file_buffer += std::string(value);
+  file_buffer += value;
   file_buffer += '_';
   file_buffer += std::to_string(now_idx);
   file_buffer += "\":{";
@@ -1075,25 +1084,57 @@ void syntax_tree::print_json_class_end() {
   return;
 }
 
-void syntax_tree::print_json_key(char const *key) {
+void syntax_tree::print_json_key(std::string key) {
   // file << "\"" << key << "\":";
   // auto str_key = std::string(key);
   // file_buffer += fmt::format("\"{}\":", str_key);
   file_buffer += "\"";
-  file_buffer += std::string(key);
+  file_buffer += key;
   file_buffer += "\":";
   return;
 }
 
-void syntax_tree::print_json_value(char const *value) {
+void syntax_tree::print_json_value(std::string value) {
   //
   // file << "\"" << value << "\",\n";
   // auto str_value = std::string(value);
   // file_buffer += fmt::format("\"{}\",", str_value);
   file_buffer += "\"";
-  file_buffer += std::string(value);
+  file_buffer += value;
   file_buffer += "\",";
   return;
+}
+
+void syntax_tree::print_json_constant(ast::idx idx_constant) {
+  switch (constant_node_tree[idx_constant].type) {
+    case ast::node_type::constant_integer_number:
+      file_buffer += fmt::format(
+        "\"{}_{}\":\"{}\",", "constant_integer_number", idx_constant,
+        constant_node_tree[idx_constant].value
+      );
+      break;
+    case ast::node_type::constant_float_number:
+      file_buffer += fmt::format(
+        "\"{}_{}\":\"{}\",", "constant_float_number", idx_constant,
+        constant_node_tree[idx_constant].value
+      );
+      break;
+    case ast::node_type::constant_negative_float_number:
+      file_buffer += fmt::format(
+        "\"{}_{}\":\"{}\",", "constant_negative_float_number", idx_constant,
+        constant_node_tree[idx_constant].value
+      );
+      break;
+    case ast::node_type::constant_negative_integer_number:
+      file_buffer += fmt::format(
+        "\"{}_{}\":\"{}\",", "constant_negative_integer_number", idx_constant,
+        constant_node_tree[idx_constant].value
+      );
+      break;
+    default:
+      PRINT_NODE_TYPE(constant_node_tree[idx_constant].type)
+      SWITCH_ERROR
+  }
 }
 
 }  // namespace toy_c

@@ -1,13 +1,11 @@
 #ifndef syntax_TREE_H
 #define syntax_TREE_H
 #pragma once
+#include "ast.h"
+#include "declataror.h"
 #include <fstream>
 #include <string>
 #include <vector>
-
-#include "ast.h"
-#include "declataror.h"
-
 namespace toy_c {
 std::size_t const sizeof_syntax_tree_init = 100000;
 
@@ -45,10 +43,11 @@ private:
   ast::idx idx_now_compound_statement     = ast::null;
 
   void dfs_print_tree(ast::idx ptr);
-  void print_json_key_value(char const *key, char const *value);
-  void print_json_key(char const *key);
-  void print_json_value(char const *value);
-  void print_json_class_head(char const *value);
+  void print_json_key_value(std::string key, std::string value);
+  void print_json_key(std::string key);
+  void print_json_value(std::string value);
+  void print_json_class_head(std::string value);
+  void print_json_constant(ast::idx idx_constant);
   void print_json_class_end();
   void trans_declaration_or_definition(ast::idx idx);
   void trans_each_initial_declarator(ast::idx idx);

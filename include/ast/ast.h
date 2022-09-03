@@ -3,14 +3,19 @@
 
 #pragma once
 #include "token.h"
+#include <array>
 #include <iostream>
+#include <llvm/IR/DIBuilder.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Verifier.h>
 #include <memory>
 #include <string>
 #include <vector>
 //#include <variant>
 //#include <string_view>
-#include <array>
-
 namespace ast {
 std::size_t const array_in_struct_size = 25;
 
@@ -77,6 +82,8 @@ enum class node_type : unsigned char {
   block,
   mark_statement,
   initializer,
+  initializer_list,
+  initializer_list_node,
   postfix_operator,
 
   case_label,
@@ -114,7 +121,7 @@ using idef = std::size_t;
 //-------------------------------------------
 
 // basic I
-struct node_loction {
+struct node_location {
   std::size_t line;
   std::size_t column;
 };
@@ -188,11 +195,31 @@ struct array_declarator {
   ast::idx idx_constant              = ast::null;
 };
 
-// constant
 
+// TODO
+// initializer
+// +-----------+
+// |initializer|
+// +-----------+
+//       |
+//     +----+
+//     |list|
+//     +----+
+//
 struct initializer {
   ast::idx idx_assignment_expression = ast::null;
   ast::idx idx_initializer_list      = ast::null;
+};
+
+struct initializer_list {
+  ast::idx idx_son_initializer_list       = ast::null;
+  ast::idx idx_next_initializer_list      = ast::null;
+  ast::idx idx_head_initializer_list_node = ast::null;
+};
+
+struct initializer_list_node {
+  ast::idx idx_constant                   = ast::null;
+  ast::idx idx_next_initializer_list_node = ast::null;
 };
 
 
@@ -460,10 +487,10 @@ union value {
   ast::postfix_expression        postfix_expression;
   ast::declare_var               declare_var;
   ast::initial_declarator        initial_declarator;
-  ast::initial_declarator_list   initial_declarator_list;
   ast::declaration_or_definition declaration_or_definition;
   ast::direct_declarator         direct_declarator;
   ast::identifier                identifier;
+  ast::initial_declarator_list   initial_declarator_list;
   ast::arguments_declaration     arguments_declaration;
   ast::arguments_type_list       arguments_type_list;
   ast::compound_statement        compound_statement;
@@ -471,6 +498,8 @@ union value {
   ast::mark_statement            mark_statement;
   ast::mark                      mark;
   ast::initializer               initializer;
+  ast::initializer_list          initializer_list;
+  ast::initializer_list_node     initializer_list_node;
   ast::postfix_operator          postfix_operator;
   ast::case_label                case_label;
   ast::default_label             default_label;
@@ -499,15 +528,17 @@ union value {
 };
 
 struct node {
-  ast::value        value;
-  ast::node_type    type;
-  ast::node_loction node_loction;
-  ast::idx          next;
+  ast::value         value;
+  ast::node_type     type;
+  ast::node_location node_location;
+  llvm::Type        *llvm_type;
+  // ast::idx           next;
 };
 
 struct constant_node {
   ast::node_type type;
   std::string    value;
+  llvm::Type    *llvm_type;
 };
 
 }  // namespace ast

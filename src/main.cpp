@@ -58,7 +58,7 @@ void gflags_choose_mode_run() {
     {"help",  mode::help    },
     {"debug", mode::debug   },
     {"tree",  mode::tree    },
-    {"ir ",   mode::llvm_ir },
+    {"ir",    mode::llvm_ir },
     {"opt",   mode::llvm_opt}
   };
 

@@ -1,66 +1,36 @@
-{"declaration_or_definition_1":{"declaration_declarator_2":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"compound_statement_8":{"block_9":{"declaration_or_definition_10":{"declaration_declarator_11":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"initial_declarator_12":{"declarator_13":{"is_pointer":"0","direct_declarator_14":{"identifier_15":{"name":"a"
-}
-}
-},"initial_declarator_16":{"declarator_17":{"is_pointer":"0","direct_declarator_18":{"identifier_19":{"name":"b"
-}
-}
-},"initializer_20":{"unary_expression_21":{"postfix_expression_22":{"postfix_operator_24":{},"primary_expression_23":{"constant_integer_number":"1"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-},"initial_declarator_25":{"declarator_26":{"is_pointer":"1","direct_declarator_27":{"identifier_28":{"name":"c"
-}
-}
-}
-}
-}
-}
-}
-},"block_29":{"declaration_or_definition_30":{"declaration_declarator_31":{"sign":"true","type":"double","limit":"empty","store":"empty"
-},"initial_declarator_32":{"declarator_33":{"is_pointer":"0","direct_declarator_34":{"identifier_35":{"name":"d"
-}
-}
-},"initializer_36":{"unary_expression_37":{"postfix_expression_38":{"postfix_operator_40":{},"primary_expression_39":{"constant_integer_number":"1"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-},"initial_declarator_41":{"declarator_42":{"is_pointer":"0","direct_declarator_43":{"identifier_44":{"name":"e"
-}
-}
-}
-}
-}
-}
-},"block_45":{"declaration_or_definition_46":{"declaration_declarator_47":{"sign":"true","type":"long_long_int","limit":"empty","store":"empty"
-},"initial_declarator_48":{"declarator_49":{"is_pointer":"0","direct_declarator_50":{"identifier_51":{"name":"f"
-}
-}
-}
-}
-}
-},"block_52":{"declaration_or_definition_53":{"declaration_declarator_54":{"sign":"false","type":"int","limit":"empty","store":"empty"
-},"initial_declarator_55":{"declarator_56":{"is_pointer":"0","direct_declarator_57":{"identifier_58":{"name":"g"
-}
-}
-},"initializer_59":{"unary_expression_60":{"postfix_expression_61":{"primary_expression_62":{"constant_integer_number":"1"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-}
-},"block_63":{"return_statement_64":{"unary_expression_65":{"postfix_expression_66":{"primary_expression_67":{"constant_integer_number":"1"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-},"initial_declarator_3":{"declarator_4":{"is_pointer":"0","direct_declarator_5":{"identifier_6":{"name":"main"
-},"arguments_type_list_7":{}
-}
-}
-}
-}
-}
+token: key_int                        string: int
+token: identify                       string: main
+token: l_par                          string: (
+token: r_par                          string: )
+token: l_big_par                      string: {
+token: key_int                        string: int
+token: identify                       string: a
+token: comma                          string: ,
+token: identify                       string: b
+token: assign                         string: =
+token: constant_integer_number        string: 1
+token: comma                          string: ,
+token: times                          string: *
+token: identify                       string: c
+token: end                            string: ;
+token: key_double                     string: double
+token: identify                       string: d
+token: assign                         string: =
+token: constant_float_number          string: 3.21
+token: comma                          string: ,
+token: identify                       string: e
+token: end                            string: ;
+token: key_long                       string: long
+token: key_long                       string: long
+token: identify                       string: f
+token: end                            string: ;
+token: key_unsigned                   string: unsigned
+token: key_int                        string: int
+token: identify                       string: g
+token: assign                         string: =
+token: constant_integer_number        string: 2
+token: end                            string: ;
+token: key_return                     string: return
+token: constant_integer_number        string: 0
+token: end                            string: ;
+token: r_big_par                      string: }

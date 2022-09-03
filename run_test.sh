@@ -9,33 +9,69 @@ excutable_files_path=${current_path}"/build/ToyC"
 # INPUT PATH
 input_files_prefix_path="/test/c_files_for_input/"
 input_files_prefix_path=${current_path}${input_files_prefix_path}
-input_files=$(ls ${input_files_prefix_path})
+# input_files=$(ls ${input_files_prefix_path})
+input_files=()
+for i in `ls ${input_files_prefix_path}`
+do
+    # ${input_files[j]}=$i
+    input_files+=($i)
+done
 
 # OUTPUT PATH
 # txt
 output_txt_files_prefix_path="/test/token_output/"
 output_txt_files_prefix_path=${current_path}${output_txt_files_prefix_path}
-
 # json
+output_json_files_prefix_path="/test/json_tree_output/"
+output_json_files_prefix_path=${current_path}${output_json_files_prefix_path}
+# llvm
+output_llvm_files_prefix_path="/test/llvm_output/"
+output_llvm_files_prefix_path=${current_path}${output_llvm_files_prefix_path}
+#
 
-# length=${#input_files[@]}
+length=${#input_files[@]}
+length=15
+printf "input file number: "${length}"\n"
+
 mode_list=(scan tree ir)
+postfix_files_list=(txt json ll)
+list_output_files_prefix_path=(${output_txt_files_prefix_path} ${output_json_files_prefix_path} ${output_llvm_files_prefix_path})
 
-for mode in ${mode_list[@]}
+
+for ((i=0; i<${#mode_list[@]}; i++))
 do
     printf "****************\n"
-    printf "* %s         *\n" ${mode}
+    printf "* %s\n" ${mode_list[${i}]}
     printf "****************\n\n"
 
-    for input_file_name in ${input_files}
+    for ((j=0; j<length; j++))
     do
-        printf ${input_file_name}"\n"
-        output_file_name=${input_file_name%.*}".txt"
-        touch ${output_txt_files_prefix_path}${output_file_name}
-        ${excutable_files_path} -i ${input_files_prefix_path}${input_file_name} -o ${output_txt_files_prefix_path}${output_file_name} -m ${mode}
+        printf ${input_files[${j}]}"\n"
+        input_file_name=${input_files[${j}]}
+        output_file_name=${input_files[${j}]}
+        output_file_name=${output_file_name%.*}'.'${postfix_files_list[$i]}
+        #touch ${list_output_files_prefix_path[${j}]}${output_file_name}
+        #echo ${list_output_files_prefix_path[${i}]}${output_file_name}
+        ${excutable_files_path} -i ${input_files_prefix_path}${input_file_name} -o ${list_output_files_prefix_path[${i}]}${output_file_name} -m ${mode_list[i]}
         printf "%s\n" "--------------------"
     done
 done
+
+# for i in ${!input_files[@]}
+# do
+#     echo "------"
+#     echo "下标为：$i，数组的值为：${input_files[$i]}"
+#     echo "------"
+# done
+
+#   for input_file_name in ${input_files}
+#   do
+#       printf ${input_file_name}"\n"
+#       output_file_name=${input_file_name%.*}".txt"
+#       touch ${output_txt_files_prefix_path}${output_file_name}
+#       ${excutable_files_path} -i ${input_files_prefix_path}${input_file_name} -o ${output_txt_files_prefix_path}${output_file_name} -m ${mode}
+#       printf "%s\n" "--------------------"
+#   done
 
 #for ((i=0; i<$length; ++i))
 #do

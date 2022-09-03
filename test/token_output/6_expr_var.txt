@@ -1,92 +1,45 @@
-{"declaration_or_definition_1":{"declaration_declarator_2":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"compound_statement_8":{"block_9":{"declaration_or_definition_10":{"declaration_declarator_11":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"initial_declarator_12":{"declarator_13":{"is_pointer":"0","direct_declarator_14":{"identifier_15":{"name":"a"
-}
-}
-},"initializer_16":{"unary_expression_17":{"postfix_expression_18":{"primary_expression_19":{"constant_integer_number":"1"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-}
-},"block_20":{"declaration_or_definition_21":{"declaration_declarator_22":{"sign":"true","type":"long_long_int","limit":"empty","store":"empty"
-},"initial_declarator_23":{"declarator_24":{"is_pointer":"0","direct_declarator_25":{"identifier_26":{"name":"b"
-}
-}
-},"initializer_27":{"unary_expression_28":{"postfix_expression_29":{"primary_expression_30":{"constant_integer_number":"1"
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-}
-},"block_31":{"declaration_or_definition_32":{"declaration_declarator_33":{"sign":"true","type":"int","limit":"empty","store":"empty"
-},"initial_declarator_34":{"declarator_35":{"is_pointer":"0","direct_declarator_36":{"identifier_37":{"name":"c"
-}
-}
-},"initializer_38":{"binary_expression_44":{"operator":"+","unary_expression_39":{"postfix_expression_40":{"postfix_operator_43":{},"primary_expression_41":{"identifier_42":{"name":"a"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"unary_expression_45":{"postfix_expression_46":{"primary_expression_47":{"identifier_48":{"name":"b"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-}
-}
-},"block_49":{"declaration_or_definition_50":{"declaration_declarator_51":{"sign":"false","type":"int","limit":"empty","store":"empty"
-},"initial_declarator_52":{"declarator_53":{"is_pointer":"0","direct_declarator_54":{"identifier_55":{"name":"e"
-}
-}
-}
-}
-}
-},"block_56":{"expression_57":{"assignment_expression_63":{"assignment_type":"=","binary_expression_81":{"operator":"+","binary_expression_75":{"operator":"+","binary_expression_69":{"operator":"/","unary_expression_64":{"postfix_expression_65":{"postfix_operator_68":{},"primary_expression_66":{"identifier_67":{"name":"c"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"unary_expression_70":{"postfix_expression_71":{"postfix_operator_74":{},"primary_expression_72":{"identifier_73":{"name":"a"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-},"unary_expression_76":{"postfix_expression_77":{"postfix_operator_80":{},"primary_expression_78":{"identifier_79":{"name":"b"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-},"binary_expression_87":{"operator":"/","unary_expression_82":{"postfix_expression_83":{"postfix_operator_86":{},"primary_expression_84":{"identifier_85":{"name":"a"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"unary_expression_88":{"postfix_expression_89":{"postfix_operator_92":{},"primary_expression_90":{"identifier_91":{"name":"b"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-},"unary_expression_58":{"postfix_expression_59":{"postfix_operator_62":{},"primary_expression_60":{"identifier_61":{"name":"e"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-},"next_assign_61":{}
-}
-}
-},"block_93":{"return_statement_94":{"unary_expression_95":{"postfix_expression_96":{"primary_expression_97":{"identifier_98":{"name":"e"
-}
-}
-},"is_sizeof":"false","unary_operator":"void"
-}
-}
-}
-},"initial_declarator_3":{"declarator_4":{"is_pointer":"0","direct_declarator_5":{"identifier_6":{"name":"main"
-},"arguments_type_list_7":{}
-}
-}
-}
-}
-}
+token: key_int                        string: int
+token: identify                       string: main
+token: l_par                          string: (
+token: r_par                          string: )
+token: l_big_par                      string: {
+token: key_int                        string: int
+token: identify                       string: a
+token: assign                         string: =
+token: constant_integer_number        string: 1
+token: end                            string: ;
+token: key_long                       string: long
+token: key_long                       string: long
+token: identify                       string: b
+token: assign                         string: =
+token: constant_integer_number        string: 2
+token: end                            string: ;
+token: key_int                        string: int
+token: identify                       string: c
+token: assign                         string: =
+token: identify                       string: a
+token: plus                           string: +
+token: identify                       string: b
+token: end                            string: ;
+token: key_unsigned                   string: unsigned
+token: key_int                        string: int
+token: identify                       string: e
+token: end                            string: ;
+token: identify                       string: e
+token: assign                         string: =
+token: identify                       string: c
+token: div                            string: /
+token: identify                       string: a
+token: plus                           string: +
+token: identify                       string: b
+token: plus                           string: +
+token: l_par                          string: (
+token: identify                       string: a
+token: div                            string: /
+token: identify                       string: b
+token: r_par                          string: )
+token: end                            string: ;
+token: key_return                     string: return
+token: identify                       string: e
+token: end                            string: ;
+token: r_big_par                      string: }

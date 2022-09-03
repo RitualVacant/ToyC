@@ -4,22 +4,21 @@
 #pragma once
 #include "parser.h"
 #include "syntax_tree.h"
-#include <vector>
-
-
-#include "llvm/ADT/STLExtras.h"
-#include "llvm/Analysis/BasicAliasAnalysis.h"
-#include "llvm/Analysis/Passes.h"
-#include "llvm/IR/DIBuilder.h"
-#include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/LegacyPassManager.h"
-#include "llvm/IR/Module.h"
-#include "llvm/IR/Verifier.h"
-#include "llvm/Support/Host.h"
-#include "llvm/Support/TargetSelect.h"
-#include "llvm/Transforms/Scalar.h"
+#include <llvm/ADT/STLExtras.h>
+#include <llvm/Analysis/BasicAliasAnalysis.h>
+#include <llvm/Analysis/Passes.h>
+#include <llvm/IR/DIBuilder.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/Support/Host.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Transforms/Scalar.h>
 #include <map>
+#include <tuple>
+#include <vector>
 
 namespace toy_c {
 
@@ -27,31 +26,34 @@ enum type_of_def_or_dec { is_func_decl, is_array, is_var };
 
 class build_llvm_ir {
 private:
-  std::unique_ptr<llvm::LLVMContext>   context;
-  std::unique_ptr<llvm::Module>        module;
-  std::unique_ptr<llvm::IRBuilder<>>   builder;
-  toy_c::parser                        parse;
-  toy_c::syntax_tree                   tree;
-  std::map<std::string, llvm::Value *> func_symbol_table;
-  std::map<std::string, llvm::Value *> global_symbol_table;
+  std::unique_ptr<llvm::LLVMContext> context;
+  std::unique_ptr<llvm::Module>      module;
+  std::unique_ptr<llvm::IRBuilder<>> builder;
+  toy_c::parser                      parse;
+  toy_c::syntax_tree                 tree;
+
+  std::map<std::string, std::tuple<llvm::Value *, llvm::Type *>> func_symbol_table;
+  std::map<std::string, std::pair<llvm::Value *, llvm::Type *>>  global_symbol_table;
 
   ast::idx    now_compound_statement;
   std::size_t label_num = 0;
 
   llvm::Function   *ptr_now_func;
-  llvm::Type       *ptr_now_func_type;
   llvm::BasicBlock *ptr_now_block;
 
   type_of_def_or_dec which_type(ast::idx);
-  bool               is_func_decl(ast::idx);
-  bool               is_func(ast::idx);
-  bool               is_struct(ast::idx);
-  bool               is_union(ast::idx);
-  bool               is_var(ast::idx);
 
-  void         insert_func_symbol(std::string name, llvm::Value *ptr_var);
-  void         insert_symbol_symbol(std::string name, llvm::Value *ptr_var);
+  bool is_func_decl(ast::idx);
+  bool is_func(ast::idx);
+  bool is_struct(ast::idx);
+  bool is_union(ast::idx);
+  bool is_var(ast::idx);
+
+  void insert_func_symbol(std::string name, llvm::Value *ptr_var, llvm::Type *ptr_type);
+  void insert_global_symbol(std::string name, llvm::Value *ptr_var, llvm::Type *ptr_type);
+
   llvm::Value *find_value(std::string name);
+  llvm::Type  *find_type(std::string name);
 
   llvm::Type *build_mult_declaration_or_definition(ast::idx idx_declaration_or_definition
   );
@@ -87,6 +89,7 @@ private:
 
   llvm::Value *build_assign_expression(
     ast::idx          idx_assign_expression,
+    llvm::Type       *limit_type      = nullptr,
     llvm::BasicBlock *ptr_true_block  = nullptr,
     llvm::BasicBlock *ptr_false_block = nullptr,
     bool              is_return_value = true
@@ -110,7 +113,11 @@ private:
   std::uint64_t build_uint64(ast::idx idx_);
 
 
-  void analysis_and_assign_type_to_node(ast::idx idx_assign_expression);
+  llvm::Type *analysis_and_assign_type_to_node(
+    ast::idx    idx_assign_expression,
+    llvm::Type *limit_type = nullptr
+  );
+
   // func for analysis node type and assign type to node
   llvm::Type *recursion_analysis_and_assign_type_to_node(
     ast::idx    idx_binary_unary_expression,
