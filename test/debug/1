@@ -6,160 +6,32 @@
             "limit": "empty",
             "store": "empty"
         },
-        "compound_statement_8": {
-            "block_9": {
-                "declaration_or_definition_10": {
-                    "declaration_declarator_11": {
-                        "sign": "true",
-                        "type": "int",
-                        "limit": "empty",
-                        "store": "empty"
-                    },
-                    "initial_declarator_12": {
-                        "declarator_13": {
-                            "is_pointer": "0",
-                            "direct_declarator_14": {
-                                "identifier_15": {
-                                    "name": "a"
-                                }
-                            }
-                        },
-                        "initializer_16": {
-                            "unary_expression_17": {
-                                "postfix_expression_18": {
-                                    "primary_expression_19": {
-                                        "constant_integer_number_1": "1"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            }
-                        }
-                    }
-                }
-            },
-            "block_20": {
-                "for_statement_21": {
-                    "declaration_or_definition_22": {
-                        "declaration_declarator_23": {
-                            "sign": "true",
-                            "type": "int",
-                            "limit": "empty",
-                            "store": "empty"
-                        },
-                        "initial_declarator_24": {
-                            "declarator_25": {
-                                "is_pointer": "0",
-                                "direct_declarator_26": {
-                                    "identifier_27": {
-                                        "name": "i"
-                                    }
-                                }
-                            },
-                            "initializer_28": {
-                                "unary_expression_29": {
-                                    "postfix_expression_30": {
-                                        "primary_expression_31": {
-                                            "constant_integer_number_1": "1"
-                                        }
-                                    },
-                                    "is_sizeof": "false",
-                                    "unary_operator": "void"
-                                }
-                            }
-                        }
-                    },
-                    "binary_expression_36": {
-                        "operator": "<",
-                        "unary_expression_32": {
-                            "postfix_expression_33": {
-                                "primary_expression_34": {
-                                    "identifier_35": {
-                                        "name": "i"
+        "compound_statement_18": {
+            "block_19": {
+                "return_statement_20": {
+                    "binary_expression_25": {
+                        "operator": "+",
+                        "unary_expression_21": {
+                            "postfix_expression_22": {
+                                "primary_expression_23": {
+                                    "identifier_24": {
+                                        "name": "a"
                                     }
                                 }
                             },
                             "is_sizeof": "false",
                             "unary_operator": "void"
                         },
-                        "unary_expression_37": {
-                            "postfix_expression_38": {
-                                "primary_expression_39": {
-                                    "constant_integer_number_1": "1"
-                                }
-                            },
-                            "is_sizeof": "false",
-                            "unary_operator": "void"
-                        }
-                    },
-                    "assignment_expression_44": {
-                        "assignment_type": "=",
-                        "binary_expression_49": {
-                            "operator": "+",
-                            "unary_expression_45": {
-                                "postfix_expression_46": {
-                                    "primary_expression_47": {
-                                        "identifier_48": {
-                                            "name": "i"
-                                        }
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            },
-                            "unary_expression_50": {
-                                "postfix_expression_51": {
-                                    "primary_expression_52": {
-                                        "constant_integer_number_1": "1"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            }
-                        },
-                        "unary_expression_40": {
-                            "postfix_expression_41": {
-                                "primary_expression_42": {
-                                    "identifier_43": {
-                                        "name": "i"
+                        "unary_expression_26": {
+                            "postfix_expression_27": {
+                                "primary_expression_28": {
+                                    "identifier_29": {
+                                        "name": "b"
                                     }
                                 }
                             },
                             "is_sizeof": "false",
                             "unary_operator": "void"
-                        },
-                        "next_assign_43": {}
-                    },
-                    "compound_statement_53": {
-                        "block_54": {
-                            "expression_55": {
-                                "assignment_expression_60": {
-                                    "assignment_type": "+=",
-                                    "unary_expression_61": {
-                                        "postfix_expression_62": {
-                                            "primary_expression_63": {
-                                                "identifier_64": {
-                                                    "name": "i"
-                                                }
-                                            }
-                                        },
-                                        "is_sizeof": "false",
-                                        "unary_operator": "void"
-                                    },
-                                    "unary_expression_56": {
-                                        "postfix_expression_57": {
-                                            "primary_expression_58": {
-                                                "identifier_59": {
-                                                    "name": "a"
-                                                }
-                                            }
-                                        },
-                                        "is_sizeof": "false",
-                                        "unary_operator": "void"
-                                    },
-                                    "next_assign_59": {}
-                                }
-                            }
                         }
                     }
                 }
@@ -170,11 +42,238 @@
                 "is_pointer": "0",
                 "direct_declarator_5": {
                     "identifier_6": {
-                        "name": "main"
+                        "name": "f"
                     },
-                    "arguments_type_list_7": {}
+                    "arguments_type_list_7": {
+                        "arguments_declaration_8": {
+                            "declaration_declarator_9": {
+                                "sign": "true",
+                                "type": "int",
+                                "limit": "empty",
+                                "store": "empty"
+                            },
+                            "declarator_10": {
+                                "is_pointer": "0",
+                                "direct_declarator_11": {
+                                    "identifier_12": {
+                                        "name": "a"
+                                    }
+                                }
+                            }
+                        },
+                        "arguments_declaration_13": {
+                            "declaration_declarator_14": {
+                                "sign": "true",
+                                "type": "int",
+                                "limit": "empty",
+                                "store": "empty"
+                            },
+                            "declarator_15": {
+                                "is_pointer": "0",
+                                "direct_declarator_16": {
+                                    "identifier_17": {
+                                        "name": "b"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "declaration_or_definition_31": {
+            "declaration_declarator_32": {
+                "sign": "true",
+                "type": "int",
+                "limit": "empty",
+                "store": "empty"
+            },
+            "compound_statement_38": {
+                "block_39": {
+                    "declaration_or_definition_40": {
+                        "declaration_declarator_41": {
+                            "sign": "true",
+                            "type": "int",
+                            "limit": "empty",
+                            "store": "empty"
+                        },
+                        "initial_declarator_42": {
+                            "declarator_43": {
+                                "is_pointer": "0",
+                                "direct_declarator_44": {
+                                    "identifier_45": {
+                                        "name": "a"
+                                    }
+                                }
+                            },
+                            "initializer_46": {
+                                "unary_expression_47": {
+                                    "postfix_expression_48": {
+                                        "primary_expression_49": {
+                                            "constant_integer_number_1": "1"
+                                        }
+                                    },
+                                    "is_sizeof": "false",
+                                    "unary_operator": "void"
+                                }
+                            }
+                        }
+                    }
+                },
+                "block_50": {
+                    "for_statement_51": {
+                        "declaration_or_definition_52": {
+                            "declaration_declarator_53": {
+                                "sign": "true",
+                                "type": "int",
+                                "limit": "empty",
+                                "store": "empty"
+                            },
+                            "initial_declarator_54": {
+                                "declarator_55": {
+                                    "is_pointer": "0",
+                                    "direct_declarator_56": {
+                                        "identifier_57": {
+                                            "name": "i"
+                                        }
+                                    }
+                                },
+                                "initializer_58": {
+                                    "unary_expression_59": {
+                                        "postfix_expression_60": {
+                                            "primary_expression_61": {
+                                                "constant_integer_number_1": "1"
+                                            }
+                                        },
+                                        "is_sizeof": "false",
+                                        "unary_operator": "void"
+                                    }
+                                }
+                            }
+                        },
+                        "binary_expression_66": {
+                            "operator": "<",
+                            "unary_expression_62": {
+                                "postfix_expression_63": {
+                                    "primary_expression_64": {
+                                        "identifier_65": {
+                                            "name": "i"
+                                        }
+                                    }
+                                },
+                                "is_sizeof": "false",
+                                "unary_operator": "void"
+                            },
+                            "unary_expression_67": {
+                                "postfix_expression_68": {
+                                    "primary_expression_69": {
+                                        "constant_integer_number_1": "1"
+                                    }
+                                },
+                                "is_sizeof": "false",
+                                "unary_operator": "void"
+                            }
+                        },
+                        "unary_expression_70": {
+                            "postfix_expression_71": {
+                                "postfix_operator_74": {
+                                    "postfix_operator": "++",
+                                    "primary_expression_72": {
+                                        "identifier_73": {
+                                            "name": "i"
+                                        }
+                                    }
+                                },
+                                "is_sizeof": "false",
+                                "unary_operator": "void"
+                            },
+                            "compound_statement_75": {
+                                "block_76": {
+                                    "expression_77": {
+                                        "assignment_expression_82": {
+                                            "assignment_type": "+=",
+                                            "unary_expression_83": {
+                                                "postfix_expression_84": {
+                                                    "primary_expression_85": {
+                                                        "identifier_86": {
+                                                            "name": "i"
+                                                        }
+                                                    }
+                                                },
+                                                "is_sizeof": "false",
+                                                "unary_operator": "void"
+                                            },
+                                            "unary_expression_78": {
+                                                "postfix_expression_79": {
+                                                    "primary_expression_80": {
+                                                        "identifier_81": {
+                                                            "name": "a"
+                                                        }
+                                                    }
+                                                },
+                                                "is_sizeof": "false",
+                                                "unary_operator": "void"
+                                            },
+                                            "next_assign_81": {}
+                                        }
+                                    }
+                                },
+                                "block_87": {
+                                    "expression_88": {
+                                        "unary_expression_89": {
+                                            "postfix_expression_90": {
+                                                "postfix_operator_93": {
+                                                    "arguments_list_node_94": {
+                                                        "unary_expression_95": {
+                                                            "postfix_expression_96": {
+                                                                "primary_expression_97": {
+                                                                    "identifier_98": {
+                                                                        "name": "i"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "is_sizeof": "false",
+                                                            "unary_operator": "void"
+                                                        },
+                                                        "unary_expression_95": {
+                                                            "postfix_expression_96": {
+                                                                "primary_expression_97": {
+                                                                    "identifier_98": {
+                                                                        "name": "i"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "is_sizeof": "false",
+                                                            "unary_operator": "void"
+                                                        }
+                                                    }
+                                                },
+                                                "primary_expression_91": {
+                                                    "identifier_92": {
+                                                        "name": "f"
+                                                    }
+                                                }
+                                            },
+                                            "is_sizeof": "false",
+                                            "unary_operator": "void"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "initial_declarator_33": {
+                    "declarator_34": {
+                        "is_pointer": "0",
+                        "direct_declarator_35": {
+                            "identifier_36": {
+                                "name": "main"
+                            },
+                            "arguments_type_list_37": {}
+                        }
+                    }
                 }
             }
         }
     }
-}

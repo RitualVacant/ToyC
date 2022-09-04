@@ -1,2 +1,6 @@
 build/
 cmake-build-debug/
+.vscode/
+.idea/
+cmake-build-debug/
+.gitignore

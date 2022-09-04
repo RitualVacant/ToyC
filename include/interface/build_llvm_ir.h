@@ -20,11 +20,18 @@
 #include <tuple>
 #include <vector>
 
-namespace toy_c {
+namespace toy_c
+{
 
-enum type_of_def_or_dec { is_func_decl, is_array, is_var };
+enum type_of_def_or_dec
+{
+  is_func_decl,
+  is_array,
+  is_var
+};
 
-class build_llvm_ir {
+class build_llvm_ir
+{
 private:
   std::unique_ptr<llvm::LLVMContext> context;
   std::unique_ptr<llvm::Module>      module;
@@ -33,7 +40,10 @@ private:
   toy_c::syntax_tree                 tree;
 
   std::map<std::string, std::tuple<llvm::Value *, llvm::Type *>> func_symbol_table;
-  std::map<std::string, std::pair<llvm::Value *, llvm::Type *>>  global_symbol_table;
+  std::map<std::string, std::tuple<llvm::Value *, llvm::Type *>> global_symbol_table;
+  std::map<std::string, std::tuple<llvm::Value *, llvm::Type *>> func_argument_table;
+  std::map<std::string, llvm::Type *>                            struct_union_table;
+  std::map<std::string, llvm::Function *>                        func_table;
 
   ast::idx    now_compound_statement;
   std::size_t label_num = 0;
@@ -51,9 +61,13 @@ private:
 
   void insert_func_symbol(std::string name, llvm::Value *ptr_var, llvm::Type *ptr_type);
   void insert_global_symbol(std::string name, llvm::Value *ptr_var, llvm::Type *ptr_type);
+  void insert_func_argument(std::string name, llvm::Value *ptr_var, llvm::Type *ptr_type);
 
   llvm::Value *find_value(std::string name);
   llvm::Type  *find_type(std::string name);
+
+  llvm::Value *search_value(std::string name);
+  llvm::Type  *search_type(std::string name);
 
   llvm::Type *build_mult_declaration_or_definition(ast::idx idx_declaration_or_definition
   );
@@ -70,10 +84,17 @@ private:
     ast::idx          idx_compound_statement,
     llvm::BasicBlock *ptr_block = nullptr
   );
+
+  // TODO second argument should be llvm::Type *
   void build_declaration_or_definition(
     ast::idx idx_declaration_declarator,
     ast::idx idx_initial_declarator
   );
+  llvm::Type *build_struct_element_type(
+    ast::idx idx_declaration_declarator,
+    ast::idx idx_initial_declarator
+  );
+
   void build_block(ast::idx idx_block);
   void build_variable(ast::idx idx, llvm::Type *ptr_declaration_declarator);
   void
@@ -132,9 +153,16 @@ private:
   llvm::Value *build_log_and_chain(ast::idx idx_log_and_operator);
   llvm::Value *build_log_or_chain(ast::idx idx_log_or_operator);
 
-  llvm::SmallVector<llvm::Type *> build_arguments_type_list(ast::idx idx);
-  llvm::Type                     *build_argument_declaration(ast::idx idx);
+  std::tuple<llvm::Type *, std::string>
+  build_argument_declaration(ast::idx idx_argument_declaration);
 
+  llvm::SmallVector<llvm::Value *> build_arguments_list(ast::idx idx_assignment_list);
+
+  std::tuple<llvm::SmallVector<llvm::Type *>, llvm::SmallVector<std::string>>
+  build_arguments_type_list(ast::idx idx_argument_type_list);
+
+  llvm::SmallVector<llvm::Type *>
+  build_struct_element_type_list(ast::idx idx_compound_statement);
 
   std::string get_label();
 

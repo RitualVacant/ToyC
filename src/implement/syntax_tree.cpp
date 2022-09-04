@@ -9,17 +9,21 @@
 #include <fmt/format.h>
 #include <stdlib.h>
 
-namespace toy_c {
+namespace toy_c
+{
 
-syntax_tree::syntax_tree() {
-  if (reserve_tree) {
+syntax_tree::syntax_tree()
+{
+  if (reserve_tree)
+  {
     tree.reserve(sizeof_syntax_tree_init);
   }
   tree.push_back({});
   constant_node_tree.push_back({});
 }
 
-syntax_tree::~syntax_tree() {
+syntax_tree::~syntax_tree()
+{
   // int done = system("python3.8 -m json.tool
   // /home/lzj/code/program/script/test/tree.json
   // /home/lzj/code/program/script/test/tree1.json"); if (done == 127) {
@@ -30,7 +34,8 @@ syntax_tree::~syntax_tree() {
   // }
 }
 
-toy_c::syntax_tree &syntax_tree::operator=(const toy_c::syntax_tree &&syntax_tree) {
+toy_c::syntax_tree &syntax_tree::operator=(const toy_c::syntax_tree &&syntax_tree)
+{
   tree               = std::move(syntax_tree.tree);
   constant_node_tree = std::move(syntax_tree.constant_node_tree);
   return *this;
@@ -78,13 +83,16 @@ syntax_tree::insert(ast::node_type node_type) {
 }
 */
 
-ast::node &syntax_tree::operator[](ast::idx idx) {
+ast::node &syntax_tree::operator[](ast::idx idx)
+{
 #ifdef DEBUG
-  if (idx == ast::null) {
+  if (idx == ast::null)
+  {
     fmt::print(fg(fmt::color::red), "ast::idx error : ast::idx can't be ast::null\n");
     exit(0);
   }
-  if (idx >= tree.size()) {
+  if (idx >= tree.size())
+  {
     fmt::print(fg(fmt::color::red), "ast::idx error : ast::idx out of range\n");
     exit(0);
   }
@@ -92,16 +100,19 @@ ast::node &syntax_tree::operator[](ast::idx idx) {
   return tree[idx];
 }
 
-ast::constant_node &syntax_tree::get_constant(ast::idx idx_constant) {
+ast::constant_node &syntax_tree::get_constant(ast::idx idx_constant)
+{
   return constant_node_tree[idx_constant];
 }
 
-ast::idx syntax_tree::create_constant_node(ast::node_type node_type, std::string value) {
+ast::idx syntax_tree::create_constant_node(ast::node_type node_type, std::string value)
+{
   constant_node_tree.push_back(ast::constant_node{node_type, value});
   return constant_node_tree.size() - 1;
 }
 
-ast::idx syntax_tree::creat_node(ast::node_type node_type) {
+ast::idx syntax_tree::creat_node(ast::node_type node_type)
+{
   tree.push_back({});
   tree.back().type = node_type;
   return tree.size() - 1;
@@ -199,17 +210,19 @@ ast::idx syntax_tree::creat_node(ast::node_type node_type) {
 
 
 //
-void syntax_tree::trans_tree() {
+void syntax_tree::trans_tree()
+{
   print_trans_tree = true;
   for (ast::idx i = 1; i != ast::null;
-       i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition) {
+       i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition)
+  {
     trans_declaration_or_definition(i);
   }
   return;
 }
 
-void syntax_tree::trans_declaration_or_definition(ast::idx idx_declaration_or_definition
-) {
+void syntax_tree::trans_declaration_or_definition(ast::idx idx_declaration_or_definition)
+{
   ast::idx idx_start_initial_declarator
     = tree[idx_declaration_or_definition]
         .value.declaration_or_definition.idx_initial_declarator;
@@ -225,15 +238,18 @@ void syntax_tree::trans_declaration_or_definition(ast::idx idx_declaration_or_de
   // j store next idx before next idx been covered
   for (ast::idx i        = idx_start_initial_declarator,
                 j        = tree[i].value.initial_declarator.idx_next_initial_declarator;
-       i != ast::null; i = j) {
+       i != ast::null; i = j)
+  {
     // std::cout << i << ' ' << j << std::endl;
     trans_each_initial_declarator(i);
   }
   return;
 }
 
-void syntax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator) {
-  switch (which_type(idx_initial_declarator)) {
+void syntax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator)
+{
+  switch (which_type(idx_initial_declarator))
+  {
     case type_decl_defi::array_decl:
       tree[idx_initial_declarator].type = ast::node_type::array_definintion;
       trans_to_arrary_definition(idx_initial_declarator);
@@ -262,45 +278,55 @@ void syntax_tree::trans_each_initial_declarator(ast::idx idx_initial_declarator)
   return;
 }
 
-syntax_tree::type_decl_defi syntax_tree::which_type(ast::idx idx_initial_declarator) {
+syntax_tree::type_decl_defi syntax_tree::which_type(ast::idx idx_initial_declarator)
+{
   ast::idx idx_direct_declarator
     = tree[tree[idx_initial_declarator].value.initial_declarator.idx_declarator]
         .value.declarator.idx_direct_declarator;
 
   // function
-  if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null) {
-    if (tree[idx_initial_declarator].value.declaration_or_definition.idx_compound_statement != ast::null) {
+  if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null)
+  {
+    if (tree[idx_initial_declarator].value.declaration_or_definition.idx_compound_statement != ast::null)
+    {
       return type_decl_defi::func_defi;
     }
-    else {
+    else
+    {
       return type_decl_defi::func_decl;
     }
   }
 
   // array
-  if (tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null) {
+  if (tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null)
+  {
     return type_decl_defi::array_decl;
   }
 
   // struct
-  if (tree[idx_now_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_struct) {
-    if (idx_now_compound_statement != ast::null) {
+  if (tree[idx_now_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_struct)
+  {
+    if (idx_now_compound_statement != ast::null)
+    {
       return type_decl_defi::struct_defi;
     }
-    else {
+    else
+    {
       return type_decl_defi::struct_decl;
     }
   }
 
   // enum
-  if (tree[idx_now_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_enum) {
+  if (tree[idx_now_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_enum)
+  {
     return type_decl_defi::enum_defi;
   }
 
   return var_decl;
 }
 
-void syntax_tree::trans_to_function(ast::idx idx) {
+void syntax_tree::trans_to_function(ast::idx idx)
+{
   tree[idx].type = ast::node_type::function;
 
   ast::idx idx_next_declarator
@@ -309,17 +335,21 @@ void syntax_tree::trans_to_function(ast::idx idx) {
   ast::idx idx_identifier;
 
   // because the function pointer
-  for (ast::idx i = idx_declarator; tree[i].type != ast::node_type::identifier;) {
-    switch (tree[i].type) {
+  for (ast::idx i = idx_declarator; tree[i].type != ast::node_type::identifier;)
+  {
+    switch (tree[i].type)
+    {
       case ast::node_type::declarator:
         i = tree[i].value.declarator.idx_direct_declarator;
         break;
       case ast::node_type::direct_declarator:
-        if (tree[i].value.direct_declarator.idx_identifier != ast::null) {
+        if (tree[i].value.direct_declarator.idx_identifier != ast::null)
+        {
           i              = tree[i].value.direct_declarator.idx_identifier;
           idx_identifier = i;
         }
-        else {
+        else
+        {
           i = tree[i].value.direct_declarator.idx_declarator;
         }
         break;
@@ -362,7 +392,8 @@ void syntax_tree::trans_to_function(ast::idx idx) {
   return;
 }
 
-void syntax_tree::trans_to_arrary_definition(ast::idx idx_initial_declarator) {
+void syntax_tree::trans_to_arrary_definition(ast::idx idx_initial_declarator)
+{
   tree[idx_initial_declarator].type = ast::node_type::struct_declaration;
 
   // type of struct
@@ -377,7 +408,8 @@ void syntax_tree::trans_to_arrary_definition(ast::idx idx_initial_declarator) {
 
   return;
 }
-void syntax_tree::trans_to_struct_definition(ast::idx idx_initial_declarator) {
+void syntax_tree::trans_to_struct_definition(ast::idx idx_initial_declarator)
+{
   tree[idx_initial_declarator].type = ast::node_type::struct_definition;
 
   // type of struct
@@ -396,31 +428,39 @@ void syntax_tree::trans_to_struct_definition(ast::idx idx_initial_declarator) {
 
   return;
 }
-void syntax_tree::trans_to_struct_declaration(ast::idx idx_initial_declarator) {
+void syntax_tree::trans_to_struct_declaration(ast::idx idx_initial_declarator)
+{
   tree[idx_initial_declarator].type = ast::node_type::struct_declaration;
   return;
 }
-void syntax_tree::trans_to_basic_type_declaration(ast::idx idx) {
+void syntax_tree::trans_to_basic_type_declaration(ast::idx idx)
+{
   return;
 }
-void syntax_tree::trans_to_enum_definition(ast::idx idx) {
+void syntax_tree::trans_to_enum_definition(ast::idx idx)
+{
   return;
 }
 
-void syntax_tree::connect(ast::idx idx) {
-  if (last_root_ptr != ast::null) {
+void syntax_tree::connect(ast::idx idx)
+{
+  if (last_root_ptr != ast::null)
+  {
     tree[last_root_ptr].value.declaration_or_definition.idx_next_declaration_or_definition
       = idx;
   }
-  else {
+  else
+  {
     last_root_ptr = idx;
   }
   return;
 }
 
-void syntax_tree::print_tree() {
+void syntax_tree::print_tree()
+{
   toy_c::fstream_guard file(output_file_path, toy_c::mode::write);
-  if (!file.is_open()) {
+  if (!file.is_open())
+  {
     fmt::print("can't open file in syntax_tree");
     exit(0);
   }
@@ -432,8 +472,10 @@ void syntax_tree::print_tree() {
 
   // erase extra comma in json file string
   // just replace comma with /n
-  for (std::size_t i = 0, j = 1; j < file_buffer.size(); ++i, ++j) {
-    if (file_buffer[i] == ',' && file_buffer[j] == '}') {
+  for (std::size_t i = 0, j = 1; j < file_buffer.size(); ++i, ++j)
+  {
+    if (file_buffer[i] == ',' && file_buffer[j] == '}')
+    {
       file_buffer[i] = '\n';
     }
   }
@@ -443,15 +485,18 @@ void syntax_tree::print_tree() {
   return;
 }
 
-void syntax_tree::dfs_print_tree(ast::idx idx) {
+void syntax_tree::dfs_print_tree(ast::idx idx)
+{
   if (idx == ast::null)
     return;
   now_idx = idx;
-  switch (tree[idx].type) {
+  switch (tree[idx].type)
+  {
     case ast::node_type::assignment_expression:
       print_json_class_head("assignment_expression");
       print_json_key("assignment_type");
-      switch (tree[idx].value.assignment_expression.assignment_type) {
+      switch (tree[idx].value.assignment_expression.assignment_type)
+      {
         case token::assign:
           print_json_value("=");
           break;
@@ -505,15 +550,18 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       dfs_print_tree(tree[idx].value.unary_expression.idx_unary_expression);
 
       print_json_key("is_sizeof");
-      if (tree[idx].value.unary_expression.is_sizeof) {
+      if (tree[idx].value.unary_expression.is_sizeof)
+      {
         print_json_value("true");
       }
-      else {
+      else
+      {
         print_json_value("false");
       }
 
       print_json_key("unary_operator");
-      switch (tree[idx].value.unary_expression.unary_operator) {
+      switch (tree[idx].value.unary_expression.unary_operator)
+      {
         case token::bit_and:
           print_json_value("&");
           break;
@@ -564,10 +612,12 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       print_json_class_head("primary_expression");
       ast::idx idx_constant
         = tree[idx].value.primary_expression.idx_constant != ast::null;
-      if (idx_constant != ast::null) {
+      if (idx_constant != ast::null)
+      {
         print_json_constant(idx_constant);
       }
-      else {
+      else
+      {
         dfs_print_tree(tree[idx].value.primary_expression.idx_identifier);
         dfs_print_tree(tree[idx].value.primary_expression.idx_expression);
       }
@@ -578,7 +628,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
     case ast::node_type::binary_expression:
       print_json_class_head("binary_expression");
       print_json_key("operator");
-      switch (tree[idx].value.binary_expression.token_operator) {
+      switch (tree[idx].value.binary_expression.token_operator)
+      {
         case token::log_or:
           print_json_value("||");
           break;
@@ -681,7 +732,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::initializer_list:
       for (ast::idx i = idx; i != ast::null;
-           i          = tree[i].value.initializer_list.idx_next_initializer_list) {
+           i          = tree[i].value.initializer_list.idx_next_initializer_list)
+      {
         // std::cout << " " << i << " "
         //           << tree[i].value.initializer_list.idx_next_initializer_list
         //           << std::endl;
@@ -696,7 +748,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::initializer_list_node:
       for (ast::idx i = idx; i != ast::null;
-           i = tree[i].value.initializer_list_node.idx_next_initializer_list_node) {
+           i = tree[i].value.initializer_list_node.idx_next_initializer_list_node)
+      {
         now_idx = i;
         print_json_class_head("initializer_list_node");
         print_json_constant(tree[i].value.initializer_list_node.idx_constant);
@@ -752,7 +805,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       dfs_print_tree(tree[idx].value.direct_declarator.idx_identifier);
       dfs_print_tree(tree[idx].value.direct_declarator.idx_declarator);
       dfs_print_tree(tree[idx].value.direct_declarator.idx_array_declarator);
-      if (!print_trans_tree) {
+      if (!print_trans_tree)
+      {
         dfs_print_tree(tree[idx].value.direct_declarator.idx_arguments_type_list);
       }
       print_json_class_end();
@@ -767,7 +821,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::declarator:
       print_json_class_head("declarator");
-      switch (tree[idx].value.declarator.is_ptr) {
+      switch (tree[idx].value.declarator.is_ptr)
+      {
         case 0:
           print_json_key_value("is_pointer", "0");
           break;
@@ -796,7 +851,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::declaration_or_definition:
       print_json_class_head("declaration_or_definition");
-      if (!print_trans_tree) {
+      if (!print_trans_tree)
+      {
         dfs_print_tree(
           tree[idx].value.declaration_or_definition.idx_declaration_declarator
         );
@@ -846,7 +902,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
 
     case ast::node_type::postfix_operator:
       print_json_class_head("postfix_operator");
-      switch (tree[idx].value.postfix_operator.postfix_operator) {
+      switch (tree[idx].value.postfix_operator.postfix_operator)
+      {
         case token::ver:
           print_json_key_value("postfix_operator", "->");
           return;
@@ -952,15 +1009,18 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
     case ast::node_type::declaration_declarator: {
       print_json_class_head("declaration_declarator");
       auto &decl = tree[idx].value.declaration_declarator;
-      if (decl.sign == ast::declarator_sign::sign_signed) {
+      if (decl.sign == ast::declarator_sign::sign_signed)
+      {
         print_json_key_value("sign", "true");
       }
-      else {
+      else
+      {
         print_json_key_value("sign", "false");
       }
 
       print_json_key("type");
-      switch (decl.type) {
+      switch (decl.type)
+      {
         case ast::declarator_type::type_char:
           print_json_value("char");
           break;
@@ -993,15 +1053,18 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       }
 
       print_json_key("limit");
-      if (decl.limit == ast::declarator_limit::limit_Alignas) {
+      if (decl.limit == ast::declarator_limit::limit_Alignas)
+      {
         print_json_value("Alignas");
       }
-      else {
+      else
+      {
         print_json_value("empty");
       }
 
       print_json_key("store");
-      switch (decl.store) {
+      switch (decl.store)
+      {
         case ast::declarator_store::store_empty:
           print_json_value("empty");
           break;
@@ -1017,6 +1080,7 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
         default:
           break;
       }
+      dfs_print_tree(tree[idx].value.declaration_declarator.idx_struct_union_identifier);
       print_json_class_end();
       break;
     }
@@ -1041,6 +1105,16 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
       print_json_class_end();
       break;
 
+    case ast::node_type::arguments_list_node:
+      print_json_class_head("arguments_list_node");
+      for (ast::idx i = idx; i != ast::null;
+           i          = tree[i].value.arguments_list_node.idx_next_arguments_list_node)
+      {
+        dfs_print_tree(tree[idx].value.arguments_list_node.idx_assignment_expression);
+      }
+      print_json_class_end();
+      break;
+
     default: {
       fmt::print(
         fg(fmt::color::red), "add node type : {}\n",
@@ -1052,7 +1126,8 @@ void syntax_tree::dfs_print_tree(ast::idx idx) {
   return;
 }
 
-void syntax_tree::print_json_key_value(std::string key, std::string value) {
+void syntax_tree::print_json_key_value(std::string key, std::string value)
+{
   // file << "\"" << key << "\":\"" << value << "\",\n";
 
   file_buffer += fmt::format("\"{}\":\"{}\",", key, value);
@@ -1064,7 +1139,8 @@ void syntax_tree::print_json_key_value(std::string key, std::string value) {
   return;
 }
 
-void syntax_tree::print_json_class_head(std::string value) {
+void syntax_tree::print_json_class_head(std::string value)
+{
   // file << "\"" <<  value << "\":{\n";
 
   // auto str_value = std::string(value);
@@ -1077,14 +1153,16 @@ void syntax_tree::print_json_class_head(std::string value) {
   return;
 }
 
-void syntax_tree::print_json_class_end() {
+void syntax_tree::print_json_class_end()
+{
   // file << "},\n";
   // file_buffer += fmt::format("},");
   file_buffer += "},";
   return;
 }
 
-void syntax_tree::print_json_key(std::string key) {
+void syntax_tree::print_json_key(std::string key)
+{
   // file << "\"" << key << "\":";
   // auto str_key = std::string(key);
   // file_buffer += fmt::format("\"{}\":", str_key);
@@ -1094,7 +1172,8 @@ void syntax_tree::print_json_key(std::string key) {
   return;
 }
 
-void syntax_tree::print_json_value(std::string value) {
+void syntax_tree::print_json_value(std::string value)
+{
   //
   // file << "\"" << value << "\",\n";
   // auto str_value = std::string(value);
@@ -1105,8 +1184,10 @@ void syntax_tree::print_json_value(std::string value) {
   return;
 }
 
-void syntax_tree::print_json_constant(ast::idx idx_constant) {
-  switch (constant_node_tree[idx_constant].type) {
+void syntax_tree::print_json_constant(ast::idx idx_constant)
+{
+  switch (constant_node_tree[idx_constant].type)
+  {
     case ast::node_type::constant_integer_number:
       file_buffer += fmt::format(
         "\"{}_{}\":\"{}\",", "constant_integer_number", idx_constant,

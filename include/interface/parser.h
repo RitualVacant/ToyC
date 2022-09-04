@@ -14,8 +14,10 @@
 #include <string>
 #include <tuple>
 
-namespace toy_c {
-class parser {
+namespace toy_c
+{
+class parser
+{
 private:
   // yes or no
   bool really_output_asm_code = false;
@@ -31,9 +33,10 @@ private:
   toy_c::syntax_tree tree;
   // std::unique_ptr<asm_code> asm_file  =
   // std::make_unique<asm_code>(asm_code(fil)) asm_code* asm_file = nullptr;
-  //
-  bool is_func   = false;
-  bool is_struct = false;
+  bool is_func   = false;  // DROP
+  bool is_struct = false;  // DROP
+
+  bool is_in_func_struct_union = false;
 
   //临时变量的个数,类似会累加的闭包,parser::get_var_time()
   // std::size_t var_time = 0;
@@ -85,7 +88,7 @@ private:
   // expression
   ast::idx parser_priority_binary_expression(int priority);
   ast::idx parser_expression();
-  ast::idx parser_assignment_expression(ast::idx last_assign);
+  ast::idx parser_assignment_expression(ast::idx last_assign = ast::null);
   ast::idx parser_assignment_expression_list();
   ast::idx parser_conditional_expression();
   ast::idx parser_binary_expression();

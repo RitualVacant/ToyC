@@ -16,10 +16,15 @@
 #include <vector>
 //#include <variant>
 //#include <string_view>
-namespace ast {
+namespace ast
+{
 std::size_t const array_in_struct_size = 25;
+using idx                              = std::size_t;
+idx const null{0};
+using idef = std::size_t;
 
-enum class declarator_type : unsigned char {
+enum class declarator_type : unsigned char
+{
   type_empty,
 
   type_void,
@@ -31,10 +36,12 @@ enum class declarator_type : unsigned char {
   type_long_int,
   type_long_long_int,
   type_struct,
+  type_union,
   type_enum
 };
 
-enum class declarator_store : unsigned char {
+enum class declarator_store : unsigned char
+{
   store_empty,
 
   store_extern,
@@ -42,11 +49,30 @@ enum class declarator_store : unsigned char {
   store_typedef
 };
 
-enum class declarator_limit : unsigned char { limit_empty, limit_Alignas };
+enum class declarator_limit : unsigned char
+{
+  limit_empty,
+  limit_Alignas
+};
 
-enum class declarator_sign : bool { sign_signed, sign_unsigned };
+enum class declarator_sign : bool
+{
+  sign_signed,
+  sign_unsigned
+};
 
-enum class node_type : unsigned char {
+struct declaration_declarator
+{
+  declarator_type  type  = declarator_type::type_empty;
+  declarator_store store = declarator_store::store_empty;
+  declarator_limit limit = declarator_limit::limit_empty;
+  declarator_sign  sign  = declarator_sign::sign_signed;
+
+  ast::idx idx_struct_union_identifier = ast::null;
+};
+
+enum class node_type : unsigned char
+{
   type,
   expression,
   assignment_expression,
@@ -63,7 +89,7 @@ enum class node_type : unsigned char {
   constant,
   operators,
   array_declarator,
-
+  arguments_list_node,
   initial_declarator,
 
 
@@ -114,45 +140,52 @@ enum class node_type : unsigned char {
   constant_string,
 };
 
-using idx = std::size_t;
-idx const null{0};
-using idef = std::size_t;
 
 //-------------------------------------------
 
 // basic I
-struct node_location {
+struct node_location
+{
   std::size_t line;
   std::size_t column;
 };
 
-struct ast_node {
+struct ast_node
+{
   bool is_init = false;
 };
 
-struct identifier {
+struct identifier
+{
   char name[ast::array_in_struct_size] = {};
 };
 
 //-------------------------------------------
 
-struct declaration_or_definition {
+struct declaration_or_definition
+{
   ast::idx idx_declaration_declarator         = ast::null;
   ast::idx idx_initial_declarator             = ast::null;
   ast::idx idx_compound_statement             = ast::null;
   ast::idx idx_next_declaration_or_definition = ast::null;
 };
 
-struct declare_function {
+struct declare_function
+{
   ast::idx idx_return_value_type  = ast::null;
   ast::idx idx_function_arguments = ast::null;
 };
 
-struct declare_variable {};
+struct declare_variable
+{
+};
 
-struct definition_struct {};
+struct definition_struct
+{
+};
 
-struct definition_function {
+struct definition_function
+{
   ast::idx idx_return_value_type  = ast::null;
   ast::idx idx_function_arguments = ast::null;
   ast::idx idx_compound_statement = ast::null;
@@ -161,18 +194,21 @@ struct definition_function {
 
 // basic II
 // type
-struct type {
+struct type
+{
   bool is_volatile = false;
   bool is_const    = false;
 };
 
 // expression
-struct expression {
+struct expression
+{
   ast::idx idx_assignment_expression = ast::null;
   ast::idx idx_next_expression       = ast::null;
 };
 
-struct assignment_expression {
+struct assignment_expression
+{
   ast::idx idx_unary_or_binary_expression = ast::null;
   ast::idx idx_binary_expression          = ast::null;
   ast::idx idx_next_assignment_expression = ast::null;
@@ -180,7 +216,9 @@ struct assignment_expression {
 };
 
 // statement
-struct statement {};
+struct statement
+{
+};
 
 // declare or definition
 char const var_dec  = 0;
@@ -188,9 +226,12 @@ char const var_def  = 1;
 char const func_def = 2;
 
 // operator
-struct operators {};
+struct operators
+{
+};
 
-struct array_declarator {
+struct array_declarator
+{
   ast::idx idx_next_array_declarator = ast::null;
   ast::idx idx_constant              = ast::null;
 };
@@ -206,18 +247,21 @@ struct array_declarator {
 //     |list|
 //     +----+
 //
-struct initializer {
+struct initializer
+{
   ast::idx idx_assignment_expression = ast::null;
   ast::idx idx_initializer_list      = ast::null;
 };
 
-struct initializer_list {
+struct initializer_list
+{
   ast::idx idx_son_initializer_list       = ast::null;
   ast::idx idx_next_initializer_list      = ast::null;
   ast::idx idx_head_initializer_list_node = ast::null;
 };
 
-struct initializer_list_node {
+struct initializer_list_node
+{
   ast::idx idx_constant                   = ast::null;
   ast::idx idx_next_initializer_list_node = ast::null;
 };
@@ -225,25 +269,31 @@ struct initializer_list_node {
 
 //-------------------------------------------
 
-enum const_type {
+enum const_type
+{
   int_const,
   float_const,
   string_const,
 };
 
 // DROP
-struct constant {
+struct constant
+{
   char const_value[array_in_struct_size] = {};
 
-  std::size_t get_unsigned_int() {
+  std::size_t get_unsigned_int()
+  {
     std::size_t val = 0;
     int         len;
-    for (len = 0; len < array_in_struct_size; ++len) {
-      if (const_value[len] == '\0') {
+    for (len = 0; len < array_in_struct_size; ++len)
+    {
+      if (const_value[len] == '\0')
+      {
         break;
       }
     }
-    for (int i = len - 1; i >= 0; --i) {
+    for (int i = len - 1; i >= 0; --i)
+    {
       val += static_cast<std::size_t>(const_value[i] - '0');
       val *= 10;
     }
@@ -253,19 +303,22 @@ struct constant {
 
 // expression
 
-struct conditional_expression {
+struct conditional_expression
+{
   ast::idx idx_binary_expression      = ast::null;
   ast::idx idx_expression             = ast::null;
   ast::idx idx_conditional_expression = ast::null;
 };
 
-struct binary_expression {
+struct binary_expression
+{
   token    token_operator = token::invalid;
   ast::idx idx_left_node  = ast::null;
   ast::idx idx_right_node = ast::null;
 };
 
-struct unary_expression {
+struct unary_expression
+{
   bool is_sizeof = false;
 
   token    unary_operator             = token::invalid;
@@ -274,18 +327,21 @@ struct unary_expression {
   ast::idx idx_postfix_expression     = ast::null;
 };
 
-struct postfix_expression {
+struct postfix_expression
+{
   ast::idx idx_primary_expression = ast::null;
   ast::idx idx_postfix_operator   = ast::null;
 };
 
-struct primary_expression {
+struct primary_expression
+{
   ast::idx idx_identifier = ast::null;
   ast::idx idx_constant   = ast::null;
   ast::idx idx_expression = ast::null;
 };
 
-struct postfix_operator {
+struct postfix_operator
+{
   // . -> ++ --
   token    postfix_operator                         = token::invalid;
   ast::idx idx_array_idx_assignment_expression      = ast::null;
@@ -296,80 +352,91 @@ struct postfix_operator {
 
 // TODO
 // constant
-struct case_label {
+struct case_label
+{
   ast::idx const_expression = ast::null;
 };
 
-struct default_label {};
+struct default_label
+{
+};
 
 // declare
-struct declare_var {};
+struct declare_var
+{
+};
 
-struct declarator {
+struct declarator
+{
   unsigned short int is_ptr                = 0;
   ast::idx           idx_direct_declarator = ast::null;
 };
 
 
-struct initial_declarator_list {
+struct initial_declarator_list
+{
   ast::idx idx_initial_declarator = ast::null;
 };
 
-struct initial_declarator {
+struct initial_declarator
+{
   ast::idx idx_declarator              = ast::null;
   ast::idx idx_next_initial_declarator = ast::null;
   ast::idx idx_initializer             = ast::null;
 };
 
-struct declaration_declarator {
-  declarator_type  type  = declarator_type::type_empty;
-  declarator_store store = declarator_store::store_empty;
-  declarator_limit limit = declarator_limit::limit_empty;
-  declarator_sign  sign  = declarator_sign::sign_signed;
-};
 
-struct direct_declarator {
+struct direct_declarator
+{
   ast::idx idx_identifier          = ast::null;
   ast::idx idx_declarator          = ast::null;
   ast::idx idx_arguments_type_list = ast::null;
   ast::idx idx_array_declarator    = ast::null;
 };
 
-struct compound_statement {
+struct compound_statement
+{
   ast::idx idx_block = ast::null;
 };
 
 
-struct arguments_type_list {
+struct arguments_type_list
+{
   ast::idx idx_argument_declaration = ast::null;
 };
 
 // DROP
-struct arguments_list {
+struct arguments_list
+{
   // ast::idx idx_arugments_declaration = ast::null;
   // ast::idx idx_arguments_list_next = ast::null;
   // ast::idx idx_
 };
 
-struct idnetifier_list {};
+struct idnetifier_list
+{
+};
 
 // struct block_list {
 //     ast::idx idx_block = ast::null;
 // };
 
-struct block {
+struct block
+{
   ast::idx idx_statement   = ast::null;
   ast::idx idx_declaration = ast::null;
   ast::idx idx_next_block  = ast::null;
 };
 
-struct arguments_declaration {
+struct arguments_declaration
+{
   ast::idx idx_declaration_declarator     = ast::null;
   ast::idx idx_declarator                 = ast::null;
   ast::idx idx_next_arguments_declaration = ast::null;
 };
 
-struct mark_statement {
+struct mark_statement
+{
   ast::idx idx_mark                = ast::null;
   ast::idx idx_statement           = ast::null;
   ast::idx idx_constant_expression = ast::null;
@@ -379,75 +446,102 @@ struct mark_statement {
   bool     is_identif              = false;
 };
 
-struct mark {};
+struct mark
+{
+};
 
 // expression
-struct expr_statement {};
+struct expr_statement
+{
+};
 
-struct if_statement {
+struct if_statement
+{
   ast::idx idx_assign_expression = ast::null;
   ast::idx idx_if_body           = ast::null;
   ast::idx idx_else_body         = ast::null;
 };
 
-struct else_statement {};
+struct else_statement
+{
+};
 
-struct while_statement {
+struct while_statement
+{
   ast::idx idx_assignment_expression = ast::null;
   ast::idx idx_compound_statement    = ast::null;
 };
-struct do_while_statement {
+struct do_while_statement
+{
   ast::idx idx_assign_statement   = ast::null;
   ast::idx idx_compound_statement = ast::null;
 };
-struct for_statement {
+struct for_statement
+{
   ast::idx idx_declaration                   = ast::null;
   ast::idx idx_conditional_assign_expression = ast::null;
   ast::idx idx_change_assign_expression      = ast::null;
   ast::idx idx_compound_statement            = ast::null;
 };
 
-struct break_statement {};
+struct break_statement
+{
+};
 
-struct switch_statement {
+struct switch_statement
+{
   ast::idx idx_assign_expression  = ast::null;
   ast::idx idx_compound_statement = ast::null;
 };
 
-struct goto_statement {
+struct goto_statement
+{
   ast::idx idx_identifier = ast::null;
 };
 
-struct continue_statement {};
+struct continue_statement
+{
+};
 
-struct return_statement {
+struct return_statement
+{
   ast::idx idx_assignment_expression = ast::null;
 };
 
+struct arguments_list_node
+{
+  ast::idx idx_assignment_expression    = ast::null;
+  ast::idx idx_next_arguments_list_node = ast::null;
+};
 
 // DROP
 // those nodes is second step trans nods
 //
 
-struct enum_definition {
+struct enum_definition
+{
   ast::idx idx_next = ast::null;
 };
-struct struct_declaration {
+struct struct_declaration
+{
   ast::idx idx_struct_name = ast::null;
   ast::idx idx_struct_type = ast::null;
   ast::idx idx_next        = ast::null;
 };
-struct struct_definition {
+struct struct_definition
+{
   ast::idx idx_struct_name = ast::null;
   ast::idx idx_struct_body = ast::null;
   ast::idx idx_struct_type = ast::null;
   ast::idx idx_next        = ast::null;
 };
-struct basic_type_declaration {
+struct basic_type_declaration
+{
   ast::idx idx_next = ast::null;
 };
 
-struct function_declaration {
+struct function_declaration
+{
   ast::idx idx_function_return_type;
   ast::idx idx_function_declarator;
   ast::idx idx_function_arguments_type_list;
@@ -456,20 +550,24 @@ struct function_declaration {
   ast::idx idx_next = ast::null;
 };
 
-struct function_definition {
+struct function_definition
+{
   ast::idx idx_next = ast::null;
 };
 
-struct arrary_definition {
+struct arrary_definition
+{
   ast::idx idx_next = ast::null;
 };
 
-struct basic_type_definiton {
+struct basic_type_definiton
+{
   ast::idx idx_next = ast::null;
 };
 
 
-union value {
+union value
+{
   ast::type                      type;
   ast::expression                expression;
   ast::statement                 statement;
@@ -515,6 +613,8 @@ union value {
   ast::break_statement           break_statement;
   ast::array_declarator          array_declarator;
   ast::primary_expression        primary_expression;
+  ast::arguments_list_node       arguments_list_node;
+
 
   // DROP
   // trans node
@@ -527,7 +627,8 @@ union value {
   ast::enum_definition        enum_definition;
 };
 
-struct node {
+struct node
+{
   ast::value         value;
   ast::node_type     type;
   ast::node_location node_location;
@@ -535,7 +636,8 @@ struct node {
   // ast::idx           next;
 };
 
-struct constant_node {
+struct constant_node
+{
   ast::node_type type;
   std::string    value;
   llvm::Type    *llvm_type;

@@ -1,0 +1,1 @@
+clang -S -emit-llvm 1.c -o 1.ll -O0

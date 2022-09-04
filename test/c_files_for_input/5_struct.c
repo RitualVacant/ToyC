@@ -1,10 +1,12 @@
 
-struct a {
+struct a
+{
   int    a;
   double b;
 };
 
-struct d {
+struct d
+{
   struct a  e;
   long long f;
 };
