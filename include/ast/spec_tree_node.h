@@ -4,11 +4,35 @@
 #include "inner.h"
 #include <limits>
 #include <string>
+#include <variant>
 #include <vector>
 
 
-namespace ast
+namespace spt
 {
+
+class Type;
+class Dec;
+class Def;
+class FuncDec;
+class FuncDef;
+class VarDec;
+class VarDef;
+
+using spec_tree_node = std::variant<
+  Dec,
+  Def,
+  FuncDec,
+  FuncDef,
+  VarDec,
+  VarDef
+
+  >;
+
+std::vector<spec_tree_node> *spec_tree = nullptr;
+
+extern Type basic_type_loc[20];
+
 
 // class Base;
 // class Def;
@@ -25,6 +49,14 @@ namespace ast
 // class VarDec;
 // class StrcutDef;
 // class StructDec;
+
+/**
+ * @brief
+ *
+ */
+class Block
+{
+};
 
 /**
  * @brief
@@ -62,20 +94,12 @@ class Value : public Base
   std::string identifier;
 };
 
-/**
- * @brief
- *
- */
-class Func : public Base
-{
-  std::string identifier;
-};
 
 /**
  * @brief
  *
  */
-class Expr
+class Expr : public Base
 {
 };
 
@@ -87,16 +111,53 @@ class Expr
 class Type
 {
 public:
-  static Type *get(){};
-  static Type *getInt8Ty(){};
-  static Type *getDoubleTy(){};
-  static Type *getFloatTy(){};
-  static Type *getInt16Ty(){};
-  static Type *getInt32Ty(){};
-  static Type *getInt64Ty(){};
-  static Type *getVoid(){};
-
+  static Type *getInt8Ty()
+  {
+    return &basic_type_loc[0];
+  }
+  static Type *getDoubleTy()
+  {
+    return &basic_type_loc[1];
+  }
+  static Type *getFloatTy()
+  {
+    return &basic_type_loc[2];
+  }
+  static Type *getInt16Ty()
+  {
+    return &basic_type_loc[3];
+  }
+  static Type *getInt32Ty()
+  {
+    return &basic_type_loc[4];
+  };
+  static Type *getInt64Ty()
+  {
+    return &basic_type_loc[5];
+  };
+  static Type *getVoid()
+  {
+    return &basic_type_loc[6];
+  };
+  static Type *getStructTy()
+  {
+    return &basic_type_loc[7];
+  };
   void dump(){
+
+  };
+};
+/**
+ * @brief
+ *
+ */
+class FunctionType : public Type
+{
+public:
+  static FunctionType *get(
+    Type                                                          *ptr_return_type,
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list
+  ){
 
   };
 };
@@ -118,56 +179,75 @@ public:
   };
 };
 
-/**
- * @brief
- *
- */
-class FunctionType : public Type
+
+class Func
 {
 public:
-  static FunctionType *get(
-    Type                                                          *ptr_return_type,
-    std::tuple<std::vector<ast::Type *>, std::vector<std::string>> argument_type_list
-  ){};
+  std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list;
+
+  Type       *ptr_return_type;
+  std::string name;
+
+  Func(
+    Type                                                          *ptr_return_type_,
+    std::string                                                    name_,
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_
+
+  )
+      : ptr_return_type{ptr_return_type_}, name{name_}, argument_type_list{
+                                                          argument_type_list_} {};
+  ~Func();
 };
 
 /**
  * @brief
  *
  */
-class FuncDef : public Def
+class FuncDef : public Def, public Func
 {
 private:
-  std::tuple<std::vector<ast::Type *>, std::vector<std::string>> argument_type_list;
-  Type                                                          *ptr_return_type;
-  std::string                                                    name;
+  Block *body;
 
 public:
+  FuncDef(
+    Type                                                          *ptr_return_type_,
+    std::string                                                    name_,
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_,
+    Block                                                         *body_
+  )
+      : Func(ptr_return_type_, name_, argument_type_list_), body{body_} {};
+
   static FuncDef *create(
-    Type                                                          *ptr_return_type,
-    std::tuple<std::vector<ast::Type *>, std::vector<std::string>> argument_type_list,
-    std::string                                                    name,
-    Block                                                         *body
-  ){};
+    Type                                                          *ptr_return_type_,
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_,
+    std::string                                                    name_,
+    Block                                                         *body_
+  ){
+
+  };
 };
 
 /**
  * @brief
  *
  */
-class FuncDec : public Dec
+class FuncDec : public Dec, public Func
 {
 private:
-  std::tuple<std::vector<ast::Type *>, std::vector<std::string>> argument_type_list;
-  Type                                                          *ptr_return_type;
-  std::string                                                    name;
-
 public:
-  create(
+  FuncDec(
+    Type                                                          *ptr_return_type_,
+    std::string                                                    name_,
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_
+  )
+      : Func(ptr_return_type_, name_, argument_type_list_){};
+  static FuncDec *create(
     Type                                                          *ptr_return_type,
-    std::tuple<std::vector<ast::Type *>, std::vector<std::string>> argument_type_list,
-    std::string                                                    name
-  ){};
+    std::string                                                    name,
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list
+  ){
+
+  };
 };
 
 /**
@@ -176,14 +256,32 @@ public:
  */
 class FuncCall : public Value
 {
+public:
 };
+
+class Var : public Def
+{
+public:
+  Type       *type;
+  std::string name;
+};
+
 
 /**
  * @brief
  *
  */
-class VarDef : public Def
+class VarDef : public Def, public Var
 {
+  Expr *initializer;
+
+public:
+  VarDef(Type *type_, std::string name_, Expr *initializer_)
+      : Var(), initializer{initializer_} {};
+
+  static VarDef *create(Type *type_, std::string name_, Expr *initializer_ = nullptr){
+
+  };
 };
 
 /**
@@ -198,14 +296,14 @@ class VarDec : public Dec
  * @brief
  *
  */
-class StrcutDef : public Def
+class StructDef : public Def
 {
   std::tuple<std::vector<llvm::Type *>, std::vector<std::string>> element_list;
 
 public:
-  static create(
-    std::tuple<std::vector<llvm::Type *>, std::vector<std::string>> element_list,
-    std::string                                                     name
+  static StructDef *create(
+    std::string                                                    name,
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> element_list
   ){};
 };
 
@@ -215,17 +313,11 @@ public:
  */
 class StructDec : public Dec
 {
-  static create(std::string name){};
+public:
+  static StructDec *create(std::string name){};
 };
 
-/**
- * @brief
- *
- */
-class Block
-{
-};
 
-}  // namespace ast
+}  // namespace spt
 
 #endif

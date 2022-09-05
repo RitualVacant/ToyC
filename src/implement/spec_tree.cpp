@@ -3,7 +3,7 @@
 #include "inner.h"
 #include "spec_tree_node.h"
 
-namespace ast
+namespace toy_c
 {
 
 /**
@@ -28,13 +28,27 @@ spec_tree::~spec_tree() {}
  */
 void spec_tree::trans_mult_declaration_or_definition()
 {
+  // the syntax tree 's root node must be 1
   ast::idx idx_declaration_or_definition = 1;
 
+  //
+  // idx_declaration_declarator
+  //          ||
+  //          ||        j
+  //          ||       ||
+  //          \/       \/
+  //  i->    int a, b, c = 3, *d;
+  //
+
   for (ast::idx i = idx_declaration_or_definition,
+
                 idx_declaration_declarator
                 = tree[i].value.declaration_or_definition.idx_declaration_declarator;
+
        i != ast::null;
+
        i = tree[i].value.declaration_or_definition.idx_next_declaration_or_definition,
+
                 idx_declaration_declarator
                 = tree[i].value.declaration_or_definition.idx_declaration_declarator)
   {
@@ -53,30 +67,30 @@ void spec_tree::trans_mult_declaration_or_definition()
  * @brief
  *
  * @param idx_declaration_declarator
- * @return ast::Type*
+ * @return spt::Type*
  */
-ast::Type *spec_tree::trans_declaration_declarator(ast::idx idx_declaration_declarator)
+spt::Type *spec_tree::trans_declaration_declarator(ast::idx idx_declaration_declarator)
 {
   switch (tree[idx_declaration_declarator].value.declaration_declarator.type)
   {
     case ast::declarator_type::type_struct:
-      return ast::Type::get();
+      return spt::Type::getStructTy();
     case ast::declarator_type::type_char:
-      return ast::Type::getInt8Ty();
+      return spt::Type::getInt8Ty();
     case ast::declarator_type::type_double:
-      return ast::Type::getDoubleTy();
+      return spt::Type::getDoubleTy();
     case ast::declarator_type::type_float:
-      return ast::Type::getFloatTy();
+      return spt::Type::getFloatTy();
     case ast::declarator_type::type_short_int:
-      return ast::Type::getInt16Ty();
+      return spt::Type::getInt16Ty();
     case ast::declarator_type::type_int:
     case ast::declarator_type::type_long_int:
-      return ast::Type::getInt32Ty();
+      return spt::Type::getInt32Ty();
     case ast::declarator_type::type_long_long_int:
-      return ast::Type::getInt64Ty();
+      return spt::Type::getInt64Ty();
     // TODO void type
     case ast::declarator_type::type_void:
-      return ast::Type::getVoid();
+      return spt::Type::getVoid();
     default:
       SWITCH_ERROR
   }
@@ -99,11 +113,11 @@ void spec_tree::trans_declaration_or_definition(
   ast::idx idx_direct_declarator
     = tree[idx_declarator].value.declarator.idx_direct_declarator;
 
-  ast::Type *ptr_type_declaration_declarator
+  spt::Type *ptr_type_declaration_declarator
     = trans_declaration_declarator(idx_declaration_declarator);
 
   // return type, var type, arrary unit type
-  ast::Type *ptr_type = trans_pointer(ptr_type_declaration_declarator, idx_declarator);
+  spt::Type *ptr_type = trans_pointer(ptr_type_declaration_declarator, idx_declarator);
 
   std::string identifier_name = get_identifier_name(idx_declarator);
 
@@ -112,10 +126,10 @@ void spec_tree::trans_declaration_or_definition(
   // ----------------------------------
   if (tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null)
   {
-    ast::Type *ptr_unit_type = ptr_type;
+    spt::Type *ptr_unit_type = ptr_type;
     ast::idx   idx_array_declarator
       = tree[idx_direct_declarator].value.direct_declarator.idx_array_declarator;
-    ast::Type *ptr_array_type = trans_array(ptr_unit_type, idx_array_declarator);
+    spt::ArrayType *ptr_array_type = trans_array(ptr_unit_type, idx_array_declarator);
 
     // a pointer to array
     while (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null
@@ -132,15 +146,15 @@ void spec_tree::trans_declaration_or_definition(
   // ----------------------------------
   else if (tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null)
   {
-    ast::Type *ptr_return_type = ptr_type;
+    spt::Type *ptr_return_type = ptr_type;
     // get function type list
-    std::tuple<std::vector<ast::Type *>, std::vector<std::string>> argument_type_list
+    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list
       = trans_arguments_type_list(
         tree[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list
       );
 
-    ast::FunctionType *ptr_func_type
-      = ast::FunctionType::get(ptr_return_type, argument_type_list);
+    spt::FunctionType *ptr_func_type
+      = spt::FunctionType::get(ptr_return_type, argument_type_list);
 
     /// 1. a pointer to function
     if (tree[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null)
@@ -162,17 +176,16 @@ void spec_tree::trans_declaration_or_definition(
       if (now_compound_statement != ast::null)
       {
         // compound_statement
-        FuncDef::create(
-          argument_type_list, ptr_func_type, identifier_name,
+        spt::FuncDef::create(
+          ptr_return_type, argument_type_list, identifier_name,
           trans_compound_statement(now_compound_statement)
         );
       }
       // 4. a function declaration
       else
       {
-        FuncDec::create(argument_type_list, ptr_func_type, identifier_name);
+        spt::FuncDec::create(ptr_return_type, identifier_name, argument_type_list);
       }
-      // reset now_compound_statement
     }
   }
   // ----------------------------------
@@ -183,14 +196,14 @@ void spec_tree::trans_declaration_or_definition(
     // struct definition
     if (now_compound_statement != ast::null)
     {
-      ast::StructDef::create(
-        trans_struct_element_type_list(now_compound_statement), identifier_name
+      spt::StructDef::create(
+        identifier_name, trans_struct_element_type_list(now_compound_statement)
       );
     }
     // struct declaration
     else
     {
-      ast::StructDec::create(identifier_name);
+      spt::StructDec::create(identifier_name);
     }
   }
   // ----------------------------------
@@ -198,7 +211,6 @@ void spec_tree::trans_declaration_or_definition(
   // ----------------------------------
   else
   {
-    llvm::Value *ptr_var = builder->CreateAlloca(ptr_type);
     // exist initializer
     if (tree[idx_initial_declarator].value.initial_declarator.idx_initializer != ast::null)
     {
@@ -206,38 +218,15 @@ void spec_tree::trans_declaration_or_definition(
         = tree[idx_initial_declarator].value.initial_declarator.idx_initializer;
       ast::idx idx_assignment_expression
         = tree[idx_initializer].value.initializer.idx_assignment_expression;
-
-      // int a, b = c = 1;
-      //            |
-      // if initializer is a assignment expression, the expression after first =
-      // operator must be a left value
-      //
-      // binary expression
-      if (tree[idx_assignment_expression].type == ast::node_type::binary_expression)
-      {
-        ast::Value *initializer_value
-          = trans_binary_expression(idx_assignment_expression);
-        builder->CreateStore(initializer_value, ptr_var);
-      }
-      // unary expression
-      else if (tree[idx_assignment_expression].type == ast::node_type::unary_expression)
-      {
-        ast::Value *initializer_value = build_unary_expression(idx_assignment_expression);
-        builder->CreateStore(initializer_value, ptr_var);
-      }
-      // assignment expression
-      else if (tree[idx_assignment_expression].type == ast::node_type::assignment_expression)
-      {
-        llvm::Value *initializer_value
-          = build_assign_expression(idx_assignment_expression);
-        builder->CreateStore(initializer_value, ptr_var);
-      }
-      else
-      {
-        NOT_REACHABLE
-      }
+      spt::VarDef::create(
+        ptr_type, identifier_name, trans_expression(idx_assignment_expression)
+      );
     }
     // not exist initializer
+    else
+    {
+      spt::VarDef::create(ptr_type, identifier_name);
+    }
   }
   now_compound_statement = ast::null;
 }
@@ -247,17 +236,17 @@ void spec_tree::trans_declaration_or_definition(
  *
  * @param ptr_type_declaration_declarator
  * @param idx_declarator
- * @return ast::Type*
+ * @return spt::Type*
  */
-ast::Type *spec_tree::trans_pointer(
-  ast::Type *ptr_type_declaration_declarator,
+spt::Type *spec_tree::trans_pointer(
+  spt::Type *ptr_type_declaration_declarator,
   ast::idx   idx_declarator
 )
 {
-  for (auto i = tree[idx_declarator].value.declarator.is_ptr; i > 0; --i)
+  TODO for (auto i = tree[idx_declarator].value.declarator.is_ptr; i > 0; --i)
   {
     // ptr_type_declaration_declarator
-    //   = ast::PointerType::get(ptr_type_declaration_declarator, 0);
+    //   = spt::PointerType::get(ptr_type_declaration_declarator, 0);
   }
   return ptr_type_declaration_declarator;
 }
@@ -300,8 +289,16 @@ std::string spec_tree::get_identifier_name(ast::idx idx_declarator)
   return std::string(tree[idx_identifier].value.identifier.name);
 }
 
-ast::ArrayType *
-spec_tree::trans_array(ast::Type *ptr_unit_type, ast::idx idx_array_declarator)
+
+/**
+ * @brief
+ *
+ * @param ptr_unit_type
+ * @param idx_array_declarator
+ * @return spt::ArrayType*
+ */
+spt::ArrayType *
+spec_tree::trans_array(spt::Type *ptr_unit_type, ast::idx idx_array_declarator)
 {
   ast::idx idx_next_array_declarator
     = tree[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
@@ -313,7 +310,7 @@ spec_tree::trans_array(ast::Type *ptr_unit_type, ast::idx idx_array_declarator)
       = tree[idx_array_declarator].value.array_declarator.idx_constant;
     dimension_len.push_back(constant_node_to_uint64(idx_constant));
   }
-  ArrayType::get(ptr_unit_type, dimension_len);
+  return spt::ArrayType::get(ptr_unit_type, dimension_len);
 }
 
-}  // namespace ast
+}  // namespace toy_c
