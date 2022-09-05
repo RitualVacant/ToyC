@@ -289,7 +289,6 @@ std::string spec_tree::get_identifier_name(ast::idx idx_declarator)
   return std::string(tree[idx_identifier].value.identifier.name);
 }
 
-
 /**
  * @brief
  *
