@@ -514,6 +514,7 @@ void build_llvm_ir::build_declaration_or_definition(
       llvm::Function *ptr_func = llvm::Function::Create(
         ptr_func_type, llvm::Function::ExternalLinkage, name, *module
       );
+      func_table.insert({name, ptr_func});
 
       // 4. a function definition
       if (now_compound_statement != ast::null)

@@ -1,279 +1,101 @@
-{
-    "declaration_or_definition_1": {
-        "declaration_declarator_2": {
-            "sign": "true",
-            "type": "int",
-            "limit": "empty",
-            "store": "empty"
-        },
-        "compound_statement_18": {
-            "block_19": {
-                "return_statement_20": {
-                    "binary_expression_25": {
-                        "operator": "+",
-                        "unary_expression_21": {
-                            "postfix_expression_22": {
-                                "primary_expression_23": {
-                                    "identifier_24": {
-                                        "name": "a"
-                                    }
-                                }
-                            },
-                            "is_sizeof": "false",
-                            "unary_operator": "void"
-                        },
-                        "unary_expression_26": {
-                            "postfix_expression_27": {
-                                "primary_expression_28": {
-                                    "identifier_29": {
-                                        "name": "b"
-                                    }
-                                }
-                            },
-                            "is_sizeof": "false",
-                            "unary_operator": "void"
-                        }
-                    }
-                }
-            }
-        },
-        "initial_declarator_3": {
-            "declarator_4": {
-                "is_pointer": "0",
-                "direct_declarator_5": {
-                    "identifier_6": {
-                        "name": "f"
-                    },
-                    "arguments_type_list_7": {
-                        "arguments_declaration_8": {
-                            "declaration_declarator_9": {
-                                "sign": "true",
-                                "type": "int",
-                                "limit": "empty",
-                                "store": "empty"
-                            },
-                            "declarator_10": {
-                                "is_pointer": "0",
-                                "direct_declarator_11": {
-                                    "identifier_12": {
-                                        "name": "a"
-                                    }
-                                }
-                            }
-                        },
-                        "arguments_declaration_13": {
-                            "declaration_declarator_14": {
-                                "sign": "true",
-                                "type": "int",
-                                "limit": "empty",
-                                "store": "empty"
-                            },
-                            "declarator_15": {
-                                "is_pointer": "0",
-                                "direct_declarator_16": {
-                                    "identifier_17": {
-                                        "name": "b"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "declaration_or_definition_31": {
-            "declaration_declarator_32": {
-                "sign": "true",
-                "type": "int",
-                "limit": "empty",
-                "store": "empty"
-            },
-            "compound_statement_38": {
-                "block_39": {
-                    "declaration_or_definition_40": {
-                        "declaration_declarator_41": {
-                            "sign": "true",
-                            "type": "int",
-                            "limit": "empty",
-                            "store": "empty"
-                        },
-                        "initial_declarator_42": {
-                            "declarator_43": {
-                                "is_pointer": "0",
-                                "direct_declarator_44": {
-                                    "identifier_45": {
-                                        "name": "a"
-                                    }
-                                }
-                            },
-                            "initializer_46": {
-                                "unary_expression_47": {
-                                    "postfix_expression_48": {
-                                        "primary_expression_49": {
-                                            "constant_integer_number_1": "1"
-                                        }
-                                    },
-                                    "is_sizeof": "false",
-                                    "unary_operator": "void"
-                                }
-                            }
-                        }
-                    }
-                },
-                "block_50": {
-                    "for_statement_51": {
-                        "declaration_or_definition_52": {
-                            "declaration_declarator_53": {
-                                "sign": "true",
-                                "type": "int",
-                                "limit": "empty",
-                                "store": "empty"
-                            },
-                            "initial_declarator_54": {
-                                "declarator_55": {
-                                    "is_pointer": "0",
-                                    "direct_declarator_56": {
-                                        "identifier_57": {
-                                            "name": "i"
-                                        }
-                                    }
-                                },
-                                "initializer_58": {
-                                    "unary_expression_59": {
-                                        "postfix_expression_60": {
-                                            "primary_expression_61": {
-                                                "constant_integer_number_1": "1"
-                                            }
-                                        },
-                                        "is_sizeof": "false",
-                                        "unary_operator": "void"
-                                    }
-                                }
-                            }
-                        },
-                        "binary_expression_66": {
-                            "operator": "<",
-                            "unary_expression_62": {
-                                "postfix_expression_63": {
-                                    "primary_expression_64": {
-                                        "identifier_65": {
-                                            "name": "i"
-                                        }
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            },
-                            "unary_expression_67": {
-                                "postfix_expression_68": {
-                                    "primary_expression_69": {
-                                        "constant_integer_number_1": "1"
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            }
-                        },
-                        "unary_expression_70": {
-                            "postfix_expression_71": {
-                                "postfix_operator_74": {
-                                    "postfix_operator": "++",
-                                    "primary_expression_72": {
-                                        "identifier_73": {
-                                            "name": "i"
-                                        }
-                                    }
-                                },
-                                "is_sizeof": "false",
-                                "unary_operator": "void"
-                            },
-                            "compound_statement_75": {
-                                "block_76": {
-                                    "expression_77": {
-                                        "assignment_expression_82": {
-                                            "assignment_type": "+=",
-                                            "unary_expression_83": {
-                                                "postfix_expression_84": {
-                                                    "primary_expression_85": {
-                                                        "identifier_86": {
-                                                            "name": "i"
-                                                        }
-                                                    }
-                                                },
-                                                "is_sizeof": "false",
-                                                "unary_operator": "void"
-                                            },
-                                            "unary_expression_78": {
-                                                "postfix_expression_79": {
-                                                    "primary_expression_80": {
-                                                        "identifier_81": {
-                                                            "name": "a"
-                                                        }
-                                                    }
-                                                },
-                                                "is_sizeof": "false",
-                                                "unary_operator": "void"
-                                            },
-                                            "next_assign_81": {}
-                                        }
-                                    }
-                                },
-                                "block_87": {
-                                    "expression_88": {
-                                        "unary_expression_89": {
-                                            "postfix_expression_90": {
-                                                "postfix_operator_93": {
-                                                    "arguments_list_node_94": {
-                                                        "unary_expression_95": {
-                                                            "postfix_expression_96": {
-                                                                "primary_expression_97": {
-                                                                    "identifier_98": {
-                                                                        "name": "i"
-                                                                    }
-                                                                }
-                                                            },
-                                                            "is_sizeof": "false",
-                                                            "unary_operator": "void"
-                                                        },
-                                                        "unary_expression_95": {
-                                                            "postfix_expression_96": {
-                                                                "primary_expression_97": {
-                                                                    "identifier_98": {
-                                                                        "name": "i"
-                                                                    }
-                                                                }
-                                                            },
-                                                            "is_sizeof": "false",
-                                                            "unary_operator": "void"
-                                                        }
-                                                    }
-                                                },
-                                                "primary_expression_91": {
-                                                    "identifier_92": {
-                                                        "name": "f"
-                                                    }
-                                                }
-                                            },
-                                            "is_sizeof": "false",
-                                            "unary_operator": "void"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "initial_declarator_33": {
-                    "declarator_34": {
-                        "is_pointer": "0",
-                        "direct_declarator_35": {
-                            "identifier_36": {
-                                "name": "main"
-                            },
-                            "arguments_type_list_37": {}
-                        }
-                    }
-                }
-            }
-        }
-    }
+{"declaration_or_definition_1":{"declaration_declarator_2":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"compound_statement_18":{"block_19":{"return_statement_20":{"binary_expression_25":{"operator":"+","unary_expression_21":{"postfix_expression_22":{"primary_expression_23":{"identifier_24":{"name":"a"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_26":{"postfix_expression_27":{"primary_expression_28":{"identifier_29":{"name":"b"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+}
+}
+}
+},"initial_declarator_3":{"declarator_4":{"is_pointer":"0","direct_declarator_5":{"identifier_6":{"name":"f"
+},"arguments_type_list_7":{"arguments_declaration_8":{"declaration_declarator_9":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"declarator_10":{"is_pointer":"0","direct_declarator_11":{"identifier_12":{"name":"a"
+}
+}
+}
+},"arguments_declaration_13":{"declaration_declarator_14":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"declarator_15":{"is_pointer":"0","direct_declarator_16":{"identifier_17":{"name":"b"
+}
+}
+}
+}
+}
+}
+}
+},"declaration_or_definition_31":{"declaration_declarator_32":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"compound_statement_38":{"block_39":{"declaration_or_definition_40":{"declaration_declarator_41":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"initial_declarator_42":{"declarator_43":{"is_pointer":"0","direct_declarator_44":{"identifier_45":{"name":"a"
+}
+}
+},"initializer_46":{"unary_expression_47":{"postfix_expression_48":{"primary_expression_49":{"constant_integer_number_1":"1"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+}
+}
+}
+},"block_50":{"for_statement_51":{"declaration_or_definition_52":{"declaration_declarator_53":{"sign":"true","type":"int","limit":"empty","store":"empty"
+},"initial_declarator_54":{"declarator_55":{"is_pointer":"0","direct_declarator_56":{"identifier_57":{"name":"i"
+}
+}
+},"initializer_58":{"unary_expression_59":{"postfix_expression_60":{"primary_expression_61":{"constant_integer_number_1":"1"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+}
+}
+},"binary_expression_66":{"operator":"<","unary_expression_62":{"postfix_expression_63":{"primary_expression_64":{"identifier_65":{"name":"i"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_67":{"postfix_expression_68":{"primary_expression_69":{"constant_integer_number_1":"1"
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+},"unary_expression_70":{"postfix_expression_71":{"postfix_operator_74":{"postfix_operator":"++","primary_expression_72":{"identifier_73":{"name":"i"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"compound_statement_75":{"block_76":{"expression_77":{"assignment_expression_82":{"assignment_type":"+=","unary_expression_83":{"postfix_expression_84":{"primary_expression_85":{"identifier_86":{"name":"i"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_78":{"postfix_expression_79":{"primary_expression_80":{"identifier_81":{"name":"a"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"next_assign_81":{}
+}
+}
+},"block_87":{"expression_88":{"unary_expression_89":{"postfix_expression_90":{"postfix_operator_93":{"arguments_list_node_94":{"unary_expression_95":{"postfix_expression_96":{"primary_expression_97":{"identifier_98":{"name":"i"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+},"unary_expression_95":{"postfix_expression_96":{"primary_expression_97":{"identifier_98":{"name":"i"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+}
+},"primary_expression_91":{"identifier_92":{"name":"f"
+}
+}
+},"is_sizeof":"false","unary_operator":"void"
+}
+}
+}
+}
+}
+}
+},"initial_declarator_33":{"declarator_34":{"is_pointer":"0","direct_declarator_35":{"identifier_36":{"name":"main"
+},"arguments_type_list_37":{}
+}
+}
+}
+}
+}
+}

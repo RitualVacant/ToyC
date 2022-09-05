@@ -18,10 +18,12 @@
 //#include <string_view>
 namespace ast
 {
+
 std::size_t const array_in_struct_size = 25;
 using idx                              = std::size_t;
 idx const null{0};
 using idef = std::size_t;
+
 
 enum class declarator_type : unsigned char
 {
