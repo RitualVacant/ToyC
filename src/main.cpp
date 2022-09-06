@@ -1,20 +1,24 @@
 #include "build_llvm_ir.h"
 #include "fmt/core.h"
 #include "parser.h"
+#include "spec_tree.h"
+#include "spec_tree_node.h"
 #include <gflags/gflags.h>
 #include <map>
 #include <string>
 
-enum class mode : char {
-  scan     = 's',
-  yes      = 'y',
-  mid      = 'm',
-  quit     = 'q',
-  help     = 'h',
-  debug    = 'd',
-  tree     = 't',
-  llvm_ir  = 'l',
-  llvm_opt = 'o'
+enum class mode : char
+{
+  scan      = 's',
+  yes       = 'y',
+  mid       = 'm',
+  quit      = 'q',
+  help      = 'h',
+  debug     = 'd',
+  tree      = 't',
+  llvm_ir   = 'l',
+  llvm_opt  = 'o',
+  spec_tree = 'S'
 };
 
 //
@@ -30,8 +34,10 @@ void gflags_choose_mode_run();
 // main func
 std::vector<std::string> command;
 
-int main(int argc, char *argv[]) {
-  if (argc == 1) {
+int main(int argc, char *argv[])
+{
+  if (argc == 1)
+  {
     fmt::print("path of input file  : ");
     input_file_path = "/home/lzj/code/cpp/script/test/debug/1.c";
     // std::cin >> input_file_path;
@@ -40,7 +46,8 @@ int main(int argc, char *argv[]) {
     // std::cin >> output_file_path;
     choose_mode_run();
   }
-  else {
+  else
+  {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     gflags_choose_mode_run();
     fmt::print("DONE\n");
@@ -49,28 +56,32 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void gflags_choose_mode_run() {
+void gflags_choose_mode_run()
+{
   const std::map<std::string, mode> str_to_char_mode{
-    {"scan",  mode::scan    },
-    {"yes",   mode::yes     },
-    {"mid",   mode::mid     },
-    {"quit",  mode::quit    },
-    {"help",  mode::help    },
-    {"debug", mode::debug   },
-    {"tree",  mode::tree    },
-    {"ir",    mode::llvm_ir },
-    {"opt",   mode::llvm_opt}
+    {"scan",  mode::scan     },
+    {"yes",   mode::yes      },
+    {"mid",   mode::mid      },
+    {"quit",  mode::quit     },
+    {"help",  mode::help     },
+    {"debug", mode::debug    },
+    {"tree",  mode::tree     },
+    {"ir",    mode::llvm_ir  },
+    {"opt",   mode::llvm_opt },
+    {"spt",   mode::spec_tree}
   };
 
   input_file_path  = FLAGS_i;
   output_file_path = FLAGS_o;
 
-  if (str_to_char_mode.find(FLAGS_m) == str_to_char_mode.end()) {
+  if (str_to_char_mode.find(FLAGS_m) == str_to_char_mode.end())
+  {
     fmt::print(fg(fmt::color::red), "unknow mode : {}\n", FLAGS_m);
     exit(0);
   }
 
-  switch (str_to_char_mode.at(FLAGS_m)) {
+  switch (str_to_char_mode.at(FLAGS_m))
+  {
     case mode::scan: {
       toy_c::scanning s(input_file_path);
       s.token_output();
@@ -101,12 +112,19 @@ void gflags_choose_mode_run() {
     }
     case mode::llvm_opt: {
       int done = system("opt -dot-cfg -S ./../test/llvm.ll");
-      if (done == 127) {
+      if (done == 127)
+      {
         fmt::print("done");
       }
-      if (done == -1) {
+      if (done == -1)
+      {
         fmt::print("no");
       }
+      break;
+    }
+    case mode::spec_tree: {
+      spt::Tree spt_tree;
+      spt_tree.print_spec_tree();
       break;
     }
     default:
@@ -116,15 +134,18 @@ void gflags_choose_mode_run() {
 
 // def
 
-void choose_mode_run() {
+void choose_mode_run()
+{
   output_help_information();
   mode choose_mode = mode::help;
   char in;
-  while (choose_mode != mode::quit) {
+  while (choose_mode != mode::quit)
+  {
     fmt::print("(help -h)enter to continue: ");
     std::cin >> in;
     choose_mode = static_cast<mode>(in);
-    switch (choose_mode) {
+    switch (choose_mode)
+    {
       case mode::scan: {
         toy_c::scanning s(input_file_path);
         s.token_output();
@@ -155,12 +176,19 @@ void choose_mode_run() {
       }
       case mode::llvm_opt: {
         int done = system("opt -dot-cfg -S ./../test/llvm.ll");
-        if (done == 127) {
+        if (done == 127)
+        {
           fmt::print("done");
         }
-        if (done == -1) {
+        if (done == -1)
+        {
           fmt::print("no");
         }
+        break;
+      }
+      case mode::spec_tree: {
+        spt::Tree spt_tree;
+        spt_tree.print_spec_tree();
         break;
       }
       default:
@@ -170,7 +198,8 @@ void choose_mode_run() {
   return;
 }
 
-void output_help_information() {
+void output_help_information()
+{
   fmt::print("\n");
   fmt::print("size of node: {}B\n", sizeof(ast::node));
   fmt::print("-s  scan         lexical analysis and output the token\n");
@@ -182,6 +211,7 @@ void output_help_information() {
   fmt::print("-h  help         print table\n");
   fmt::print("-l  llvm         output llvm ir\n");
   fmt::print("-o  dot          dot\n");
+  fmt::print("-S  spec_tree\n");
   fmt::print("-q  quit         quit\n");
   return;
 }

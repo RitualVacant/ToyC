@@ -4,9 +4,9 @@
 #pragma once
 #include "asm_code.h"
 #include "ast.h"
+#include "ast_node.h"
 #include "global_var.h"
 #include "scanning.h"
-#include "syntax_tree.h"
 #include "token.h"
 #include <fstream>
 #include <memory>
@@ -29,8 +29,8 @@ private:
   // symbol_table table = symbol_table(output_file_path,
   // really_output_asm_code);
   // symbol_table* table;
-  toy_c::scanning    scan = toy_c::scanning(input_file_path);
-  toy_c::syntax_tree tree;
+  toy_c::scanning scan = toy_c::scanning(input_file_path);
+  ast::Tree       tree;
   // std::unique_ptr<asm_code> asm_file  =
   // std::make_unique<asm_code>(asm_code(fil)) asm_code* asm_file = nullptr;
   bool is_func   = false;  // DROP
@@ -131,11 +131,11 @@ public:
   parser &operator=(parser &)  = delete;
   parser &operator=(parser &&) = delete;
 
-  void                print_mid_code();
-  void                print_asm_code_code();
-  void                print_syntax_tree();
-  void                move_syntax_tree();
-  toy_c::syntax_tree &get_syntax_tree();
+  void       print_mid_code();
+  void       print_asm_code_code();
+  void       print_syntax_tree();
+  void       move_syntax_tree();
+  ast::Tree &get_ast_tree();
 };
 
 }  // namespace toy_c

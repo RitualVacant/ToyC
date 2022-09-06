@@ -14,7 +14,7 @@ namespace toy_c
  */
 build_llvm_ir::build_llvm_ir()
 {
-  tree    = std::move(parse.get_syntax_tree());
+  tree    = std::move(parse.get_ast_tree());
   context = std::make_unique<llvm::LLVMContext>();
   module  = std::make_unique<llvm::Module>("text_module", *context);
   builder = std::make_unique<llvm::IRBuilder<>>(*context);
@@ -235,10 +235,13 @@ build_llvm_ir::build_array(llvm::Type *ptr_unit_type, ast::idx idx_array_declara
  * @param idx_
  * @return std::uint64_t
  */
-std::uint64_t build_llvm_ir::build_uint64(ast::idx idx_)
+std::uint64_t build_llvm_ir::build_uint64(ast::idx idx_constant)
 {
+  // idx_constant is not idx of tree.get_constant(idx_constant);
+  // is an unary expression idx
+  return 3;
   // TODO
-  return 5;
+  return std::stoull(tree.get_constant(idx_constant).value);
 }
 
 /**

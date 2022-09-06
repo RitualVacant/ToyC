@@ -2,7 +2,6 @@ Toy C89 compilers
 
 #### Description
 
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
 
 #### Software Architecture
 
@@ -10,9 +9,9 @@ Software architecture description
 
 #### Installation
 
-1. xxxx
-2. xxxx
-3. xxxx
+1. Need LLVM 14.0.6 with dump function for debug; fmt 9.0.0; gflags
+2.
+3.
 
 #### Instructions
 

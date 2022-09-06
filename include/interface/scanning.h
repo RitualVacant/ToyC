@@ -2,7 +2,7 @@
 #define SCANNING_H
 
 #pragma once
-#include "ast.h"
+#include "ast_node.h"
 #include "fmt/color.h"
 #include "fmt/core.h"
 #include "fmt/format.h"
@@ -14,9 +14,11 @@
 #include <string>
 #include <tuple>
 
-namespace toy_c {
+namespace toy_c
+{
 
-class scanning {
+class scanning
+{
 private:
   char        c;
   std::size_t num_token = 0;  // the number of token in this script file
@@ -39,7 +41,8 @@ public:
   std::tuple<token, std::string> last_token;
   std::tuple<token, std::string> pre_token;
 
-  explicit scanning(std::string &file_path_) : input_file_path(file_path_) {
+  explicit scanning(std::string &file_path_) : input_file_path(file_path_)
+  {
     file.open(input_file_path, toy_c::mode::read);
     c = file.get();
   };

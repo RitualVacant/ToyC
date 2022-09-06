@@ -2,8 +2,8 @@
 #define BUILD_LLVM_IR_H
 
 #pragma once
+#include "ast.h"
 #include "parser.h"
-#include "syntax_tree.h"
 #include <llvm/ADT/STLExtras.h>
 #include <llvm/Analysis/BasicAliasAnalysis.h>
 #include <llvm/Analysis/Passes.h>
@@ -37,7 +37,7 @@ private:
   std::unique_ptr<llvm::Module>      module;
   std::unique_ptr<llvm::IRBuilder<>> builder;
   toy_c::parser                      parse;
-  toy_c::syntax_tree                 tree;
+  ast::Tree                          tree;
 
   std::map<std::string, std::tuple<llvm::Value *, llvm::Type *>> func_symbol_table;
   std::map<std::string, std::tuple<llvm::Value *, llvm::Type *>> global_symbol_table;

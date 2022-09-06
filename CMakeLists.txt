@@ -34,12 +34,18 @@ set(CMAKE_GENERATOR "Ninja")
 
 
 # header files h
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/token)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ast)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/error)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/interface)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/var)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/spt)
+
 
 # source files cpp
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/token tokenlib)
+add_library(token STATIC ${tokenlib})
+
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/implement implib)
 add_library(implement STATIC ${implib})
 
@@ -49,6 +55,8 @@ add_library(ast STATIC ${astlib})
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/var varlib)
 add_library(var STATIC ${varlib})
 
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/spt sptlib)
+add_library(spt STATIC ${sptlib})
 #
 # LLVM packages
 #
@@ -86,6 +94,8 @@ target_link_libraries(
     implement
     ast
     var
+    spt
+    token
     # profiler
     # unwind
 )
