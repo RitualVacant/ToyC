@@ -9,8 +9,11 @@ Software architecture description
 
 #### Installation
 
-1. Need LLVM 14.0.6 with dump function for debug; fmt 9.0.0; gflags
-2.
+1. LLVM 14.0.6 with dump function for debug; fmt 9.0.0; gflags
+2. LLVM
+- cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD=X86 -DLLVM_ENABLE_DUMP=ON ../llvm
+- make or ninja
+- checkinstall
 3.
 
 #### Instructions
