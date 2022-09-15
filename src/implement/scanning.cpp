@@ -12,7 +12,6 @@ namespace toy_c {
 void scanning::get_next_char() {
   ++column;
   c = static_cast<char>(file.get());
-  return;
 }
 
 std::tuple<token, std::string> scanning::to_number(bool is_negative) {

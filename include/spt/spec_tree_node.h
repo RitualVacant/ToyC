@@ -37,9 +37,10 @@ class Block
   std::vector<Statement *> block_body;
 
 public:
-  Block();
+  explicit Block();
   ~Block();
   static Block *create();
+  uint64_t      size() const;
   void          push_back(Statement *ptr_statement);
 };
 
@@ -59,15 +60,6 @@ class Dec : public Base, public Statement
 {
 };
 
-/**
- * @brief
- *
- */
-class Value : public Base
-{
-  std::string identifier;
-};
-
 
 /**
  * @brief
@@ -75,6 +67,16 @@ class Value : public Base
  */
 class Expr : public Base, public Statement
 {
+private:
+  token op;
+  Expr *l_expr;
+  Expr *r_expr;
+
+public:
+  explicit Expr();
+  Expr(token op, Expr *l_expr, Expr *r_expr);
+  ~Expr();
+  static Expr *create(token op, Expr *l_expr, Expr *r_expr);
 };
 
 /**
@@ -85,8 +87,7 @@ class Expr : public Base, public Statement
 class Type
 {
 public:
-  Type *type = nullptr;
-  Type();
+  explicit Type();
   ~Type();
   static Type *getInt8Ty();
   static Type *getDoubleTy();
@@ -105,10 +106,11 @@ public:
  */
 class FuncType : public Type
 {
-public:
   Type                    *ptr_return_type;
   std::vector<spt::Type *> argument_type_list;
-  FuncType(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list);
+
+public:
+  explicit FuncType(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list);
   ~FuncType();
   static FuncType *
   get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list);
@@ -140,7 +142,7 @@ private:
 
 public:
   static PointerType *get(Type *ptr_type);
-  PointerType(Type *ptr_type);
+  explicit PointerType(Type *ptr_type);
   ~PointerType();
 };
 
@@ -157,7 +159,7 @@ public:
   Type       *ptr_return_type;
   std::string name;
 
-  Func(
+  explicit Func(
     Type                                                          *ptr_return_type_,
     std::string                                                    name_,
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_
@@ -176,7 +178,7 @@ private:
   Block *body;
 
 public:
-  FuncDef(
+  explicit FuncDef(
     Type                                                          *ptr_return_type_,
     std::string                                                    name_,
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_,
@@ -199,7 +201,7 @@ class FuncDec : public Dec, public Func
 {
 private:
 public:
-  FuncDec(
+  explicit FuncDec(
     Type                                                          *ptr_return_type_,
     std::string                                                    name_,
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_
@@ -215,16 +217,26 @@ public:
  * @brief
  *
  */
-class FuncCall : public Value
+class FuncCall : public Expr
 {
+  std::string         identifier;
+  std::vector<Expr *> argument_list;
+
+private:
 public:
+  explicit FuncCall(std::string identifier, std::vector<Expr *> argument_list);
+  ~FuncCall();
+  static FuncCall *create(std::string identifier, std::vector<Expr *> argument_list);
 };
 
 class Var
 {
+  std::string identifier;
+
 public:
-  Type       *type;
-  std::string name;
+  explicit Var(std::string identifier);
+  ~Var();
+  static Var *create(std::string identifier);
 };
 
 
@@ -237,7 +249,7 @@ class VarDef : public Def, public Var
   Expr *initializer;
 
 public:
-  VarDef(Type *type_, std::string name_, Expr *initializer_);
+  explicit VarDef(Type *type_, std::string name_, Expr *initializer_);
   static VarDef *create(Type *type_, std::string name_, Expr *initializer_ = nullptr);
 };
 
@@ -287,26 +299,38 @@ private:
   Block *false_block;
 
 public:
-  IfStatement(Expr *expr, Block *true_block, Block *false_block);
+  explicit IfStatement(Expr *expr, Block *true_block, Block *false_block);
   static IfStatement *create(Expr *expr, Block *true_block);
   static IfStatement *create(Expr *expr, Block *true_block, Block *false_block);
 };
 
+/**
+ * @brief
+ *
+ */
 class SwitchStatement : public Statement
 {
 };
 
+/**
+ * @brief
+ *
+ */
 class ReturnStatement : public Statement
 {
 private:
   Expr *return_expr;
 
 public:
-  ReturnStatement(Expr *return_expr);
+  explicit ReturnStatement(Expr *return_expr);
   ~ReturnStatement();
   static ReturnStatement *create(Expr *return_expr);
 };
 
+/**
+ * @brief
+ *
+ */
 class WhileStatement : public Statement
 {
 private:
@@ -314,11 +338,15 @@ private:
   Block *while_body;
 
 public:
-  WhileStatement(Expr *expr, Block *while_body);
+  explicit WhileStatement(Expr *expr, Block *while_body);
   ~WhileStatement();
   static WhileStatement *create(Expr *expr, Block *while_body);
 };
 
+/**
+ * @brief
+ *
+ */
 class DoWhileStatement : public Statement
 {
 private:
@@ -326,11 +354,15 @@ private:
   Block *do_while_body;
 
 public:
-  DoWhileStatement(Expr *expr, Block *do_while_body);
+  explicit DoWhileStatement(Expr *expr, Block *do_while_body);
   ~DoWhileStatement();
   static DoWhileStatement *create(Expr *expr, Block *do_while_body);
 };
 
+/**
+ * @brief
+ *
+ */
 class ForStatement : public Statement
 {
 private:
@@ -341,7 +373,12 @@ private:
   Expr  *change_expr;
 
 public:
-  ForStatement(Expr *init_expr, Expr *condition_expr, Expr *change_expr, Block *for_body);
+  explicit ForStatement(
+    Expr  *init_expr,
+    Expr  *condition_expr,
+    Expr  *change_expr,
+    Block *for_body
+  );
   ForStatement(Def *init_def, Expr *condition_expr, Expr *change_expr, Block *for_body);
   ~ForStatement();
 
@@ -352,8 +389,22 @@ public:
 };
 
 
+class Array : Expr
+{
+private:
+  std::string         identifier;
+  std::vector<Expr *> idx_list;
+
+public:
+  explicit Array(std::string identifier, std::vector<Expr *> idx_list);
+  ~Array();
+  static Array *create(std::string identifier, std::vector<Expr *> idx_list);
+};
+
+
 using spec_tree_node = std::variant<
   ArrayType,
+  Array,
   Base,
   Block,
   Dec,
@@ -366,7 +417,6 @@ using spec_tree_node = std::variant<
   FuncDef,
   Type,
   PointerType,
-  Value,
   Var,
   VarDef,
   VarDec,

@@ -104,7 +104,7 @@ using idef = std::size_t;
 //-------------------------------------------
 
 // basic I
-struct node_loction {
+struct node_location {
   std::size_t line;
   std::size_t column;
 };
@@ -485,7 +485,7 @@ union value {
 struct node {
   ast::value        value;
   ast::node_type    type;
-  ast::node_loction node_loction;
+  ast::node_location node_loction;
   ast::idx          next;
 };
 }  // namespace ast

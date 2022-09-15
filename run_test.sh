@@ -31,6 +31,7 @@ output_llvm_files_prefix_path=${current_path}${output_llvm_files_prefix_path}
 
 length=${#input_files[@]}
 length=15
+
 printf "input file number: "${length}"\n"
 
 mode_list=(scan tree ir)

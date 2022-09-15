@@ -6,7 +6,7 @@
 #  include "inner.h"
 #  include "parser.h"
 #  include <fmt/color.h>
-#  include <fmt/core.h>
+#  include <iostream>
 #  include <string>
 
 namespace spt
@@ -23,7 +23,7 @@ Tree::Tree()
 {
   toy_c::parser parser;
   ast           = std::move(parser.get_ast_tree());
-  ptr_tree_body = &tree_body;
+  ptr_tree_body = new std::vector<spt::spec_tree_node>;
   // the syntax ast 's root node must be 1
   build_mult_declaration_or_definition(1);
 }
@@ -198,12 +198,12 @@ spt::Statement *Tree::build_declaration_or_definition(
         ast[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list
       );
 
-    spt::FuncType *ptr_func_type
-      = spt::FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
-
     /// 1. a pointer to function
     if (ast[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null)
     {
+      spt::FuncType *ptr_func_type
+        = spt::FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
+
       while (ast[idx_direct_declarator].value.direct_declarator.idx_declarator
              != ast::null)
       {
@@ -221,7 +221,7 @@ spt::Statement *Tree::build_declaration_or_definition(
       if (now_compound_statement != ast::null)
       {
         // compound_statement
-        spt::FuncDef::create(
+        return spt::FuncDef::create(
           ptr_return_type, identifier_name, argument_type_list,
           build_compound_statement(now_compound_statement)
         );
@@ -377,10 +377,9 @@ spt::Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
 
   for (ast::idx i = idx_block; i != ast::null; i = ast[i].value.block.idx_next_block)
   {
-    // connect block
     block->push_back(build_block(i));
   }
-  return nullptr;
+  return block;
 }
 
 /**
@@ -429,7 +428,237 @@ spt::Statement *Tree::build_block(ast::idx idx_block)
  * @param idx_expression
  * @return spt::Expr*
  */
-spt::Expr *Tree::build_expression(ast::idx idx_expression){TODO}
+spt::Expr *Tree::build_expression(ast::idx idx_expression)
+{
+  switch (ast[idx_expression].type)
+  {
+    case ast::node_type::assignment_expression:
+      return build_assign_expression(idx_expression);
+    case ast::node_type::binary_expression:
+      return build_binary_expression(idx_expression);
+    case ast::node_type::conditional_expression:
+      return build_conditional_expression(idx_expression);
+    case ast::node_type::unary_expression:
+      return build_unary_expression(idx_expression);
+    default:
+      SWITCH_ERROR
+  }
+  NOT_REACHABLE
+}
+
+Expr *Tree::build_binary_expression(ast::idx idx_binary_expression)
+{
+  return Expr::create(
+    ast[idx_binary_expression].value.binary_expression.token_operator,
+    build_expression(ast[idx_binary_expression].value.binary_expression.idx_left_node),
+    build_expression(ast[idx_binary_expression].value.binary_expression.idx_right_node)
+  );
+}
+
+Expr *Tree::build_assign_expression(ast::idx idx_assign_expression)
+{
+  ast::idx idx_binary_expression
+    = ast[idx_assign_expression].value.assignment_expression.idx_binary_expression;
+
+  // just a binary expression without assign
+  Expr *r_value = build_expression(idx_binary_expression);
+  Expr *l_value;
+
+  for (ast::idx i = idx_assign_expression; i != ast::null;
+       i          = ast[i].value.assignment_expression.idx_next_assignment_expression)
+  {
+    l_value = build_unary_expression(
+      ast[i].value.assignment_expression.idx_unary_or_binary_expression
+    );
+    Expr::create(ast[i].value.assignment_expression.assignment_type, l_value, r_value);
+
+    if (ast[i].value.assignment_expression.idx_next_assignment_expression != ast::null)
+    {
+      r_value = l_value;
+    }
+  }
+  return r_value;
+}
+
+
+Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
+{
+  //----------------------------------------------------------------
+  // 1. sizeof
+  //----------------------------------------------------------------
+  if (ast[idx_unary_expression].value.unary_expression.is_sizeof)
+  {
+    // unary_expression
+    if (ast[idx_unary_expression].type == ast::node_type::unary_expression)
+    {
+      return build_compute_unary_expression_size(
+        ast[idx_unary_expression].value.unary_expression.idx_unary_expression
+      );
+    }
+    // declarator
+    else
+    {
+      return build_compute_declarator_size(
+        ast[idx_unary_expression].value.unary_expression.idx_declaration_declarator
+      );
+    }
+  }
+
+  ast::idx idx_postfix_expression
+    = ast[idx_unary_expression].value.unary_expression.idx_postfix_expression;
+
+  ast::idx idx_primary_expression
+    = ast[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
+
+  //----------------------------------------------------------------
+  // 2. unary operator
+  //----------------------------------------------------------------
+  if (ast[idx_unary_expression].value.unary_expression.unary_operator != token::invalid)
+  {
+    return build_unary_expression(idx_unary_expression);
+  }
+  //----------------------------------------------------------------
+  // 3. postfix expression
+  //----------------------------------------------------------------
+  if (idx_postfix_expression != ast::null)
+  {
+    return build_postfix_expression(idx_postfix_expression);
+  }
+  //----------------------------------------------------------------
+  // 4. declaration declarator : conversion
+  //----------------------------------------------------------------
+  if (ast[idx_unary_expression].value.unary_expression.idx_declaration_declarator)
+  {
+    TODO
+  }
+}
+
+/**
+ * @brief
+ *
+ * @param idx_conditional_expression
+ * @return Expr*
+ */
+Expr *Tree::build_conditional_expression(ast::idx idx_conditional_expression) {}
+
+
+/**
+ * @brief
+ *
+ * @param idx_postfix_expression
+ * @return Expr*
+ */
+Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
+{
+  ast::idx idx_primary_expression
+    = ast[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
+
+  //--------------------------------
+  // primary expression
+  //--------------------------------
+
+  //------------
+  // identifier : array func call and other with identifier
+  //------------
+  if (ast[idx_primary_expression].value.primary_expression.idx_identifier != ast::null)
+  {
+    // TODO
+    ast::idx idx_identifier
+      = ast[idx_primary_expression].value.primary_expression.idx_identifier;
+    std::string identifier = std::string(ast[idx_identifier].value.identifier.name);
+
+    // CASE exist postfix operator
+    if (ast[idx_postfix_expression].value.postfix_expression.idx_postfix_operator != ast::null)
+    {
+      ast::idx idx_postfix_operator
+        = ast[idx_postfix_expression].value.postfix_expression.idx_postfix_operator;
+      while (idx_postfix_operator != ast::null)
+      {
+        switch (ast[idx_postfix_operator].value.postfix_operator.postfix_operator)
+        {
+          // ++
+          case token::self_plus:
+            TODO break;
+
+          // --
+          case token::self_minus:
+            TODO break;
+
+          // ->
+          case token::ver:
+            TODO break;
+
+          // .
+          case token::period:
+            TODO break;
+
+          // CASE array [] or function call ()
+          case token::invalid: {
+            // CASE array
+            if (ast[idx_postfix_operator].value.postfix_operator.idx_array_idx_assignment_expression != ast::null)
+            {
+              std::vector<Expr *> idx_list;
+              for (ast::idx i = idx_postfix_operator; i != ast::null;
+                   i          = ast[i].value.postfix_operator.idx_next_postfix_operator)
+              {
+                idx_list.push_back(build_expression(
+                  ast[i].value.postfix_operator.idx_array_idx_assignment_expression
+                ));
+              }
+              // TODO
+              // return Array::create(identifier, idx_list);
+            }
+            // CASE function call
+            else if (ast[idx_postfix_operator].value.postfix_operator.idx_func_call_assignment_expression_list != ast::null)
+            {
+              // TODO
+              // return FuncCall::create(
+              //   identifier,
+              //   build_argument_list(
+              //     ast[idx_postfix_operator]
+              //       .value.postfix_operator.idx_func_call_assignment_expression_list
+              //   )
+              //);
+            }
+            else
+            {
+              NOT_REACHABLE
+            }
+            NOT_REACHABLE
+          }
+
+          default:
+            SWITCH_ERROR
+        }
+        idx_postfix_operator
+          = ast[idx_postfix_operator].value.postfix_operator.idx_next_postfix_operator;
+      }
+    }
+    // CASE not exist postfix operator
+    else
+    {
+      // TODO
+      //  return Var::create(identifier);
+    }
+  }
+  //------------
+  // constant
+  //------------
+  else if (ast[idx_primary_expression].value.primary_expression.idx_constant != ast::null)
+  {
+    // return build_constant(
+    //   ast[idx_primary_expression].value.primary_expression.idx_constant
+    //);
+  }
+  //------------
+  // expression
+  //------------
+  else
+  {
+    return build_binary_expression(idx_postfix_expression);
+  }
+  NOT_REACHABLE
+}
 
 
 /**
@@ -438,8 +667,8 @@ spt::Expr *Tree::build_expression(ast::idx idx_expression){TODO}
  * @param idx_arguments_type_list
  * @return std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
  */
-std::tuple<std::vector<spt::Type *>, std::vector<std::string>> Tree::
-  build_arguments_type_list(ast::idx idx_arguments_type_list)
+std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
+Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
 {
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> arguments_type_list;
   for (ast::idx i
@@ -664,6 +893,14 @@ spt::Statement *Tree::build_for_statement(ast::idx idx_for_statement)
   build_expression(idx_change_assign_expression);
   // compound statement
   build_compound_statement(idx_compound_statement);
+}
+
+
+Expr *Tree::build_compute_unary_expression_size(ast::idx unary_expression){TODO}
+
+Expr *Tree::build_compute_declarator_size(ast::idx idx_declaration_declarator)
+{
+  TODO
 }
 
 #endif
