@@ -1,12 +1,21 @@
 #ifndef SPEC_TREE_NODE_CPP
 #define SPEC_TREE_NODE_CPP
 #include "spec_tree_node.h"
+#include <fmt/format.h>
 #include <iostream>
+#include <string>
 
-#define PRINT_SIZE std::cout << "tree size:" << ptr_tree_body->size() << std::endl;
 
 namespace spt
 {
+std::string print_buffer;
+uint64_t    number_print_node = 0;
+
+std::string get_node_name(std::string node_name)
+{
+  return node_name + std::to_string(number_print_node);
+}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Block
 ////////////////////////////////////////////////////////////////
@@ -27,6 +36,17 @@ void Block::push_back(Statement *ptr_statement)
 uint64_t Block::size() const
 {
   return block_body.size();
+}
+
+void Block::print() const
+{
+  print_buffer += "Block:";
+  /*
+  for (Statement i : block_body)
+  {
+    i->print();
+  }
+  */
 }
 
 ////////////////////////////////////////////////////////////////
@@ -88,11 +108,10 @@ FuncType::~FuncType() {}
 FuncType *
 FuncType::get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list)
 {
-  FuncType f(ptr_return_type, argument_type_list);
-  // TODO this step will write memory belong to block located in 0x555555a1f550
-  PRINT_SIZE
-  ptr_tree_body->emplace_back(f);
-  PRINT_SIZE
+  // TODO this step will write memory belong to class Block located at 0x555555a1f550
+  PRINT_SPEC_TREE_SIZE
+  ptr_tree_body->push_back(FuncType (ptr_return_type, argument_type_list));
+  PRINT_SPEC_TREE_SIZE
   std::cout << &std::get<FuncType>(ptr_tree_body->back()) << std::endl;
   return &std::get<FuncType>(ptr_tree_body->back());
 }
@@ -102,8 +121,8 @@ FuncType::get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list
 /// @brief ArrayType
 ////////////////////////////////////////////////////////////////
 
-ArrayType *
-ArrayType::get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len){};
+ArrayType *ArrayType::get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len){
+  TODO};
 
 ////////////////////////////////////////////////////////////////
 /// @brief PointerType
@@ -112,7 +131,6 @@ ArrayType::get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len){};
 PointerType *PointerType::get(Type *ptr_type_)
 {
   ptr_tree_body->push_back(PointerType(ptr_type_));
-  PRINT_SIZE
   return &std::get<PointerType>(ptr_tree_body->back());
 }
 
@@ -153,7 +171,10 @@ FuncDef *FuncDef::create(
   Block                                                         *body_
 )
 {
+  // TODO this step will write memory belong to class Block located at 0x555555a1f550
+  PRINT_SPEC_TREE_SIZE
   ptr_tree_body->push_back(FuncDef(ptr_return_type_, name_, argument_type_list_, body_));
+  PRINT_SPEC_TREE_SIZE
   return &std::get<FuncDef>(ptr_tree_body->back());
 }
 

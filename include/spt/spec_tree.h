@@ -12,6 +12,7 @@ namespace spt
 class Tree
 {
 private:
+  spt::Block                      *ptr_root_tree_body = nullptr;
   ast::Tree                        ast;
   std::vector<spt::spec_tree_node> tree_body;
 
@@ -64,7 +65,6 @@ private:
   Statement *build_while_statement(ast::idx idx_statement);
   Statement *build_do_while_statement(ast::idx idx_statement);
   Statement *build_for_statement(ast::idx idx_statement);
-
 
   std::uint64_t constant_node_to_uint64(ast::idx idx_constant);
 

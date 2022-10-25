@@ -6,6 +6,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+
+
 namespace ast
 {
 std::size_t const sizeof_syntax_tree_init = 100000;

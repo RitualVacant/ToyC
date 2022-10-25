@@ -22,10 +22,11 @@ std::vector<spec_tree_node> *ptr_tree_body = nullptr;
 Tree::Tree()
 {
   toy_c::parser parser;
-  ast           = std::move(parser.get_ast_tree());
-  ptr_tree_body = new std::vector<spt::spec_tree_node>;
-  // the syntax ast 's root node must be 1
-  build_mult_declaration_or_definition(1);
+  ast = std::move(parser.get_ast_tree());
+  // ptr_tree_body = new std::vector<spt::spec_tree_node>;
+  ptr_tree_body = &tree_body;
+  // the ast 's root node idx must be 1
+  ptr_root_tree_body = build_mult_declaration_or_definition(1);
 }
 
 /**
@@ -39,7 +40,10 @@ Tree::~Tree() {}
  * @brief
  *
  */
-void Tree::print_spec_tree() {}
+void Tree::print_spec_tree()
+{
+  ptr_root_tree_body->print();
+}
 
 /**
  * @brief
@@ -77,6 +81,7 @@ Tree::build_mult_declaration_or_definition(ast::idx idx_declaration_or_definitio
     for (ast::idx j = ast[i].value.declaration_or_definition.idx_initial_declarator;
          j != ast::null; j = ast[j].value.initial_declarator.idx_next_initial_declarator)
     {
+      PRINT_SPEC_TREE_SIZE
       block->push_back(build_declaration_or_definition(idx_declaration_declarator, j));
       now_compound_statement = ast::null;
     }
@@ -198,12 +203,12 @@ spt::Statement *Tree::build_declaration_or_definition(
         ast[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list
       );
 
+    spt::FuncType *ptr_func_type
+      = spt::FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
+
     /// 1. a pointer to function
     if (ast[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null)
     {
-      spt::FuncType *ptr_func_type
-        = spt::FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
-
       while (ast[idx_direct_declarator].value.direct_declarator.idx_declarator
              != ast::null)
       {
@@ -273,6 +278,7 @@ spt::Statement *Tree::build_declaration_or_definition(
       return spt::VarDef::create(ptr_type, identifier_name);
     }
   }
+  NOT_REACHABLE
 }
 
 /**
@@ -531,6 +537,7 @@ Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
   {
     TODO
   }
+  NOT_REACHABLE
 }
 
 /**
@@ -539,7 +546,7 @@ Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
  * @param idx_conditional_expression
  * @return Expr*
  */
-Expr *Tree::build_conditional_expression(ast::idx idx_conditional_expression) {}
+Expr *Tree::build_conditional_expression(ast::idx idx_conditional_expression){TODO}
 
 
 /**
@@ -797,12 +804,12 @@ spt::Statement *Tree::build_if_statement(ast::idx idx_if_statement)
   // else body
   if (idx_else_body != ast::null)
   {
-    IfStatement::create(expr, true_block);
+    return IfStatement::create(expr, true_block);
   }
   else
   {
     spt::Block *false_block = build_compound_statement(idx_else_body);
-    IfStatement::create(expr, true_block, false_block);
+    return IfStatement::create(expr, true_block, false_block);
   }
 }
 
@@ -893,6 +900,7 @@ spt::Statement *Tree::build_for_statement(ast::idx idx_for_statement)
   build_expression(idx_change_assign_expression);
   // compound statement
   build_compound_statement(idx_compound_statement);
+  TODO
 }
 
 

@@ -1,14 +1,13 @@
-int f(int a, int b)
+int main(int argc, char **argv)
 {
-  return a + b ? a : b;
-}
-int main()
-{
-  int a = 1;
-  int b[3][5];
-  for (int i = 1; i < 10; i++)
+  int a = 0, b = 2 + 3, *c;
+  int d = a + b;
+  for (int i = 1; i < b; i = i + 4)
   {
-    a += i;
-    f(i, a);
+    if (b < 3 && (a == 1 || b >= a) && d != 0)
+    {
+      a = 1 + d;
+    }
   }
+  return 0;
 }

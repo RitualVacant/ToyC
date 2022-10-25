@@ -42,6 +42,7 @@ public:
   static Block *create();
   uint64_t      size() const;
   void          push_back(Statement *ptr_statement);
+  void          print() const;
 };
 
 /**

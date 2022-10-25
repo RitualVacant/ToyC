@@ -2,6 +2,7 @@
 #define INNER_CPP
 
 #include "scanning.h"
+#include <iostream>
 #include <string>
 
 #define TODO                                                                             \
@@ -40,7 +41,8 @@
   exit(0);
 
 #define NODE_TYPE_WRONG(type1, type2)                                                    \
-  if (type1 != type2) {                                                                  \
+  if (type1 != type2)                                                                    \
+  {                                                                                      \
     fmt::print(fg(fmt::color::red), "node type is wrong at: {}:{}", __FILE__, __LINE__); \
     exit(0);                                                                             \
   }
@@ -52,5 +54,9 @@
   );                                                                                     \
   exit(0);
 
+
+#define PRINT_SPEC_TREE_SIZE                                                             \
+  fmt::print("tree size : {}     {}:{}", ptr_tree_body->size(), __FILE__, __LINE__);     \
+  std::cout << std::endl;
 
 #endif

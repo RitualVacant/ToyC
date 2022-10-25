@@ -218,7 +218,6 @@ void Tree::trans_tree()
   {
     trans_declaration_or_definition(i);
   }
-  return;
 }
 
 void Tree::trans_declaration_or_definition(ast::idx idx_declaration_or_definition)
@@ -243,7 +242,6 @@ void Tree::trans_declaration_or_definition(ast::idx idx_declaration_or_definitio
     // std::cout << i << ' ' << j << std::endl;
     trans_each_initial_declarator(i);
   }
-  return;
 }
 
 void Tree::trans_each_initial_declarator(ast::idx idx_initial_declarator)
@@ -275,7 +273,7 @@ void Tree::trans_each_initial_declarator(ast::idx idx_initial_declarator)
     default:
       SWITCH_ERROR
   }
-  return;
+  NOT_REACHABLE
 }
 
 Tree::type_decl_defi Tree::which_type(ast::idx idx_initial_declarator)

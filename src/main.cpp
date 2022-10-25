@@ -111,7 +111,7 @@ void gflags_choose_mode_run()
       break;
     }
     case mode::llvm_opt: {
-      int done = system("opt -dot-cfg -S ./../test/llvm.ll");
+      int done = system("opt -dot-cfg -S ./../test/debug/1");
       if (done == 127)
       {
         fmt::print("done");
@@ -175,7 +175,7 @@ void choose_mode_run()
         break;
       }
       case mode::llvm_opt: {
-        int done = system("opt -dot-cfg -S ./../test/llvm.ll");
+        int done = system("opt -dot-cfg -S ./../test/debug/1");
         if (done == 127)
         {
           fmt::print("done");
