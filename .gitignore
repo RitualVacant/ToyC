@@ -1,8 +1,6 @@
 build/
 cmake-build-debug/
-
 .vscode/
 .idea/
 .cache/
-
 .gitignore

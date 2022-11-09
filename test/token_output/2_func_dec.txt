@@ -2,5 +2,5 @@ token: key_int                        string: int
 token: identify                       string: main
 token: l_par                          string: (
 token: r_par                          string: )
-token: l_big_par                      string: {
-token: r_big_par                      string: }
+token: end                            string: ;
+token: invalid                        string: 

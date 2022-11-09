@@ -1,6 +1,7 @@
 #ifndef SPEC_TREE_NODE_CPP
 #define SPEC_TREE_NODE_CPP
 #include "spec_tree_node.h"
+#include "inner.h"
 #include <fmt/format.h>
 #include <iostream>
 #include <string>
@@ -30,6 +31,7 @@ Block *Block::create()
 
 void Block::push_back(Statement *ptr_statement)
 {
+  PRINT_SPEC_TREE_SIZE
   block_body.push_back(ptr_statement);
 }
 
@@ -110,7 +112,7 @@ FuncType::get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list
 {
   // TODO this step will write memory belong to class Block located at 0x555555a1f550
   PRINT_SPEC_TREE_SIZE
-  ptr_tree_body->push_back(FuncType (ptr_return_type, argument_type_list));
+  ptr_tree_body->push_back(FuncType(ptr_return_type, argument_type_list));
   PRINT_SPEC_TREE_SIZE
   std::cout << &std::get<FuncType>(ptr_tree_body->back()) << std::endl;
   return &std::get<FuncType>(ptr_tree_body->back());

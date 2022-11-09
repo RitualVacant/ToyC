@@ -1,11 +1,9 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-
 #set(CMAKE_CXX_COMPILER "/usr/local/bin/clang++")
 #set(CMAKE_C_COMPILER "/usr/local/bin/clang")
-#set(CMAKE_CXX_COMPILER "/usr/bin/g++-11")
-#set(CMAKE_C_COMPILER "/usr/bin/g++-11")
-
+#set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+#set(CMAKE_C_COMPILER "/usr/bin/gcc")
 
 project(ToyC VERSION 0.1.0 LANGUAGES CXX)
 enable_testing()
@@ -32,7 +30,6 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_GENERATOR "Ninja")
 
-
 # header files h
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/token)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ast)
@@ -40,7 +37,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/error)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/interface)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/var)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/spt)
-
 
 # source files cpp
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/token tokenlib)
@@ -57,6 +53,8 @@ add_library(var STATIC ${varlib})
 
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/spt sptlib)
 add_library(spt STATIC ${sptlib})
+
+
 #
 # LLVM packages
 #

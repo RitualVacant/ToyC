@@ -32,17 +32,16 @@ void output_help_information();
 void gflags_choose_mode_run();
 
 // main func
-std::vector<std::string> command;
 
 int main(int argc, char *argv[])
 {
   if (argc == 1)
   {
     fmt::print("path of input file  : ");
-    input_file_path = "/home/lzj/code/cpp/script/test/debug/1.c";
+    input_file_path = "/home/lzj/Code/Cpp/ToyC/test/debug/1.c";
     // std::cin >> input_file_path;
     fmt::print("path of output file : ");
-    output_file_path = "/home/lzj/code/cpp/script/test/debug/1";
+    output_file_path = "/home/lzj/Code/Cpp/ToyC/test/debug/1";
     // std::cin >> output_file_path;
     choose_mode_run();
   }
@@ -50,9 +49,8 @@ int main(int argc, char *argv[])
   {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     gflags_choose_mode_run();
-    fmt::print("DONE\n");
   }
-
+  fmt::print("FINISH\n");
   return 0;
 }
 
@@ -200,7 +198,14 @@ void choose_mode_run()
 
 void output_help_information()
 {
-  fmt::print("\n");
+  fmt::print("\n _______           _____ \n");
+  fmt::print("|__   __|         / ____|\n");
+  fmt::print("   | | ___  _   _| |     \n");
+  fmt::print("   | |/ _ \\| | | | |     \n");
+  fmt::print("   | | (_) | |_| | |____ \n");
+  fmt::print("   |_|\\___/ \\__, |\\_____|\n");
+  fmt::print("             __/ |       \n");
+  fmt::print("            |___/        \n");
   fmt::print("size of node: {}B\n", sizeof(ast::node));
   fmt::print("-s  scan         lexical analysis and output the token\n");
   fmt::print("-y  yes          get the asm_code file\n");

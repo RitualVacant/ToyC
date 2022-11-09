@@ -7,7 +7,7 @@
 
 #define TODO                                                                             \
   fmt::print(                                                                            \
-    fg(fmt::color::red), "haven't finshed part at :{}:{}\n", __FILE__, __LINE__          \
+    fg(fmt::color::red), "haven't finished part at :{}:{}\n", __FILE__, __LINE__         \
   );                                                                                     \
   exit(0);
 
