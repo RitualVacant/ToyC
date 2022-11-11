@@ -11,29 +11,38 @@ namespace spt
 {
 
 /**
- * @brief
+ * @brief Base
  *
  */
 class Base
 {
-  std::size_t line;
-  std::size_t column;
+private:
+  std::size_t line   = 0;
+  std::size_t column = 0;
+
+public:
+  virtual void print();
+  Base()  = default;
+  ~Base() = default;
 };
 
 /**
- * @brief
+ * @brief Statement
  *
  */
-class Statement
+class Statement : public Base
 {
+public:
+  void print() override;
 };
 
 /**
- * @brief
+ * @brief Block
  *
  */
-class Block
+class Block : public Base
 {
+private:
   std::vector<Statement *> block_body;
 
 public:
@@ -42,31 +51,36 @@ public:
   static Block *create();
   uint64_t      size() const;
   void          push_back(Statement *ptr_statement);
-  void          print() const;
+  void          push_back(Block *block);
+  void          print() override;
 };
 
 /**
- * @brief
+ * @brief Def
  *
  */
-class Def : public Base, public Statement
+class Def : public Statement
 {
+public:
+  void print() override;
 };
 
 /**
- * @brief
+ * @brief Dec
  *
  */
-class Dec : public Base, public Statement
+class Dec : public Statement
 {
+public:
+  void print() override;
 };
 
 
 /**
- * @brief
+ * @brief Expr
  *
  */
-class Expr : public Base, public Statement
+class Expr : public Statement
 {
 private:
   token op;
@@ -78,31 +92,50 @@ public:
   Expr(token op, Expr *l_expr, Expr *r_expr);
   ~Expr();
   static Expr *create(token op, Expr *l_expr, Expr *r_expr);
+  void         print() override;
 };
 
 /**
- * @brief
+ * @brief Type
  *
  */
 
-class Type
+class Type : public Base
 {
+private:
 public:
   explicit Type();
   ~Type();
-  static Type *getInt8Ty();
-  static Type *getDoubleTy();
-  static Type *getFloatTy();
-  static Type *getInt16Ty();
-  static Type *getInt32Ty();
-  static Type *getInt64Ty();
-  static Type *getVoid();
-  static Type *getStructTy();
-  void         dump();
+  // offset
+  // 0
+  static Type *get_int8();
+  // 1
+  static Type *get_int16();
+  // 2
+  static Type *get_int32();
+  // 3
+  static Type *get_int64();
+  // 4
+  static Type *get_uint8();
+  // 5
+  static Type *get_uint16();
+  // 6
+  static Type *get_uint32();
+  // 7
+  static Type *get_uint64();
+  // 8
+  static Type *get_void();
+  // 9
+  static Type *get_struct();
+  // 10
+  static Type *get_double();
+  // 11
+  static Type *get_float();
+  void         print() override;
 };
 
 /**
- * @brief
+ * @brief FuncType
  *
  */
 class FuncType : public Type
@@ -113,12 +146,13 @@ class FuncType : public Type
 public:
   explicit FuncType(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list);
   ~FuncType();
-  static FuncType *
+  static FuncType      *
   get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list);
+  void print() override;
 };
 
 /**
- * @brief
+ * @brief ArrayType
  *
  */
 class ArrayType : public Type
@@ -129,10 +163,11 @@ private:
 
 public:
   static ArrayType *get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len);
+  void              print() override;
 };
 
 /**
- * @brief
+ * @brief PointerType
  *
  */
 
@@ -145,14 +180,15 @@ public:
   static PointerType *get(Type *ptr_type);
   explicit PointerType(Type *ptr_type);
   ~PointerType();
+  void print() override;
 };
 
 
 /**
- * @brief
+ * @brief Func
  *
  */
-class Func
+class Func : public Base
 {
 public:
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list;
@@ -167,10 +203,11 @@ public:
 
   );
   ~Func();
+  void print() override;
 };
 
 /**
- * @brief
+ * @brief FuncDef
  *
  */
 class FuncDef : public Def, public Func
@@ -185,17 +222,19 @@ public:
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_,
     Block                                                         *body_
   );
-
   static FuncDef *create(
     Type                                                          *ptr_return_type_,
     std::string                                                    name_,
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_,
     Block                                                         *body_
   );
+  //
+
+  virtual void print() override;
 };
 
 /**
- * @brief
+ * @brief FuncDec
  *
  */
 class FuncDec : public Dec, public Func
@@ -212,54 +251,69 @@ public:
     std::string                                                    name,
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list
   );
+  virtual void print() override;
 };
 
 /**
- * @brief
+ * @brief FuncCall
  *
  */
 class FuncCall : public Expr
 {
+protected:
   std::string         identifier;
   std::vector<Expr *> argument_list;
 
-private:
 public:
   explicit FuncCall(std::string identifier, std::vector<Expr *> argument_list);
   ~FuncCall();
   static FuncCall *create(std::string identifier, std::vector<Expr *> argument_list);
+  void             print() override;
 };
 
-class Var
+/**
+ * @brief Var
+ *
+ */
+
+class Var : public Base
 {
+protected:
   std::string identifier;
+  Type       *type;
 
 public:
-  explicit Var(std::string identifier);
+  explicit Var(std::string identifier_, Type *type_);
   ~Var();
-  static Var *create(std::string identifier);
+  static Var *create(std::string identifier_, Type *type_);
+  void        print() override;
 };
 
 
 /**
- * @brief
+ * @brief VarDef
  *
  */
 class VarDef : public Def, public Var
 {
+private:
   Expr *initializer;
 
 public:
-  explicit VarDef(Type *type_, std::string name_, Expr *initializer_);
-  static VarDef *create(Type *type_, std::string name_, Expr *initializer_ = nullptr);
+  explicit VarDef(Type *type_, std::string identifier_, Expr *initializer_);
+  static VarDef      *
+  create(Type *type_, std::string identifier_, Expr *initializer_ = nullptr);
+  void print() override;
 };
 
 /**
- * @brief
+ * @brief VarDec
  *
  */
-class VarDec : public Dec
+class VarDec : public Dec, public Var
 {
+public:
+  void print() override;
 };
 
 /**
@@ -275,6 +329,7 @@ public:
     std::string                                                    name,
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> element_list
   );
+  void print() override;
 };
 
 /**
@@ -285,6 +340,7 @@ class StructDec : public Dec
 {
 public:
   static StructDec *create(std::string name);
+  void              print() override;
 };
 
 
@@ -303,6 +359,7 @@ public:
   explicit IfStatement(Expr *expr, Block *true_block, Block *false_block);
   static IfStatement *create(Expr *expr, Block *true_block);
   static IfStatement *create(Expr *expr, Block *true_block, Block *false_block);
+  void                print() override;
 };
 
 /**
@@ -311,6 +368,8 @@ public:
  */
 class SwitchStatement : public Statement
 {
+public:
+  void print() override;
 };
 
 /**
@@ -326,6 +385,7 @@ public:
   explicit ReturnStatement(Expr *return_expr);
   ~ReturnStatement();
   static ReturnStatement *create(Expr *return_expr);
+  void                    print() override;
 };
 
 /**
@@ -342,6 +402,7 @@ public:
   explicit WhileStatement(Expr *expr, Block *while_body);
   ~WhileStatement();
   static WhileStatement *create(Expr *expr, Block *while_body);
+  void                   print() override;
 };
 
 /**
@@ -358,6 +419,7 @@ public:
   explicit DoWhileStatement(Expr *expr, Block *do_while_body);
   ~DoWhileStatement();
   static DoWhileStatement *create(Expr *expr, Block *do_while_body);
+  void                     print() override;
 };
 
 /**
@@ -385,8 +447,9 @@ public:
 
   static ForStatement *
   create(Expr *init_expr, Expr *condition_expr, Expr *change_expr, Block *for_body);
-  static ForStatement *
+  static ForStatement      *
   create(Def *init_def, Expr *condition_expr, Expr *change_expr, Block *for_body);
+  void print() override;
 };
 
 
@@ -400,9 +463,11 @@ public:
   explicit Array(std::string identifier, std::vector<Expr *> idx_list);
   ~Array();
   static Array *create(std::string identifier, std::vector<Expr *> idx_list);
+  void          print() override;
 };
 
 
+// DROP
 using spec_tree_node = std::variant<
   ArrayType,
   Array,
@@ -432,6 +497,5 @@ using spec_tree_node = std::variant<
 extern std::vector<spec_tree_node> *ptr_tree_body;
 
 }  // namespace spt
-
 
 #endif

@@ -1,48 +1,49 @@
 #ifndef SPEC_TREE_CPP
-#  define SPEC_TREE_CPP
+#define SPEC_TREE_CPP
 
-#  include "spec_tree.h"
-#  include "ast_node.h"
-#  include "inner.h"
-#  include "parser.h"
-#  include <fmt/color.h>
-#  include <iostream>
-#  include <string>
+#include "spec_tree.h"
+#include "ast_node.h"
+#include "fstream_guard.h"
+#include "inner.h"
+#include "parser.h"
+#include "spec_tree_node.h"
+#include <fmt/color.h>
+#include <iostream>
+#include <string>
 
 namespace spt
 {
 
-std::vector<spec_tree_node> *ptr_tree_body = nullptr;
+// std::vector<spt::spec_tree_node> *ptr_tree_body = nullptr;
 
 /**
  * @brief Construct a new spec ast::spec ast object
  *
  * @param ast
  */
-Tree::Tree()
+spt::Tree::Tree()
 {
   toy_c::parser parser;
-  ast = std::move(parser.get_ast_tree());
-  // ptr_tree_body = new std::vector<spt::spec_tree_node>;
-  ptr_tree_body = &tree_body;
-  // the ast 's root node idx must be 1
-  ptr_root_tree_body = build_mult_declaration_or_definition(1);
+  this->ast          = std::move(parser.get_ast_tree());
+  ptr_root_tree_body = build_multi_declaration_or_definition(1);
 }
 
 /**
  * @brief Destroy the spec ast::spec ast object
  *
  */
-Tree::~Tree() {}
+// spt::Tree::~Tree() {}
 
 
 /**
  * @brief
  *
  */
-void Tree::print_spec_tree()
+void spt::Tree::print_spec_tree()
 {
   ptr_root_tree_body->print();
+  toy_c::fstream_guard file(output_file_path, toy_c::mode::write);
+  file << json.get_str_ref();
 }
 
 /**
@@ -50,7 +51,7 @@ void Tree::print_spec_tree()
  *
  */
 spt::Block *
-Tree::build_mult_declaration_or_definition(ast::idx idx_declaration_or_definition)
+spt::Tree::build_multi_declaration_or_definition(ast::idx idx_declaration_or_definition)
 {
   //
   // idx_declaration_declarator
@@ -81,7 +82,6 @@ Tree::build_mult_declaration_or_definition(ast::idx idx_declaration_or_definitio
     for (ast::idx j = ast[i].value.declaration_or_definition.idx_initial_declarator;
          j != ast::null; j = ast[j].value.initial_declarator.idx_next_initial_declarator)
     {
-      PRINT_SPEC_TREE_SIZE
       block->push_back(build_declaration_or_definition(idx_declaration_declarator, j));
       now_compound_statement = ast::null;
     }
@@ -96,36 +96,66 @@ Tree::build_mult_declaration_or_definition(ast::idx idx_declaration_or_definitio
  * @param idx_declaration_declarator
  * @return spt::Type*
  */
-spt::Type *Tree::build_declaration_declarator(ast::idx idx_declaration_declarator)
+spt::Type *spt::Tree::build_declaration_declarator(ast::idx idx_declaration_declarator)
 {
-  switch (ast[idx_declaration_declarator].value.declaration_declarator.type)
+  // unsign
+  if (ast[idx_declaration_declarator].value.declaration_declarator.sign == ast::declarator_sign::sign_signed)
   {
-    case ast::declarator_type::type_struct:
-      return spt::Type::getStructTy();
-    case ast::declarator_type::type_char:
-      return spt::Type::getInt8Ty();
-    case ast::declarator_type::type_double:
-      return spt::Type::getDoubleTy();
-    case ast::declarator_type::type_float:
-      return spt::Type::getFloatTy();
-    case ast::declarator_type::type_short_int:
-      return spt::Type::getInt16Ty();
-    case ast::declarator_type::type_int:
-    case ast::declarator_type::type_long_int:
-      return spt::Type::getInt32Ty();
-    case ast::declarator_type::type_long_long_int:
-      return spt::Type::getInt64Ty();
-    // TODO void type
-    case ast::declarator_type::type_void:
-      return spt::Type::getVoid();
-    default:
-      fmt::print(
-        fg(fmt::color::red), "declarator type: {}\n",
-        static_cast<unsigned char>(
-          ast[idx_declaration_declarator].value.declaration_declarator.type
-        )
-      );
-      SWITCH_ERROR
+    switch (ast[idx_declaration_declarator].value.declaration_declarator.type)
+    {
+      case ast::declarator_type::type_struct:
+        return spt::Type::get_struct();
+      case ast::declarator_type::type_char:
+        return spt::Type::get_int8();
+      case ast::declarator_type::type_double:
+        return spt::Type::get_double();
+      case ast::declarator_type::type_float:
+        return spt::Type::get_float();
+      case ast::declarator_type::type_short_int:
+        return spt::Type::get_int16();
+      case ast::declarator_type::type_int:
+      case ast::declarator_type::type_long_int:
+        return spt::Type::get_int32();
+      case ast::declarator_type::type_long_long_int:
+        return spt::Type::get_int64();
+      case ast::declarator_type::type_void:
+        return spt::Type::get_void();
+      default:
+        fmt::print(
+          fg(fmt::color::red), "declarator type: {}\n",
+          static_cast<unsigned char>(
+            ast[idx_declaration_declarator].value.declaration_declarator.type
+          )
+        );
+        SWITCH_ERROR
+    }
+  }
+  else
+  {
+    switch (ast[idx_declaration_declarator].value.declaration_declarator.type)
+    {
+      case ast::declarator_type::type_double:
+        TODO return spt::Type::get_double();
+      case ast::declarator_type::type_float:
+        TODO return spt::Type::get_float();
+      case ast::declarator_type::type_char:
+        return spt::Type::get_uint8();
+      case ast::declarator_type::type_short_int:
+        return spt::Type::get_uint16();
+      case ast::declarator_type::type_int:
+      case ast::declarator_type::type_long_int:
+        return spt::Type::get_uint32();
+      case ast::declarator_type::type_long_long_int:
+        return spt::Type::get_uint64();
+      default:
+        fmt::print(
+          fg(fmt::color::red), "declarator type: {}\n",
+          static_cast<unsigned char>(
+            ast[idx_declaration_declarator].value.declaration_declarator.type
+          )
+        );
+        SWITCH_ERROR
+    }
   }
   NOT_REACHABLE
 }
@@ -136,7 +166,7 @@ spt::Type *Tree::build_declaration_declarator(ast::idx idx_declaration_declarato
  * @param idx_declaration_declarator
  * @param idx_initial_declarator
  */
-spt::Statement *Tree::build_declaration_or_definition(
+spt::Statement *spt::Tree::build_declaration_or_definition(
   ast::idx idx_declaration_declarator,
   ast::idx idx_initial_declarator
 )
@@ -228,7 +258,7 @@ spt::Statement *Tree::build_declaration_or_definition(
         // compound_statement
         return spt::FuncDef::create(
           ptr_return_type, identifier_name, argument_type_list,
-          build_compound_statement(now_compound_statement)
+          build_block(now_compound_statement)
         );
       }
       // 4. a function declaration
@@ -288,8 +318,10 @@ spt::Statement *Tree::build_declaration_or_definition(
  * @param idx_declarator
  * @return spt::Type*
  */
-spt::Type *
-Tree::build_pointer(spt::Type *ptr_type_declaration_declarator, ast::idx idx_declarator)
+spt::Type *spt::Tree::build_pointer(
+  spt::Type *ptr_type_declaration_declarator,
+  ast::idx   idx_declarator
+)
 {
   for (auto i = ast[idx_declarator].value.declarator.is_ptr; i > 0; --i)
   {
@@ -306,7 +338,7 @@ Tree::build_pointer(spt::Type *ptr_type_declaration_declarator, ast::idx idx_dec
  * @param idx_declarator
  * @return std::string
  */
-std::string Tree::get_identifier_name(ast::idx idx_declarator)
+std::string spt::Tree::get_identifier_name(ast::idx idx_declarator)
 {
   ast::idx idx_identifier = ast::null;
   for (ast::idx i = idx_declarator; ast[i].type != ast::node_type::identifier;)
@@ -344,7 +376,8 @@ std::string Tree::get_identifier_name(ast::idx idx_declarator)
  * @param idx_array_declarator
  * @return spt::ArrayType*
  */
-spt::ArrayType *Tree::build_array(spt::Type *ptr_unit_type, ast::idx idx_array_declarator)
+spt::ArrayType *
+spt::Tree::build_array(spt::Type *ptr_unit_type, ast::idx idx_array_declarator)
 {
   ast::idx idx_next_array_declarator
     = ast[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
@@ -364,7 +397,7 @@ spt::ArrayType *Tree::build_array(spt::Type *ptr_unit_type, ast::idx idx_array_d
  * @param idx_constant
  * @return std::uint64_t
  */
-std::uint64_t Tree::constant_node_to_uint64(ast::idx idx_constant)
+std::uint64_t spt::Tree::constant_node_to_uint64(ast::idx idx_constant)
 {
   return std::stoull(ast.get_constant(idx_constant).value);
 }
@@ -375,7 +408,7 @@ std::uint64_t Tree::constant_node_to_uint64(ast::idx idx_constant)
  * @param idx_compound_statement
  * @return spt::Block*
  */
-spt::Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
+spt::Block *spt::Tree::build_block(ast::idx idx_compound_statement)
 {
   spt::Block *block = spt::Block::create();
 
@@ -383,7 +416,15 @@ spt::Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
 
   for (ast::idx i = idx_block; i != ast::null; i = ast[i].value.block.idx_next_block)
   {
-    block->push_back(build_block(i));
+    ast::idx idx_declaration = ast[idx_block].value.block.idx_declaration;
+    if (idx_declaration != ast::null)
+    {
+      block->push_back(build_multi_declaration_or_definition(idx_declaration));
+    }
+    else
+    {
+      block->push_back(build_statement(i));
+    }
   }
   return block;
 }
@@ -394,36 +435,27 @@ spt::Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
  * @param idx_idx_block
  * @return spt::Block*
  */
-spt::Statement *Tree::build_block(ast::idx idx_block)
+spt::Statement *spt::Tree::build_statement(ast::idx idx_block)
 {
-  ast::idx idx_declaration = ast[idx_block].value.block.idx_declaration;
-  ast::idx idx_statement   = ast[idx_block].value.block.idx_statement;
-  if (idx_declaration != ast::null)
+  ast::idx idx_statement = ast[idx_block].value.block.idx_statement;
+  switch (ast[idx_statement].type)
   {
-    build_mult_declaration_or_definition(idx_declaration);
-  }
-  else
-  {
-    switch (ast[idx_statement].type)
-    {
-      // TODO all type
-      case ast::node_type::if_statement:
-        return build_if_statement(idx_statement);
-      case ast::node_type::switch_statement:
-        return build_switch_statement(idx_statement);
-      case ast::node_type::return_statement:
-        return build_return_statement(idx_statement);
-      case ast::node_type::while_statement:
-        return build_while_statement(idx_statement);
-      case ast::node_type::do_while_statement:
-        return build_do_while_statement(idx_statement);
-      case ast::node_type::for_statement:
-        return build_for_statement(idx_statement);
-      case ast::node_type::expression:
-        return build_expression(idx_statement);
-      default:
-        SWITCH_ERROR
-    }
+    case ast::node_type::if_statement:
+      return build_if_statement(idx_statement);
+    case ast::node_type::switch_statement:
+      return build_switch_statement(idx_statement);
+    case ast::node_type::return_statement:
+      return build_return_statement(idx_statement);
+    case ast::node_type::while_statement:
+      return build_while_statement(idx_statement);
+    case ast::node_type::do_while_statement:
+      return build_do_while_statement(idx_statement);
+    case ast::node_type::for_statement:
+      return build_for_statement(idx_statement);
+    case ast::node_type::expression:
+      return build_expression(idx_statement);
+    default:
+      SWITCH_ERROR
   }
   NOT_REACHABLE
 }
@@ -434,7 +466,7 @@ spt::Statement *Tree::build_block(ast::idx idx_block)
  * @param idx_expression
  * @return spt::Expr*
  */
-spt::Expr *Tree::build_expression(ast::idx idx_expression)
+spt::Expr *spt::Tree::build_expression(ast::idx idx_expression)
 {
   switch (ast[idx_expression].type)
   {
@@ -452,7 +484,7 @@ spt::Expr *Tree::build_expression(ast::idx idx_expression)
   NOT_REACHABLE
 }
 
-Expr *Tree::build_binary_expression(ast::idx idx_binary_expression)
+spt::Expr *spt::Tree::build_binary_expression(ast::idx idx_binary_expression)
 {
   return Expr::create(
     ast[idx_binary_expression].value.binary_expression.token_operator,
@@ -461,14 +493,14 @@ Expr *Tree::build_binary_expression(ast::idx idx_binary_expression)
   );
 }
 
-Expr *Tree::build_assign_expression(ast::idx idx_assign_expression)
+spt::Expr *spt::Tree::build_assign_expression(ast::idx idx_assign_expression)
 {
   ast::idx idx_binary_expression
     = ast[idx_assign_expression].value.assignment_expression.idx_binary_expression;
 
   // just a binary expression without assign
-  Expr *r_value = build_expression(idx_binary_expression);
-  Expr *l_value;
+  spt::Expr *r_value = build_expression(idx_binary_expression);
+  spt::Expr *l_value;
 
   for (ast::idx i = idx_assign_expression; i != ast::null;
        i          = ast[i].value.assignment_expression.idx_next_assignment_expression)
@@ -476,7 +508,9 @@ Expr *Tree::build_assign_expression(ast::idx idx_assign_expression)
     l_value = build_unary_expression(
       ast[i].value.assignment_expression.idx_unary_or_binary_expression
     );
-    Expr::create(ast[i].value.assignment_expression.assignment_type, l_value, r_value);
+    spt::Expr::create(
+      ast[i].value.assignment_expression.assignment_type, l_value, r_value
+    );
 
     if (ast[i].value.assignment_expression.idx_next_assignment_expression != ast::null)
     {
@@ -487,7 +521,7 @@ Expr *Tree::build_assign_expression(ast::idx idx_assign_expression)
 }
 
 
-Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
+spt::Expr *spt::Tree::build_unary_expression(ast::idx idx_unary_expression)
 {
   //----------------------------------------------------------------
   // 1. sizeof
@@ -546,7 +580,8 @@ Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
  * @param idx_conditional_expression
  * @return Expr*
  */
-Expr *Tree::build_conditional_expression(ast::idx idx_conditional_expression){TODO}
+spt::Expr *spt::Tree::build_conditional_expression(ast::idx idx_conditional_expression
+){TODO}
 
 
 /**
@@ -555,7 +590,7 @@ Expr *Tree::build_conditional_expression(ast::idx idx_conditional_expression){TO
  * @param idx_postfix_expression
  * @return Expr*
  */
-Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
+spt::Expr *spt::Tree::build_postfix_expression(ast::idx idx_postfix_expression)
 {
   ast::idx idx_primary_expression
     = ast[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
@@ -675,7 +710,7 @@ Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
  * @return std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
  */
 std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
-Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
+spt::Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
 {
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> arguments_type_list;
   for (ast::idx i
@@ -699,7 +734,7 @@ Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
  * @return std::tuple<spt::Type *, std::string>
  */
 std::tuple<spt::Type *, std::string>
-Tree::build_argument_declaration(ast::idx idx_argument_declaration)
+spt::Tree::build_argument_declaration(ast::idx idx_argument_declaration)
 {
   ast::idx idx_declaration_declarator
     = ast[idx_argument_declaration]
@@ -722,7 +757,8 @@ Tree::build_argument_declaration(ast::idx idx_argument_declaration)
  * @return spt::Type*
  */
 
-spt::Type *Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarator)
+spt::Type *
+spt::Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarator)
 {
   spt::Type *ptr_type_declaration_declarator
     = build_declaration_declarator(idx_declaration_declarator);
@@ -783,14 +819,14 @@ spt::Type *Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_de
  * @return std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
  */
 std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
-Tree::build_struct_element_type_list(ast::idx idx_compound_statement){TODO}
+spt::Tree::build_struct_element_type_list(ast::idx idx_compound_statement){TODO}
 
 /**
  * @brief
  *
  * @param idx_if_statement
  */
-spt::Statement *Tree::build_if_statement(ast::idx idx_if_statement)
+spt::Statement *spt::Tree::build_if_statement(ast::idx idx_if_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_if_statement].value.if_statement.idx_assign_expression;
@@ -800,7 +836,7 @@ spt::Statement *Tree::build_if_statement(ast::idx idx_if_statement)
   // loop conditional
   spt::Expr *expr = build_expression(idx_assign_expression);
   // if body
-  spt::Block *true_block = build_compound_statement(idx_if_body);
+  spt::Block *true_block = build_block(idx_if_body);
   // else body
   if (idx_else_body != ast::null)
   {
@@ -808,7 +844,7 @@ spt::Statement *Tree::build_if_statement(ast::idx idx_if_statement)
   }
   else
   {
-    spt::Block *false_block = build_compound_statement(idx_else_body);
+    spt::Block *false_block = build_block(idx_else_body);
     return IfStatement::create(expr, true_block, false_block);
   }
 }
@@ -819,7 +855,7 @@ spt::Statement *Tree::build_if_statement(ast::idx idx_if_statement)
  * @param idx_statement
  * @return spt::Statement*
  */
-spt::Statement *Tree::build_switch_statement(ast::idx idx_statement){TODO}
+spt::Statement *spt::Tree::build_switch_statement(ast::idx idx_statement){TODO}
 
 /**
  * @brief
@@ -827,7 +863,7 @@ spt::Statement *Tree::build_switch_statement(ast::idx idx_statement){TODO}
  * @param idx_statement
  * @return spt::Statement*
  */
-spt::Statement *Tree::build_return_statement(ast::idx idx_return_statement)
+spt::Statement *spt::Tree::build_return_statement(ast::idx idx_return_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_return_statement].value.return_statement.idx_assignment_expression;
@@ -841,7 +877,7 @@ spt::Statement *Tree::build_return_statement(ast::idx idx_return_statement)
  * @param idx_statement
  * @return spt::Statement*
  */
-spt::Statement *Tree::build_while_statement(ast::idx idx_while_statement)
+spt::Statement *spt::Tree::build_while_statement(ast::idx idx_while_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_while_statement].value.while_statement.idx_assignment_expression;
@@ -849,8 +885,7 @@ spt::Statement *Tree::build_while_statement(ast::idx idx_while_statement)
     = ast[idx_while_statement].value.while_statement.idx_compound_statement;
 
   return spt::WhileStatement::create(
-    build_expression(idx_assign_expression),
-    build_compound_statement(idx_compound_statement)
+    build_expression(idx_assign_expression), build_block(idx_compound_statement)
   );
 }
 
@@ -860,7 +895,7 @@ spt::Statement *Tree::build_while_statement(ast::idx idx_while_statement)
  * @param idx_statement
  * @return spt::Statement*
  */
-spt::Statement *Tree::build_do_while_statement(ast::idx idx_do_while_statement)
+spt::Statement *spt::Tree::build_do_while_statement(ast::idx idx_do_while_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_do_while_statement].value.do_while_statement.idx_assign_statement;
@@ -868,8 +903,7 @@ spt::Statement *Tree::build_do_while_statement(ast::idx idx_do_while_statement)
     = ast[idx_do_while_statement].value.do_while_statement.idx_compound_statement;
 
   return spt::DoWhileStatement::create(
-    build_expression(idx_assign_expression),
-    build_compound_statement(idx_compound_statement)
+    build_expression(idx_assign_expression), build_block(idx_compound_statement)
   );
 }
 
@@ -879,7 +913,7 @@ spt::Statement *Tree::build_do_while_statement(ast::idx idx_do_while_statement)
  * @param idx_statement
  * @return spt::Statement*
  */
-spt::Statement *Tree::build_for_statement(ast::idx idx_for_statement)
+spt::Statement *spt::Tree::build_for_statement(ast::idx idx_for_statement)
 {
   ast::idx idx_change_assign_expression
     = ast[idx_for_statement].value.for_statement.idx_change_assign_expression;
@@ -893,24 +927,23 @@ spt::Statement *Tree::build_for_statement(ast::idx idx_for_statement)
   ast::idx idx_declaration = ast[idx_for_statement].value.for_statement.idx_declaration;
 
   // declarations
-  build_mult_declaration_or_definition(idx_declaration);
+  build_multi_declaration_or_definition(idx_declaration);
   // condition
   build_expression(idx_conditional_assign_expression);
   // change value
   build_expression(idx_change_assign_expression);
   // compound statement
-  build_compound_statement(idx_compound_statement);
+  build_block(idx_compound_statement);
   TODO
 }
 
+spt::Expr *spt::Tree::build_compute_unary_expression_size(ast::idx unary_expression){TODO}
 
-Expr *Tree::build_compute_unary_expression_size(ast::idx unary_expression){TODO}
-
-Expr *Tree::build_compute_declarator_size(ast::idx idx_declaration_declarator)
+spt::Expr *spt::Tree::build_compute_declarator_size(ast::idx idx_declaration_declarator)
 {
   TODO
 }
 
-#endif
+}  // namespace spt
 
-}  // namespace toy_c
+#endif

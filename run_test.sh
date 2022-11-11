@@ -27,6 +27,9 @@ output_json_files_prefix_path=${current_path}${output_json_files_prefix_path}
 # llvm
 output_llvm_files_prefix_path="/test/llvm_output/"
 output_llvm_files_prefix_path=${current_path}${output_llvm_files_prefix_path}
+# spec
+output_spec_json_files_prefix_path="/test/llvm_output/"
+output_spec_json_files_prefix_path=${current_path}${output_llvm_files_prefix_path}
 
 length=${#input_files[@]}
 #length=15
@@ -35,7 +38,7 @@ printf "input file number: "${length}"\n"
 
 mode_list=(scan tree ir spt)
 postfix_files_list=(txt json ll)
-list_output_files_prefix_path=(${output_txt_files_prefix_path} ${output_json_files_prefix_path} ${output_llvm_files_prefix_path})
+list_output_files_prefix_path=(${output_txt_files_prefix_path} ${output_json_files_prefix_path} ${output_llvm_files_prefix_path} ${output_spec_json_files_prefix_path})
 
 
 for ((i=0; i<${#mode_list[@]}; i++))

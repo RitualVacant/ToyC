@@ -21,7 +21,7 @@ build_llvm_ir::build_llvm_ir()
 
   // enable in llvm 15.0.0
   // context->setOpaquePointers(false);
-  build_mult_declaration_or_definition(1);
+  build_multi_declaration_or_definition(1);
 }
 
 /**
@@ -36,8 +36,8 @@ build_llvm_ir::~build_llvm_ir() {}
  * @param idx_declaration_or_definition
  * @return llvm::Type*
  */
-llvm::Type *
-build_llvm_ir::build_mult_declaration_or_definition(ast::idx idx_declaration_or_definition
+llvm::Type *build_llvm_ir::build_multi_declaration_or_definition(
+  ast::idx idx_declaration_or_definition
 )
 {
   for (ast::idx i = idx_declaration_or_definition,
@@ -715,7 +715,7 @@ void build_llvm_ir::build_block(ast::idx idx_block)
   ast::idx idx_statement   = tree[idx_block].value.block.idx_statement;
   if (idx_declaration != ast::null)
   {
-    build_mult_declaration_or_definition(idx_declaration);
+    build_multi_declaration_or_definition(idx_declaration);
   }
   else
   {
@@ -936,7 +936,7 @@ void build_llvm_ir::build_for_statement(ast::idx idx_for_statement)
     = llvm::BasicBlock::Create(*context, get_label(), ptr_now_func);
 
   // declarations
-  build_mult_declaration_or_definition(idx_declaration);
+  build_multi_declaration_or_definition(idx_declaration);
   builder->CreateBr(ptr_for_conditional_assign_expression);
 
   builder->SetInsertPoint(ptr_for_conditional_assign_expression);

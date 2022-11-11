@@ -1,11 +1,12 @@
 #ifndef PARSER_CPP
-#  define PARSER_CPP
-#  include "parser.h"
-#  include "ast.h"
-#  include "declataror.h"
-#  include "inner.h"
-#  include "judge_char.h"
-#  include "token.h"
+#define PARSER_CPP
+
+#include "parser.h"
+#include "ast.h"
+#include "declataror.h"
+#include "inner.h"
+#include "judge_char.h"
+#include "token.h"
 
 namespace toy_c
 {
@@ -1312,7 +1313,6 @@ ast::idx parser::parser_return_statement()
 
 }  // namespace toy_c
 
-#endif
 //⠄⠄⠄⠄⢠⣿⣿⣿⣿⣿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣯⢻⣿⣿⣿⣿⣆
 //⠄⠄⣼⢀⣿⣿⣿⣿⣏⡏⠄⠹⣿⣿⣿⣿⣿⣿⣿⣿⣧⢻⣿⣿⣿⣿
 //⠄⠄⡟⣼⣿⣿⣿⣿⣿⠄⠄⠄⠈⠻⣿⣿⣿⣿⣿⣿⣿⣇⢻⣿⣿⣿⣿
@@ -2379,3 +2379,5 @@ void parser::print_mid_code() {
   return;
 }
 */
+
+#endif

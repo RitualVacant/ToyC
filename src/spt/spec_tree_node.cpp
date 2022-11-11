@@ -1,149 +1,283 @@
 #ifndef SPEC_TREE_NODE_CPP
 #define SPEC_TREE_NODE_CPP
+
 #include "spec_tree_node.h"
+#include "ast_node.h"
+#include "global_var.h"
 #include "inner.h"
+#include <fmt/core.h>
 #include <fmt/format.h>
 #include <iostream>
 #include <string>
 
-
 namespace spt
 {
-std::string print_buffer;
-uint64_t    number_print_node = 0;
+
+uint64_t number_print_node = 0;
 
 std::string get_node_name(std::string node_name)
 {
   return node_name + std::to_string(number_print_node);
 }
 
+
+////////////////////////////////////////////////////////////////
+/// @brief Base
+////////////////////////////////////////////////////////////////
+
+void spt::Base::print()
+{
+  NOT_REACHABLE
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief Statement
+////////////////////////////////////////////////////////////////
+
+void spt::Statement::print(){NOT_REACHABLE}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Block
 ////////////////////////////////////////////////////////////////
 
-Block::Block() {}
-Block::~Block() {}
-Block *Block::create()
+spt::Block::Block()
 {
-  ptr_tree_body->push_back(Block());
-  return &std::get<Block>(ptr_tree_body->back());
+}
+spt::Block::~Block() {}
+spt::Block *spt::Block::create()
+{
+  // spt::ptr_tree_body->push_back(spt::Block());
+  // return &(std::get<spt::Block>(spt::ptr_tree_body->back()));
+  return new spt::Block();
 }
 
-void Block::push_back(Statement *ptr_statement)
+void spt::Block::push_back(Statement *ptr_statement)
 {
-  PRINT_SPEC_TREE_SIZE
   block_body.push_back(ptr_statement);
 }
 
-uint64_t Block::size() const
+void spt::Block::push_back(Block *block)
+{
+  block_body.insert(block_body.end(), block->block_body.begin(), block->block_body.end());
+}
+
+uint64_t spt::Block::size() const
 {
   return block_body.size();
 }
 
-void Block::print() const
+void spt::Block::print()
 {
-  print_buffer += "Block:";
-  /*
-  for (Statement i : block_body)
+  json.print_json_class_head("Block");
+  for (auto i : block_body)
   {
     i->print();
   }
-  */
+  json.print_json_class_end();
 }
+
+////////////////////////////////////////////////////////////////
+/// @brief Def
+////////////////////////////////////////////////////////////////
+
+void spt::Def::print()
+{
+  NOT_REACHABLE
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief Dec
+////////////////////////////////////////////////////////////////
+
+void spt::Dec::print(){NOT_REACHABLE}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Type
 ////////////////////////////////////////////////////////////////
-Type basic_type_loc[20];
+spt::Type basic_type_loc[20];
 
-Type::Type() {}
-Type::~Type() {}
+spt::Type::Type() {}
 
-Type *Type::getInt8Ty()
+spt::Type::~Type() {}
+
+spt::Type *spt::Type::get_int8()
 {
   return &basic_type_loc[0];
 }
 
-Type *Type::getDoubleTy()
+spt::Type *spt::Type::get_int16()
 {
   return &basic_type_loc[1];
 }
 
-Type *Type::getFloatTy()
+spt::Type *spt::Type::get_int32()
 {
   return &basic_type_loc[2];
 }
-Type *Type::getInt16Ty()
+
+spt::Type *spt::Type::get_int64()
 {
   return &basic_type_loc[3];
 }
-Type *Type::getInt32Ty()
+
+spt::Type *spt::Type::get_uint8()
 {
   return &basic_type_loc[4];
-};
-Type *Type::getInt64Ty()
+}
+
+spt::Type *spt::Type::get_uint16()
 {
   return &basic_type_loc[5];
-};
-Type *Type::getVoid()
+}
+
+spt::Type *spt::Type::get_uint32()
 {
   return &basic_type_loc[6];
-};
-Type *Type::getStructTy()
+}
+
+spt::Type *spt::Type::get_uint64()
 {
   return &basic_type_loc[7];
-};
-void Type::dump(){
+}
 
-};
+spt::Type *spt::Type::get_void()
+{
+  return &basic_type_loc[8];
+}
+
+spt::Type *spt::Type::get_struct()
+{
+  return &basic_type_loc[9];
+}
+
+spt::Type *spt::Type::get_double()
+{
+  return &basic_type_loc[10];
+}
+
+spt::Type *spt::Type::get_float()
+{
+  return &basic_type_loc[11];
+}
+
+void spt::Type::print()
+{
+  if (this == basic_type_loc + 0)
+  {
+    json.print_json_key_value("type", "int8");
+    return;
+  }
+  if (this == basic_type_loc + 1)
+  {
+    json.print_json_key_value("type", "int16");
+    return;
+  }
+  if (this == basic_type_loc + 2)
+  {
+    json.print_json_key_value("type", "int32");
+    return;
+  }
+  if (this == basic_type_loc + 3)
+  {
+    json.print_json_key_value("type", "int64");
+    return;
+  }
+  if (this == basic_type_loc + 4)
+  {
+    json.print_json_key_value("type", "uint8");
+    return;
+  }
+  if (this == basic_type_loc + 5)
+  {
+    json.print_json_key_value("type", "uint16");
+    return;
+  }
+  if (this == basic_type_loc + 6)
+  {
+    json.print_json_key_value("type", "uint32");
+    return;
+  }
+  if (this == basic_type_loc + 7)
+  {
+    json.print_json_key_value("type", "uint64");
+    return;
+  }
+  if (this == basic_type_loc + 8)
+  {
+    json.print_json_key_value("type", "void");
+    return;
+  }
+  if (this == basic_type_loc + 9)
+  {
+    json.print_json_key_value("type", "struct");
+    return;
+  }
+  if (this == basic_type_loc + 10)
+  {
+    json.print_json_key_value("type", "double");
+    return;
+  }
+  if (this == basic_type_loc + 11)
+  {
+    json.print_json_key_value("type", "float");
+    return;
+  }
+}
 
 ////////////////////////////////////////////////////////////////
 /// @brief FunctionType
 ////////////////////////////////////////////////////////////////
-FuncType::FuncType(Type *ptr_return_type_, std::vector<spt::Type *> argument_type_list_)
+spt::FuncType::FuncType(
+  spt::Type               *ptr_return_type_,
+  std::vector<spt::Type *> argument_type_list_
+)
     : ptr_return_type{ptr_return_type_}, argument_type_list{argument_type_list_}
 {
 }
 
-FuncType::~FuncType() {}
+spt::FuncType::~FuncType() {}
 
-FuncType *
-FuncType::get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list)
+spt::FuncType *
+spt::FuncType::get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list)
 {
-  // TODO this step will write memory belong to class Block located at 0x555555a1f550
-  PRINT_SPEC_TREE_SIZE
-  ptr_tree_body->push_back(FuncType(ptr_return_type, argument_type_list));
-  PRINT_SPEC_TREE_SIZE
-  std::cout << &std::get<FuncType>(ptr_tree_body->back()) << std::endl;
-  return &std::get<FuncType>(ptr_tree_body->back());
+  // spt::ptr_tree_body->push_back(spt::FuncType(ptr_return_type, argument_type_list));
+  // return &std::get<FuncType>(ptr_tree_body->back());
+  return new spt::FuncType(ptr_return_type, argument_type_list);
 }
 
+void spt::FuncType::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ArrayType
 ////////////////////////////////////////////////////////////////
 
-ArrayType *ArrayType::get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len){
-  TODO};
+spt::ArrayType *spt::ArrayType::get(
+  Type                      *ptr_unit_type,
+  std::vector<std::uint64_t> dimension_len
+){TODO};
+
+void spt::ArrayType::print(){TODO};
 
 ////////////////////////////////////////////////////////////////
 /// @brief PointerType
 ////////////////////////////////////////////////////////////////
 
-PointerType *PointerType::get(Type *ptr_type_)
+spt::PointerType *spt::PointerType::get(Type *ptr_type_)
 {
-  ptr_tree_body->push_back(PointerType(ptr_type_));
-  return &std::get<PointerType>(ptr_tree_body->back());
+  // spt::ptr_tree_body->push_back(spt::PointerType(ptr_type_));
+  // return &std::get<spt::PointerType>(spt::ptr_tree_body->back());
+  return new spt::PointerType(ptr_type_);
 }
 
-PointerType::PointerType(Type *ptr_type_) : ptr_element_type{ptr_type_} {}
-PointerType::~PointerType() {}
+spt::PointerType::PointerType(Type *ptr_type_) : ptr_element_type{ptr_type_} {}
+spt::PointerType::~PointerType() {}
+void spt::PointerType::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Func
 ////////////////////////////////////////////////////////////////
 
-Func::Func(
+spt::Func::Func(
   Type                                                          *ptr_return_type_,
   std::string                                                    name_,
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_
@@ -151,14 +285,15 @@ Func::Func(
 )
     : ptr_return_type{ptr_return_type_}, name{name_}, argument_type_list{
                                                         argument_type_list_} {};
-Func::~Func(){};
+spt::Func::~Func(){};
+void spt::Func::print(){NOT_REACHABLE}
 
 ////////////////////////////////////////////////////////////////
 /// @brief FuncDef
 ////////////////////////////////////////////////////////////////
 
 
-FuncDef::FuncDef(
+spt::FuncDef::FuncDef(
   Type                                                          *ptr_return_type_,
   std::string                                                    name_,
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_,
@@ -166,25 +301,39 @@ FuncDef::FuncDef(
 )
     : Func(ptr_return_type_, name_, argument_type_list_), body{body_} {};
 
-FuncDef *FuncDef::create(
-  Type                                                          *ptr_return_type_,
+spt::FuncDef *spt::FuncDef::create(
+  spt::Type                                                     *ptr_return_type_,
   std::string                                                    name_,
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_,
-  Block                                                         *body_
+  spt::Block                                                    *body_
 )
 {
-  // TODO this step will write memory belong to class Block located at 0x555555a1f550
-  PRINT_SPEC_TREE_SIZE
-  ptr_tree_body->push_back(FuncDef(ptr_return_type_, name_, argument_type_list_, body_));
-  PRINT_SPEC_TREE_SIZE
-  return &std::get<FuncDef>(ptr_tree_body->back());
+  // spt::ptr_tree_body->push_back(
+  // spt::FuncDef(ptr_return_type_, name_, argument_type_list_, body_)
+  // );
+  // return &std::get<spt::FuncDef>(ptr_tree_body->back());
+  return new spt::FuncDef(ptr_return_type_, name_, argument_type_list_, body_);
+}
+
+void spt::FuncDef::print()
+{
+  json.print_json_class_head("FuncDef");
+  json.print_json_key_value("name", name);
+  json.print_json_class_head("argument_type_list");
+  for (auto i : std::get<0>(argument_type_list))
+  {
+    i->print();
+  }
+  json.print_json_class_end();
+  body->print();
+  json.print_json_class_end();
 }
 
 ////////////////////////////////////////////////////////////////
 /// @brief FuncDec
 ////////////////////////////////////////////////////////////////
 
-FuncDec::FuncDec(
+spt::FuncDec::FuncDec(
   Type                                                          *ptr_return_type_,
   std::string                                                    name_,
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_
@@ -193,225 +342,295 @@ FuncDec::FuncDec(
 {
 }
 
-FuncDec *FuncDec::create(
+spt::FuncDec *spt::FuncDec::create(
   Type                                                          *ptr_return_type_,
   std::string                                                    name_,
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list_
 )
 {
-  ptr_tree_body->push_back(FuncDec(ptr_return_type_, name_, argument_type_list_));
-  return &std::get<FuncDec>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(FuncDec(ptr_return_type_, name_, argument_type_list_));
+  // return &std::get<FuncDec>(ptr_tree_body->back());
+  return new FuncDec(ptr_return_type_, name_, argument_type_list_);
 }
+
+void spt::FuncDec::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief VarDef
 ////////////////////////////////////////////////////////////////
 
-VarDef::VarDef(Type *type_, std::string name_, Expr *initializer_)
-    : Var{name_}, initializer{initializer_}
+spt::VarDef::VarDef(spt::Type *type_, std::string name_, spt::Expr *initializer_)
+    : Var{name_, type_}, initializer{initializer_}
 {
 }
 
-VarDef *VarDef::create(Type *type_, std::string name_, Expr *initializer_)
+spt::VarDef *
+spt::VarDef::create(spt::Type *type_, std::string name_, spt::Expr *initializer_)
 {
-  ptr_tree_body->push_back(VarDef(type_, name_, initializer_));
-  return &std::get<VarDef>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(VarDef(type_, name_, initializer_));
+  // return &std::get<VarDef>(ptr_tree_body->back());
+  return new VarDef(type_, name_, initializer_);
+}
+
+void spt::VarDef::print()
+{
+  json.print_json_class_head("VarDef");
+  json.print_json_key_value("identifier:", identifier);
+  type->print();
+  json.print_json_class_end();
 }
 
 ////////////////////////////////////////////////////////////////
 /// @brief StrcutDef
 ////////////////////////////////////////////////////////////////
 
-StructDef *StructDef::create(
+spt::StructDef *spt::StructDef::create(
   std::string                                                    name,
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>> element_list
-){TODO}
+)
+{
+  TODO
+}
+
+void spt::StructDef::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief StructDec
 ////////////////////////////////////////////////////////////////
 
-StructDec *StructDec::create(std::string name){TODO};
+spt::StructDec *spt::StructDec::create(std::string name){TODO};
+void spt::StructDec::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief IfStatement
 ////////////////////////////////////////////////////////////////
 
-IfStatement::IfStatement(Expr *expr, Block *true_block, Block *false_block)
+spt::IfStatement::IfStatement(
+  spt::Expr  *expr,
+  spt::Block *true_block,
+  spt::Block *false_block
+)
     : expr{expr}, true_block{true_block}, false_block{false_block}
 {
 }
 
-IfStatement *IfStatement::create(Expr *expr, Block *true_block, Block *false_block)
+spt::IfStatement *
+spt::IfStatement::create(spt::Expr *expr, spt::Block *true_block, spt::Block *false_block)
 {
-  ptr_tree_body->push_back(IfStatement(expr, true_block, false_block));
-  return &std::get<IfStatement>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(IfStatement(expr, true_block, false_block));
+  // return &std::get<IfStatement>(ptr_tree_body->back());
+  return new IfStatement(expr, true_block, false_block);
 }
 
-IfStatement *IfStatement::create(Expr *expr, Block *true_block)
+spt::IfStatement *spt::IfStatement::create(spt::Expr *expr, spt::Block *true_block)
 {
-  ptr_tree_body->push_back(IfStatement(expr, true_block, nullptr));
-  return &std::get<IfStatement>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(IfStatement(expr, true_block, nullptr));
+  // return &std::get<IfStatement>(ptr_tree_body->back());
+  return new IfStatement(expr, true_block, nullptr);
 }
+
+void spt::IfStatement::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ReturnStatement
 ////////////////////////////////////////////////////////////////
 
-ReturnStatement::ReturnStatement(Expr *return_expr_) : return_expr{return_expr_} {}
-ReturnStatement::~ReturnStatement() {}
-ReturnStatement *ReturnStatement::create(Expr *return_expr)
+spt::ReturnStatement::ReturnStatement(Expr *return_expr_)
+    : return_expr{return_expr_}
 {
-  ptr_tree_body->push_back(ReturnStatement(return_expr));
-  return &std::get<ReturnStatement>(ptr_tree_body->back());
 }
+spt::ReturnStatement::~ReturnStatement() {}
+spt::ReturnStatement *spt::ReturnStatement::create(Expr *return_expr)
+{
+  // ptr_tree_body->push_back(ReturnStatement(return_expr));
+  // return &std::get<ReturnStatement>(ptr_tree_body->back());
+  return new ReturnStatement(return_expr);
+}
+void spt::ReturnStatement::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief WhileStatement
 ////////////////////////////////////////////////////////////////
 
-WhileStatement::WhileStatement(Expr *expr_, Block *while_body_)
+spt::WhileStatement::WhileStatement(spt::Expr *expr_, spt::Block *while_body_)
     : expr{expr_}, while_body{while_body_}
 {
 }
-WhileStatement::~WhileStatement() {}
-WhileStatement *WhileStatement::create(Expr *expr, Block *while_body)
+spt::WhileStatement::~WhileStatement() {}
+spt::WhileStatement *spt::WhileStatement::create(spt::Expr *expr, spt::Block *while_body)
 {
-  ptr_tree_body->push_back(WhileStatement(expr, while_body));
-  return &std::get<WhileStatement>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(WhileStatement(expr, while_body));
+  // return &std::get<WhileStatement>(ptr_tree_body->back());
+  return new WhileStatement(expr, while_body);
 }
 
+void spt::WhileStatement::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief DoWhileStatement
 ////////////////////////////////////////////////////////////////
 
-DoWhileStatement::DoWhileStatement(Expr *expr_, Block *do_while_body_)
+spt::DoWhileStatement::DoWhileStatement(spt::Expr *expr_, spt::Block *do_while_body_)
     : expr{expr_}, do_while_body{do_while_body_}
 {
 }
-DoWhileStatement::~DoWhileStatement() {}
-DoWhileStatement *DoWhileStatement::create(Expr *expr, Block *do_while_body)
+spt::DoWhileStatement::~DoWhileStatement() {}
+spt::DoWhileStatement *
+spt::DoWhileStatement::create(spt::Expr *expr, spt::Block *do_while_body)
 {
-  ptr_tree_body->push_back(DoWhileStatement(expr, do_while_body));
-  return &std::get<DoWhileStatement>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(DoWhileStatement(expr, do_while_body));
+  // return &std::get<DoWhileStatement>(ptr_tree_body->back());
+  return new DoWhileStatement(expr, do_while_body);
 }
 
+void spt::DoWhileStatement::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ForStatement
 ////////////////////////////////////////////////////////////////
 
-ForStatement::ForStatement(
-  Expr  *init_expr_,
-  Expr  *condition_expr_,
-  Expr  *change_expr_,
-  Block *for_body_
+spt::ForStatement::ForStatement(
+  spt::Expr  *init_expr_,
+  spt::Expr  *condition_expr_,
+  spt::Expr  *change_expr_,
+  spt::Block *for_body_
 )
     : init_expr(init_expr_), condition_expr{condition_expr_},
       change_expr{change_expr_}, for_body{for_body_}
 {
 }
-ForStatement::ForStatement(
-  Def   *init_def_,
-  Expr  *condition_expr_,
-  Expr  *change_expr_,
-  Block *for_body_
+spt::ForStatement::ForStatement(
+  spt::Def   *init_def_,
+  spt::Expr  *condition_expr_,
+  spt::Expr  *change_expr_,
+  spt::Block *for_body_
 )
     : init_def{init_def_}, condition_expr{condition_expr_},
       change_expr{change_expr_}, for_body{for_body_}
 {
 }
 
-ForStatement::~ForStatement() {}
+spt::ForStatement::~ForStatement() {}
 
-ForStatement *ForStatement::create(
-  Expr  *init_expr,
-  Expr  *condition_expr,
-  Expr  *change_expr,
-  Block *for_body
+spt::ForStatement *spt::ForStatement::create(
+  spt::Expr  *init_expr,
+  spt::Expr  *condition_expr,
+  spt::Expr  *change_expr,
+  spt::Block *for_body
 ){TODO}
 
-ForStatement *ForStatement::create(
-  Def   *init_def,
-  Expr  *condition_expr,
-  Expr  *change_expr,
-  Block *for_body
-){TODO}
+spt::ForStatement *spt::ForStatement::create(
+  spt::Def   *init_def,
+  spt::Expr  *condition_expr,
+  spt::Expr  *change_expr,
+  spt::Block *for_body
+)
+{
+  TODO
+}
 
+void spt::ForStatement::print()
+{
+  TODO
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief ForStatement
+////////////////////////////////////////////////////////////////
+
+void spt::SwitchStatement::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Expr
 ////////////////////////////////////////////////////////////////
-Expr::Expr(token op_, Expr *l_expr_, Expr *r_expr_)
+spt::Expr::Expr(token op_, Expr *l_expr_, Expr *r_expr_)
     : op{op_}, l_expr{l_expr_}, r_expr{r_expr_}
 {
 }
 
-Expr::Expr() {}
+spt::Expr::Expr() {}
 
-Expr::~Expr() {}
+spt::Expr::~Expr() {}
 
-Expr *Expr::create(token op, Expr *l_expr, Expr *r_expr)
+spt::Expr *spt::Expr::create(token op, Expr *l_expr, Expr *r_expr)
 {
-  ptr_tree_body->push_back(Expr(op, l_expr, r_expr));
-  return &std::get<Expr>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(Expr(op, l_expr, r_expr));
+  // return &std::get<Expr>(ptr_tree_body->back());
+  return new Expr(op, l_expr, r_expr);
 }
 
+void spt::Expr::print(){TODO}
 ////////////////////////////////////////////////////////////////
 /// @brief Array
 ////////////////////////////////////////////////////////////////
 
-Array::Array(std::string identifier_, std::vector<Expr *> idx_list_)
+spt::Array::Array(std::string identifier_, std::vector<Expr *> idx_list_)
     : identifier{identifier_}, idx_list{idx_list_}
 {
 }
 
-Array::~Array() {}
+spt::Array::~Array() {}
 
-Array *Array::create(std::string identifier, std::vector<Expr *> idx_list)
+spt::Array *spt::Array::create(std::string identifier, std::vector<Expr *> idx_list)
 {
-  ptr_tree_body->push_back(Array(identifier, idx_list));
-  return &std::get<Array>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(Array(identifier, idx_list));
+  // return &std::get<Array>(ptr_tree_body->back());
+  return new Array(identifier, idx_list);
 }
 
+void spt::Array::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief FuncCall
 ////////////////////////////////////////////////////////////////
-FuncCall::FuncCall(std::string identifier_, std::vector<Expr *> argument_list_)
+spt::FuncCall::FuncCall(std::string identifier_, std::vector<spt::Expr *> argument_list_)
     : identifier{identifier_}, argument_list{argument_list_}
 {
 }
 
-FuncCall::~FuncCall() {}
+spt::FuncCall::~FuncCall() {}
 
-FuncCall *FuncCall::create(std::string identifier, std::vector<Expr *> argument_list)
+spt::FuncCall *
+spt::FuncCall::create(std::string identifier, std::vector<Expr *> argument_list)
 {
-  ptr_tree_body->push_back(FuncCall(identifier, argument_list));
-  return &std::get<FuncCall>(ptr_tree_body->back());
+  // ptr_tree_body->push_back(FuncCall(identifier, argument_list));
+  // return &std::get<FuncCall>(ptr_tree_body->back());
+  return new FuncCall(identifier, argument_list);
 }
 
+void spt::FuncCall::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
-/// @brief FuncCall
+/// @brief Var
 ////////////////////////////////////////////////////////////////
 
-Var::Var(std::string identifier_) : identifier{identifier_} {}
-
-Var::~Var() {}
-
-Var *Var::create(std::string identifier)
+spt::Var::Var(std::string identifier_, spt::Type *type_)
+    : identifier{identifier_}, type{type_}
 {
-  ptr_tree_body->push_back(Var(identifier));
-  return &std::get<Var>(ptr_tree_body->back());
 }
 
+spt::Var::~Var() {}
+
+spt::Var *spt::Var::create(std::string identifier, spt::Type *type)
+{
+  // ptr_tree_body->push_back(Var(identifier));
+  // return &std::get<Var>(ptr_tree_body->back());
+  return new Var(identifier, type);
+}
+
+void spt::Var::print()
+{
+  NOT_REACHABLE
+}
 
 ////////////////////////////////////////////////////////////////
-/// @brief FuncCall
+/// @brief VarDec
 ////////////////////////////////////////////////////////////////
 
+void spt::VarDec::print()
+{
+  TODO
+}
 
 }  // namespace spt
 

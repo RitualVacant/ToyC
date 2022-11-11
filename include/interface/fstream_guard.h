@@ -4,14 +4,17 @@
 #pragma once
 #include <fstream>
 
-namespace toy_c {
+namespace toy_c
+{
 
-enum mode {
+enum mode
+{
   read,
   write,
 };
 
-class fstream_guard {
+class fstream_guard
+{
 private:
   std::fstream fstream;
 
@@ -19,7 +22,7 @@ public:
   explicit fstream_guard(std::string file_path, mode mode);
   fstream_guard();
   ~fstream_guard();
-  fstream_guard(fstream_guard const &)       = delete;
+  fstream_guard(fstream_guard &)             = delete;
   fstream_guard(fstream_guard &&)            = delete;
   fstream_guard &operator=(fstream_guard &)  = delete;
   fstream_guard &operator=(fstream_guard &&) = delete;

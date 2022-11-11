@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "spec_tree.h"
 #include "spec_tree_node.h"
+#include <cstddef>
 #include <gflags/gflags.h>
 #include <map>
 #include <string>

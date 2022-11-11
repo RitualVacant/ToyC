@@ -37,6 +37,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/error)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/interface)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/var)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/spt)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/file)
 
 # source files cpp
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/token tokenlib)
@@ -54,6 +55,8 @@ add_library(var STATIC ${varlib})
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/spt sptlib)
 add_library(spt STATIC ${sptlib})
 
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src/file filelib)
+add_library(file STATIC ${filelib})
 
 #
 # LLVM packages
@@ -94,8 +97,7 @@ target_link_libraries(
     var
     spt
     token
-    # profiler
-    # unwind
+    file
 )
 
 #target_link_libraries(${PROJECT_NAME} PUBLIC ${llvm_libs})

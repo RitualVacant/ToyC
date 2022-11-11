@@ -69,7 +69,7 @@ private:
   llvm::Value *search_value(std::string name);
   llvm::Type  *search_type(std::string name);
 
-  llvm::Type *build_mult_declaration_or_definition(ast::idx idx_declaration_or_definition
+  llvm::Type *build_multi_declaration_or_definition(ast::idx idx_declaration_or_definition
   );
   llvm::Type *
   build_declaration_or_definition(ast::idx idx, llvm::Type *ptr_declaration_declarator);

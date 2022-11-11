@@ -5,22 +5,23 @@
 #include "spec_tree_node.h"
 #include <vector>
 
-
 namespace spt
 {
 
 class Tree
 {
 private:
-  spt::Block                      *ptr_root_tree_body = nullptr;
-  ast::Tree                        ast;
+  spt::Block *ptr_root_tree_body = nullptr;
+
+  ast::Tree ast;
+  // DROP
   std::vector<spt::spec_tree_node> tree_body;
 
   ast::idx now_compound_statement;
 
   std::string get_identifier_name(ast::idx idx_declarator);
 
-  spt::Block *build_mult_declaration_or_definition(ast::idx idx_declaration_or_definition
+  spt::Block *build_multi_declaration_or_definition(ast::idx idx_declaration_or_definition
   );
 
   spt::Statement *build_declaration_or_definition(
@@ -36,12 +37,11 @@ private:
 
   std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
   build_struct_element_type_list(ast::idx idx_compound_statement);
-
   spt::Type *
   build_pointer(spt::Type *ptr_type_declaration_declarator, ast::idx idx_declarator);
   spt::Type      *build_declaration_declarator(ast::idx idx_declaration_declarator);
   spt::ArrayType *build_array(spt::Type *ptr_unit_type, ast::idx idx_array_declarator);
-  spt::Block     *build_compound_statement(ast::idx idx_compound_statement);
+  spt::Block     *build_block(ast::idx idx_compound_statement);
 
   Expr *build_expression(ast::idx idx_expression);
   Expr *build_assign_expression(ast::idx idx_assignment_expression);
@@ -57,7 +57,7 @@ private:
   Expr *build_compute_declarator_size(ast::idx idx_declaration_declarator);
 
   // TODO
-  Statement *build_block(ast::idx idx_block);
+  Statement *build_statement(ast::idx idx_block);
 
   Statement *build_if_statement(ast::idx idx_statement);
   Statement *build_switch_statement(ast::idx idx_statement);
@@ -74,7 +74,7 @@ private:
 public:
   void print_spec_tree();
   Tree();
-  ~Tree();
+  ~Tree() = default;
 };
 
 }  // namespace spt
