@@ -20,6 +20,11 @@ void spec_symbol_table::pop_scope()
 
 void spec_symbol_table::insert_symbol(std::string &name, Type *type)
 {
+  if (table.size() == 0)
+  {
+    fmt::print(fg(fmt::color::red), "symbol table don't have scope\n", name);
+    exit(0);
+  }
   table.back().push_back({name, type});
 }
 
@@ -35,7 +40,6 @@ Type *spec_symbol_table::get_type(std::string &name)
       }
     }
   }
-
   fmt::print(fg(fmt::color::red), "can't find define or declare of {}\n", name);
   exit(0);
 }

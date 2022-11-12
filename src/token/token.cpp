@@ -164,30 +164,54 @@ enum class token : unsigned int
   key_default    // default
 };
 
-std::map<token, std::string> map_binary_operator_token_and_symbol{
-  {token::log_or,    "||"},
-  {token::log_and,   "&&"},
-  {token::bit_or,    "|" },
-  {token::bit_xor,   "^" },
-  {token::bit_and,   "&" },
-  {token::equ,       "=="},
-  {token::not_equ,   "!="},
-  {token::less,      "<" },
-  {token::less_equ,  "<="},
-  {token::great,     ">" },
-  {token::great_equ, ">="},
-  {token::l_shift,   "<<"},
-  {token::r_shift,   ">>"},
-  {token::plus,      "+" },
-  {token::minus,     "-" },
-  {token::div,       "/" },
-  {token::mod,       "%" },
-  {token::times,     "*" },
+std::map<token, std::string> map_operator_token_and_symbol{
+  {token::log_or,      "||"  },
+  {token::log_and,     "&&"  },
+  {token::bit_or,      "|"   },
+  {token::bit_xor,     "^"   },
+  {token::bit_and,     "&"   },
+  {token::equ,         "=="  },
+  {token::not_equ,     "!="  },
+  {token::less,        "<"   },
+  {token::less_equ,    "<="  },
+  {token::great,       ">"   },
+  {token::great_equ,   ">="  },
+  {token::l_shift,     "<<"  },
+  {token::r_shift,     ">>"  },
+  {token::plus,        "+"   },
+  {token::minus,       "-"   },
+  {token::div,         "/"   },
+  {token::mod,         "%"   },
+  {token::times,       "*"   },
+
+
+ // assign operators
+  {token::assign,      "="   },
+  {token::plus_agn,    "+="  },
+  {token::minus_agn,   "-="  },
+  {token::times_agn,   "*="  },
+  {token::div_agn,     "/="  },
+  {token::mod_agn,     "%="  },
+  {token::r_shift_agn, ">>=" },
+  {token::l_shift_agn, "<<=" },
+  {token::bit_and_agn, "&="  },
+  {token::bit_or_agn,  "|="  },
+  {token::bit_xor_agn, "^="  },
+
+
+ //  unary operators
+  {token::bit_and,     "&"   },
+  {token::log_not,     "!"   },
+  {token::bit_not,     "~"   },
+  {token::times,       "*"   },
+  {token::self_plus,   "++"  },
+  {token::self_minus,  "--"  },
+  {token::invalid,     "void"},
 };
 
-std::string binary_operator_token_to_symbol(token t)
+std::string operator_token_to_symbol(token t)
 {
-  return map_binary_operator_token_and_symbol.at(t);
+  return map_operator_token_and_symbol.at(t);
 }
 
 #endif

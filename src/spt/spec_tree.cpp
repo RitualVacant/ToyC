@@ -22,7 +22,8 @@ namespace spt
 Tree::Tree()
 {
   toy_c::parser parser;
-  ast                = std::move(parser.get_ast_tree());
+  ast = std::move(parser.get_ast_tree());
+  symbol_table.push_scope();
   ptr_root_tree_body = build_multi_declaration_or_definition(1);
 }
 
@@ -268,6 +269,9 @@ Statement *Tree::build_declaration_or_definition(
   // ----------------------------------
   else if (ast[idx_declaration_declarator].value.declaration_declarator.type == ast::declarator_type::type_struct)
   {
+    {
+      TODO
+    }
     // struct definition
     if (now_compound_statement != ast::null)
     {
@@ -282,26 +286,18 @@ Statement *Tree::build_declaration_or_definition(
     }
   }
   // ----------------------------------
-  // basic var
+  // basic variable
   // ----------------------------------
   else
   {
-    // exist initializer
-    if (ast[idx_initial_declarator].value.initial_declarator.idx_initializer != ast::null)
-    {
-      ast::idx idx_initializer
-        = ast[idx_initial_declarator].value.initial_declarator.idx_initializer;
-      ast::idx idx_assignment_expression
-        = ast[idx_initializer].value.initializer.idx_assignment_expression;
-      return VarDef::create(
-        ptr_type, identifier_name, build_expression(idx_assignment_expression)
-      );
-    }
-    // not exist initializer
-    else
-    {
-      return VarDef::create(ptr_type, identifier_name);
-    }
+    ast::idx idx_initializer
+      = ast[idx_initial_declarator].value.initial_declarator.idx_initializer;
+    ast::idx idx_assignment_expression
+      = ast[idx_initializer].value.initializer.idx_assignment_expression;
+    symbol_table.insert_symbol(identifier_name, ptr_type);
+    return VarDef::create(
+      ptr_type, identifier_name, build_expression(idx_assignment_expression)
+    );
   }
   NOT_REACHABLE
 }
@@ -401,6 +397,7 @@ std::uint64_t Tree::constant_node_to_uint64(ast::idx idx_constant)
 Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
 {
   Block *block = Block::create();
+  symbol_table.push_scope();
 
   ast::idx idx_block = ast[idx_compound_statement].value.compound_statement.idx_block;
 
@@ -417,6 +414,8 @@ Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
       block->push_back(build_statement(idx_statement));
     }
   }
+
+  symbol_table.pop_scope();
   return block;
 }
 
@@ -456,14 +455,20 @@ Statement *Tree::build_statement(ast::idx idx_statement)
  * @param idx_expression
  * @return Expr*
  */
+// idx expression 的种类
 Expr *Tree::build_expression(ast::idx idx_expression)
 {
   if (idx_expression == ast::null)
   {
     return nullptr;
   }
+
   switch (ast[idx_expression].type)
   {
+    case ast::node_type::expression:
+      return build_expression(
+        ast[idx_expression].value.expression.idx_assignment_expression
+      );
     case ast::node_type::assignment_expression:
       return build_assign_expression(idx_expression);
     case ast::node_type::binary_expression:
@@ -516,7 +521,7 @@ Expr *Tree::build_assign_expression(ast::idx idx_assign_expression)
 Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
 {
   //----------------------------------------------------------------
-  // 1. sizeof
+  // 1. sizeof return a constant
   //----------------------------------------------------------------
   if (ast[idx_unary_expression].value.unary_expression.is_sizeof)
   {
@@ -595,7 +600,6 @@ Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
   //------------
   if (ast[idx_primary_expression].value.primary_expression.idx_identifier != ast::null)
   {
-    // TODO
     ast::idx idx_identifier
       = ast[idx_primary_expression].value.primary_expression.idx_identifier;
     std::string identifier = std::string(ast[idx_identifier].value.identifier.name);

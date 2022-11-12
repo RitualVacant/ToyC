@@ -85,7 +85,7 @@ enum class node_type : unsigned char
   postfix_expression,
   primary_expression,
   statement,
-  declare_varible,
+  declare_variable,
   declare_function,
   definition_function,
   definition_struct,
@@ -131,7 +131,7 @@ enum class node_type : unsigned char
   // second
   function,
   enum_definition,
-  array_definintion,
+  array_definition,
   struct_declaration,
   struct_definition,
   basic_type_declaration,

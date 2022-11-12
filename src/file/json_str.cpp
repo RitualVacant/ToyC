@@ -24,23 +24,9 @@ void json_str::end()
   }
 }
 
-void json_str::print_json_key_value(std::string key, std::string value)
+void json_str::print_key_value(std::string key, std::string value)
 {
   str += fmt::format("\"{}\":\"{}\",", key, value);
-}
-
-void json_str::print_json_key(std::string key)
-{
-  str += "\"";
-  str += key;
-  str += "\":";
-}
-
-void json_str::print_json_value(std::string value)
-{
-  str += "\"";
-  str += value;
-  str += "\",";
 }
 
 std::string &json_str::get_str_ref()

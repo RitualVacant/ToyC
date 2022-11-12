@@ -1,0 +1,3 @@
+@startjson
+{"declaration_or_definition1":{"declaration_declarator2":{"sign":"true","type":"int","limit":"empty","store":"empty" },"initial_declarator3":{"declarator4":{"is_pointer":"0","direct_declarator5":{"identifier6":{"name":"main" },"arguments_type_list7":{} } } } } }
+@endjson

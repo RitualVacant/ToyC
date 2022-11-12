@@ -15,17 +15,11 @@ public:
 
   std::string &get_str_ref();
 
-  void print_json_key_value(std::string key, std::string value);
-  void print_json_class_head(std::string value);
-  void print_json_class_end();
-  void print_json_key(std::string key);
-  void print_json_value(std::string value);
+  void print_key_value(std::string key, std::string value);
   void print_json_class(std::string value, auto func)
   {
     str += "\"";
     str += value;
-    // str += '_';
-    // str += std::to_string(class_num);
     str += "\":{";
     func();
     str += "},";
@@ -35,12 +29,9 @@ public:
   {
     str += "\"";
     str += value;
-    // str += '_';
-    // str += std::to_string(class_num);
     str += "\":[";
     func();
     str += "],";
-    // ++class_num;
   }
 };
 

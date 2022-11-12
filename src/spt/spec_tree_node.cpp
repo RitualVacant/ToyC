@@ -166,62 +166,62 @@ void spt::Type::print()
 {
   if (this == basic_type_loc + 0)
   {
-    json.print_json_key_value("type", "int8");
+    json.print_key_value("type", "int8");
     return;
   }
   if (this == basic_type_loc + 1)
   {
-    json.print_json_key_value("type", "int16");
+    json.print_key_value("type", "int16");
     return;
   }
   if (this == basic_type_loc + 2)
   {
-    json.print_json_key_value("type", "int32");
+    json.print_key_value("type", "int32");
     return;
   }
   if (this == basic_type_loc + 3)
   {
-    json.print_json_key_value("type", "int64");
+    json.print_key_value("type", "int64");
     return;
   }
   if (this == basic_type_loc + 4)
   {
-    json.print_json_key_value("type", "uint8");
+    json.print_key_value("type", "uint8");
     return;
   }
   if (this == basic_type_loc + 5)
   {
-    json.print_json_key_value("type", "uint16");
+    json.print_key_value("type", "uint16");
     return;
   }
   if (this == basic_type_loc + 6)
   {
-    json.print_json_key_value("type", "uint32");
+    json.print_key_value("type", "uint32");
     return;
   }
   if (this == basic_type_loc + 7)
   {
-    json.print_json_key_value("type", "uint64");
+    json.print_key_value("type", "uint64");
     return;
   }
   if (this == basic_type_loc + 8)
   {
-    json.print_json_key_value("type", "void");
+    json.print_key_value("type", "void");
     return;
   }
   if (this == basic_type_loc + 9)
   {
-    json.print_json_key_value("type", "struct");
+    json.print_key_value("type", "struct");
     return;
   }
   if (this == basic_type_loc + 10)
   {
-    json.print_json_key_value("type", "double");
+    json.print_key_value("type", "double");
     return;
   }
   if (this == basic_type_loc + 11)
   {
-    json.print_json_key_value("type", "float");
+    json.print_key_value("type", "float");
     return;
   }
 }
@@ -320,7 +320,7 @@ spt::FuncDef *spt::FuncDef::create(
 void spt::FuncDef::print()
 {
   json.print_json_class("FuncDef", [&] {
-    json.print_json_key_value("name", name);
+    json.print_key_value("name", name);
     json.print_json_array("argument_type_list", [&] {
       for (auto i : std::get<0>(argument_type_list))
       {
@@ -384,14 +384,14 @@ ConstantInt *ConstantInt::create(std::string value, bool negative)
 void ConstantInt::print()
 {
   json.print_json_class("ConstantInt", [&] {
-    json.print_json_key_value("value", value);
+    json.print_key_value("value", value);
     if (negative)
     {
-      json.print_json_key_value("negative", "true");
+      json.print_key_value("negative", "true");
     }
     else
     {
-      json.print_json_key_value("negative", "false");
+      json.print_key_value("negative", "false");
     }
   });
 }
@@ -413,14 +413,14 @@ ConstantFloat *ConstantFloat::create(std::string value_, bool negative_)
 void ConstantFloat::print()
 {
   json.print_json_class("ConstantFloat", [&] {
-    json.print_json_key_value("value", value);
+    json.print_key_value("value", value);
     if (negative)
     {
-      json.print_json_key_value("negative", "true");
+      json.print_key_value("negative", "true");
     }
     else
     {
-      json.print_json_key_value("negative", "false");
+      json.print_key_value("negative", "false");
     }
   });
 }
@@ -438,9 +438,7 @@ StringLiteral *StringLiteral::create(std::string value)
 
 void StringLiteral::print()
 {
-  json.print_json_class("StringLiteral", [&] {
-    json.print_json_key_value("value", value);
-  });
+  json.print_json_class("StringLiteral", [&] { json.print_key_value("value", value); });
 }
 
 ////////////////////////////////////////////////////////////////
@@ -463,7 +461,7 @@ spt::VarDef::create(spt::Type *type_, std::string name_, spt::Expr *initializer_
 void spt::VarDef::print()
 {
   json.print_json_class("VarDef", [&] {
-    json.print_json_key_value("identifier:", identifier);
+    json.print_key_value("identifier:", identifier);
     type->print();
     json.print_json_class("initializer", [&] { initializer->print(); });
   });
@@ -518,16 +516,25 @@ spt::IfStatement *spt::IfStatement::create(spt::Expr *expr, spt::Block *true_blo
   return new IfStatement(expr, true_block, nullptr);
 }
 
-void spt::IfStatement::print(){TODO}
+void spt::IfStatement::print()
+{
+  json.print_json_class("IfStatement", [&] {
+    json.print_json_class("expr", [&] { expr->print(); });
+    json.print_json_class("true_block", [&] { true_block->print(); });
+    json.print_json_class("false_block", [&] {
+      if (false_block != nullptr)
+      {
+        false_block->print();
+      }
+    });
+  });
+}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ReturnStatement
 ////////////////////////////////////////////////////////////////
 
-spt::ReturnStatement::ReturnStatement(Expr *return_expr_)
-    : return_expr{return_expr_}
-{
-}
+spt::ReturnStatement::ReturnStatement(Expr *return_expr_) : return_expr{return_expr_} {}
 spt::ReturnStatement::~ReturnStatement() {}
 spt::ReturnStatement *spt::ReturnStatement::create(Expr *return_expr)
 {
@@ -535,7 +542,15 @@ spt::ReturnStatement *spt::ReturnStatement::create(Expr *return_expr)
   // return &std::get<ReturnStatement>(ptr_tree_body->back());
   return new ReturnStatement(return_expr);
 }
-void spt::ReturnStatement::print(){TODO}
+void spt::ReturnStatement::print()
+{
+  json.print_json_class("ReturnStatement", [&] {
+    if (return_expr != nullptr)
+    {
+      return_expr->print();
+    }
+  });
+}
 
 ////////////////////////////////////////////////////////////////
 /// @brief WhileStatement
@@ -651,7 +666,7 @@ spt::Expr *spt::Expr::create(token op, Expr *l_expr, Expr *r_expr)
 void spt::Expr::print()
 {
   json.print_json_class("Expr", [&] {
-    json.print_json_key_value("operator", binary_operator_token_to_symbol(op));
+    json.print_key_value("operator", operator_token_to_symbol(op));
     if (l_expr != nullptr)
     {
       json.print_json_class("l_expr", [&] { l_expr->print(); });
@@ -722,7 +737,10 @@ spt::Var *spt::Var::create(std::string identifier, spt::Type *type)
 
 void spt::Var::print()
 {
-  NOT_REACHABLE
+  json.print_json_class("Var", [&] {
+    json.print_key_value("identifier", identifier);
+    json.print_json_class("type", [&] { type->print(); });
+  });
 }
 
 ////////////////////////////////////////////////////////////////

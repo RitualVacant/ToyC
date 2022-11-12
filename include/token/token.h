@@ -168,6 +168,6 @@ enum class token : unsigned int
   key_default    // default
 };
 
-std::string binary_operator_token_to_symbol(token t);
+std::string operator_token_to_symbol(token t);
 
 #endif

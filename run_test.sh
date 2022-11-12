@@ -37,7 +37,7 @@ length=${#input_files[@]}
 printf "input file number: "${length}"\n"
 
 mode_list=(scan tree ir spt)
-postfix_files_list=(txt json ll pu)
+postfix_files_list=(txt pu ll pu)
 list_output_files_prefix_path=(${output_txt_files_prefix_path} ${output_json_files_prefix_path} ${output_llvm_files_prefix_path} ${output_spec_json_files_prefix_path})
 
 

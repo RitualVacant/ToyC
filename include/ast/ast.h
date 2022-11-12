@@ -48,7 +48,7 @@ private:
   ast::idx idx_now_compound_statement     = ast::null;
 
   void dfs_print_tree(ast::idx ptr);
-  void print_json_key_value(std::string key, std::string value);
+  void print_key_value(std::string key, std::string value);
   void print_json_key(std::string key);
   void print_json_value(std::string value);
   void print_json_class_head(std::string value);
