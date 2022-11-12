@@ -56,96 +56,6 @@ ast::idx Tree::creat_node(ast::node_type node_type)
   tree_body.back().type = node_type;
   return tree_body.size() - 1;
 }
-/*
-switch (node_type) {
-    case ast::node_type::type:
-        Tree.back().value.type.is_init = true;
-        break;
-    case ast::node_type::expression:
-        Tree.back().value.expression.is_init = true
-        break;
-    case ast::node_type::assignment_expression:
-        Tree.back().
-        break;
-    case ast::node_type::conditional_expression:
-        Tree.back().
-        break;
-    case ast::node_type::binary_expression:
-        Tree.back().
-        break;
-    case ast::node_type::unary_expression:
-        Tree.back().
-        break;
-    case ast::node_type::postfix_expression:
-        Tree.back().
-        break;
-    case ast::node_type::primary_expression:
-        Tree.back().
-        break;
-    case ast::node_type::statement:
-        Tree.back().
-        break;
-    case ast::node_type::declare_variable:
-        Tree.back().
-        break;
-    case ast::node_type::declare_function:
-        Tree.back().
-        break;
-    case ast::node_type::definition_function:
-        Tree.back().
-        break;
-    case ast::node_type::definition_struct:
-        Tree.back().
-        break;
-    case ast::node_type::constant:
-        Tree.back().
-        break;
-    case ast::node_type::operators:
-        Tree.back().
-        break;
-    case ast::node_type::initial_declarator:
-        Tree.back().
-        break;
-    case ast::node_type::direct_declarator:
-        Tree.back().
-        break;
-    case ast::node_type::declarator:
-        Tree.back().
-        break;
-    case ast::node_type::declaration_declarator:
-        Tree.back().
-        break;
-    case ast::node_type::initial_declarator_list:
-        Tree.back().
-        break;
-    case ast::node_type::declaration_or_definition:
-        Tree.back().
-        break;
-    case ast::node_type::identifier:
-        Tree.back().
-        break;
-    case ast::node_type::arguments_declaration:
-        Tree.back().
-        break;
-    case ast::node_type::arguments_type_list:
-        Tree.back().
-        break;
-    case ast::node_type::compound_statement:
-        Tree.back().
-        break;
-    case ast::node_type::block_list:
-        Tree.back().
-        break;
-    case ast::node_type::block:
-        Tree.back().
-        break;
-    case ast::node_type::mark_statement:
-        Tree.back().
-        break;
-    default:
-        SWITCH_ERROR
-}
-*/
 
 // DROP
 void Tree::trans_tree()
@@ -904,23 +814,12 @@ void Tree::dfs_print_tree(ast::idx idx)
 
 void Tree::print_key_value(std::string key, std::string value)
 {
-  // file << "\"" << key << "\":\"" << value << "\",\n";
-
   file_buffer += fmt::format("\"{}\":\"{}\",", key, value);
-  // file_buffer += "\"";
-  // file_buffer += key;
-  // file_buffer += "\":\"";
-  // file_buffer += value;
-  // file_buffer += "\",";
   return;
 }
 
 void Tree::print_json_class_head(std::string value)
 {
-  // file << "\"" <<  value << "\":{\n";
-
-  // auto str_value = std::string(value);
-  // file_buffer += fmt::format("\"{}\":{", str_value);
   file_buffer += "\"";
   file_buffer += value;
   file_buffer += '_';
@@ -931,17 +830,12 @@ void Tree::print_json_class_head(std::string value)
 
 void Tree::print_json_class_end()
 {
-  // file << "},\n";
-  // file_buffer += fmt::format("},");
   file_buffer += "},";
   return;
 }
 
 void Tree::print_json_key(std::string key)
 {
-  // file << "\"" << key << "\":";
-  // auto str_key = std::string(key);
-  // file_buffer += fmt::format("\"{}\":", str_key);
   file_buffer += "\"";
   file_buffer += key;
   file_buffer += "\":";
@@ -950,10 +844,6 @@ void Tree::print_json_key(std::string key)
 
 void Tree::print_json_value(std::string value)
 {
-  //
-  // file << "\"" << value << "\",\n";
-  // auto str_value = std::string(value);
-  // file_buffer += fmt::format("\"{}\",", str_value);
   file_buffer += "\"";
   file_buffer += value;
   file_buffer += "\",";
