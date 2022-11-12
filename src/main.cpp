@@ -8,6 +8,8 @@
 #include <map>
 #include <string>
 
+//#define NDEBUG
+
 enum class mode : char
 {
   scan      = 's',
@@ -39,11 +41,19 @@ int main(int argc, char *argv[])
   if (argc == 1)
   {
     fmt::print("path of input file  : ");
-    input_file_path = "/home/lzj/Code/Cpp/ToyC/test/debug/1.c";
-    // std::cin >> input_file_path;
+#ifndef NDEBUG
+    input_file_path = "/home/lzj/Code/Cpp/ToyC/debug/1.c";
+#endif
+#ifdef NDEBUG
+    std::cin >> input_file_path;
+#endif
     fmt::print("path of output file : ");
-    output_file_path = "/home/lzj/Code/Cpp/ToyC/test/debug/1";
-    // std::cin >> output_file_path;
+#ifndef NDEBUG
+    output_file_path = "/home/lzj/Code/Cpp/ToyC/debug/1";
+#endif
+#ifdef NDEBUG
+    std::cin >> output_file_path;
+#endif
     choose_mode_run();
   }
   else

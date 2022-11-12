@@ -14,13 +14,15 @@ namespace toy_c
  */
 build_llvm_ir::build_llvm_ir()
 {
-  tree    = std::move(parse.get_ast_tree());
   context = std::make_unique<llvm::LLVMContext>();
   module  = std::make_unique<llvm::Module>("text_module", *context);
   builder = std::make_unique<llvm::IRBuilder<>>(*context);
-
   // enable in llvm 15.0.0
   // context->setOpaquePointers(false);
+
+  parser parse;
+  tree = std::move(parse.get_ast_tree());
+  tree.print_tree();
   build_multi_declaration_or_definition(1);
 }
 

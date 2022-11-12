@@ -68,12 +68,14 @@ uint64_t spt::Block::size() const
 
 void spt::Block::print()
 {
-  json.print_json_class_head("Block");
-  for (auto i : block_body)
-  {
-    i->print();
-  }
-  json.print_json_class_end();
+  json.print_json_class("Block", [&] {
+    for (size_t i = 0; i < block_body.size(); ++i)
+    {
+      json.print_json_class("statement-" + std::to_string(i), [&] {
+        block_body[i]->print();
+      });
+    }
+  });
 }
 
 ////////////////////////////////////////////////////////////////
@@ -317,16 +319,16 @@ spt::FuncDef *spt::FuncDef::create(
 
 void spt::FuncDef::print()
 {
-  json.print_json_class_head("FuncDef");
-  json.print_json_key_value("name", name);
-  json.print_json_class_head("argument_type_list");
-  for (auto i : std::get<0>(argument_type_list))
-  {
-    i->print();
-  }
-  json.print_json_class_end();
-  body->print();
-  json.print_json_class_end();
+  json.print_json_class("FuncDef", [&] {
+    json.print_json_key_value("name", name);
+    json.print_json_array("argument_type_list", [&] {
+      for (auto i : std::get<0>(argument_type_list))
+      {
+        i->print();
+      }
+    });
+    json.print_json_class("body", [&] { body->print(); });
+  });
 }
 
 ////////////////////////////////////////////////////////////////
@@ -356,11 +358,97 @@ spt::FuncDec *spt::FuncDec::create(
 void spt::FuncDec::print(){TODO}
 
 ////////////////////////////////////////////////////////////////
+/// @brief Constant
+////////////////////////////////////////////////////////////////
+spt::Constant::Constant(std::string value_)
+    : value{value_}
+{
+}
+
+void Constant::print(){NOT_REACHABLE}
+
+////////////////////////////////////////////////////////////////
+/// @brief ConstantInt
+////////////////////////////////////////////////////////////////
+
+ConstantInt::ConstantInt(std::string value_, bool negative_)
+    : Constant{value_}, negative{negative_}
+{
+}
+
+ConstantInt *ConstantInt::create(std::string value, bool negative)
+{
+  return new ConstantInt(value, negative);
+}
+
+void ConstantInt::print()
+{
+  json.print_json_class("ConstantInt", [&] {
+    json.print_json_key_value("value", value);
+    if (negative)
+    {
+      json.print_json_key_value("negative", "true");
+    }
+    else
+    {
+      json.print_json_key_value("negative", "false");
+    }
+  });
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief ConstantFloat
+////////////////////////////////////////////////////////////////
+
+ConstantFloat::ConstantFloat(std::string value_, bool negative_)
+    : Constant{value_}, negative{negative_}
+{
+}
+
+ConstantFloat *ConstantFloat::create(std::string value_, bool negative_)
+{
+  return new ConstantFloat(value_, negative_);
+}
+
+void ConstantFloat::print()
+{
+  json.print_json_class("ConstantFloat", [&] {
+    json.print_json_key_value("value", value);
+    if (negative)
+    {
+      json.print_json_key_value("negative", "true");
+    }
+    else
+    {
+      json.print_json_key_value("negative", "false");
+    }
+  });
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief StringLiteral
+////////////////////////////////////////////////////////////////
+
+StringLiteral::StringLiteral(std::string value_) : Constant{value_} {}
+
+StringLiteral *StringLiteral::create(std::string value)
+{
+  return new StringLiteral(value);
+}
+
+void StringLiteral::print()
+{
+  json.print_json_class("StringLiteral", [&] {
+    json.print_json_key_value("value", value);
+  });
+}
+
+////////////////////////////////////////////////////////////////
 /// @brief VarDef
 ////////////////////////////////////////////////////////////////
 
-spt::VarDef::VarDef(spt::Type *type_, std::string name_, spt::Expr *initializer_)
-    : Var{name_, type_}, initializer{initializer_}
+spt::VarDef::VarDef(spt::Type *type_, std::string identifier_, spt::Expr *initializer_)
+    : identifier{identifier_}, type{type_}, initializer{initializer_}
 {
 }
 
@@ -374,10 +462,11 @@ spt::VarDef::create(spt::Type *type_, std::string name_, spt::Expr *initializer_
 
 void spt::VarDef::print()
 {
-  json.print_json_class_head("VarDef");
-  json.print_json_key_value("identifier:", identifier);
-  type->print();
-  json.print_json_class_end();
+  json.print_json_class("VarDef", [&] {
+    json.print_json_key_value("identifier:", identifier);
+    type->print();
+    json.print_json_class("initializer", [&] { initializer->print(); });
+  });
 }
 
 ////////////////////////////////////////////////////////////////
@@ -559,7 +648,20 @@ spt::Expr *spt::Expr::create(token op, Expr *l_expr, Expr *r_expr)
   return new Expr(op, l_expr, r_expr);
 }
 
-void spt::Expr::print(){TODO}
+void spt::Expr::print()
+{
+  json.print_json_class("Expr", [&] {
+    json.print_json_key_value("operator", binary_operator_token_to_symbol(op));
+    if (l_expr != nullptr)
+    {
+      json.print_json_class("l_expr", [&] { l_expr->print(); });
+    }
+    if (r_expr != nullptr)
+    {
+      json.print_json_class("r_expr", [&] { r_expr->print(); });
+    }
+  });
+}
 ////////////////////////////////////////////////////////////////
 /// @brief Array
 ////////////////////////////////////////////////////////////////

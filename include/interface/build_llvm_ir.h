@@ -36,7 +36,6 @@ private:
   std::unique_ptr<llvm::LLVMContext> context;
   std::unique_ptr<llvm::Module>      module;
   std::unique_ptr<llvm::IRBuilder<>> builder;
-  toy_c::parser                      parse;
   ast::Tree                          tree;
 
   std::map<std::string, std::tuple<llvm::Value *, llvm::Type *>> func_symbol_table;

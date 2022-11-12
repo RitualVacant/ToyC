@@ -14,17 +14,15 @@
 namespace spt
 {
 
-// std::vector<spt::spec_tree_node> *ptr_tree_body = nullptr;
-
 /**
  * @brief Construct a new spec ast::spec ast object
  *
  * @param ast
  */
-spt::Tree::Tree()
+Tree::Tree()
 {
   toy_c::parser parser;
-  this->ast          = std::move(parser.get_ast_tree());
+  ast                = std::move(parser.get_ast_tree());
   ptr_root_tree_body = build_multi_declaration_or_definition(1);
 }
 
@@ -32,16 +30,17 @@ spt::Tree::Tree()
  * @brief Destroy the spec ast::spec ast object
  *
  */
-// spt::Tree::~Tree() {}
 
 
 /**
  * @brief
  *
  */
-void spt::Tree::print_spec_tree()
+void Tree::print_spec_tree()
 {
+  json.init();
   ptr_root_tree_body->print();
+  json.end();
   toy_c::fstream_guard file(output_file_path, toy_c::mode::write);
   file << json.get_str_ref();
 }
@@ -49,9 +48,10 @@ void spt::Tree::print_spec_tree()
 /**
  * @brief
  *
+ * @param idx_declaration_or_definition
+ * @return Block*
  */
-spt::Block *
-spt::Tree::build_multi_declaration_or_definition(ast::idx idx_declaration_or_definition)
+Block *Tree::build_multi_declaration_or_definition(ast::idx idx_declaration_or_definition)
 {
   //
   // idx_declaration_declarator
@@ -62,17 +62,13 @@ spt::Tree::build_multi_declaration_or_definition(ast::idx idx_declaration_or_def
   //  i->    int a, b, c = 3, *d;
   //
 
-  spt::Block *block = Block::create();
+  Block *block = Block::create();
 
   for (ast::idx i = idx_declaration_or_definition,
-
                 idx_declaration_declarator
                 = ast[i].value.declaration_or_definition.idx_declaration_declarator;
-
        i != ast::null;
-
        i = ast[i].value.declaration_or_definition.idx_next_declaration_or_definition,
-
                 idx_declaration_declarator
                 = ast[i].value.declaration_or_definition.idx_declaration_declarator)
   {
@@ -83,7 +79,7 @@ spt::Tree::build_multi_declaration_or_definition(ast::idx idx_declaration_or_def
          j != ast::null; j = ast[j].value.initial_declarator.idx_next_initial_declarator)
     {
       block->push_back(build_declaration_or_definition(idx_declaration_declarator, j));
-      now_compound_statement = ast::null;
+      // now_compound_statement = ast::null;
     }
   }
 
@@ -94,32 +90,32 @@ spt::Tree::build_multi_declaration_or_definition(ast::idx idx_declaration_or_def
  * @brief
  *
  * @param idx_declaration_declarator
- * @return spt::Type*
+ * @return Type*
  */
-spt::Type *spt::Tree::build_declaration_declarator(ast::idx idx_declaration_declarator)
+Type *Tree::build_declaration_declarator(ast::idx idx_declaration_declarator)
 {
-  // unsign
+  // unsigned
   if (ast[idx_declaration_declarator].value.declaration_declarator.sign == ast::declarator_sign::sign_signed)
   {
     switch (ast[idx_declaration_declarator].value.declaration_declarator.type)
     {
       case ast::declarator_type::type_struct:
-        return spt::Type::get_struct();
+        return Type::get_struct();
       case ast::declarator_type::type_char:
-        return spt::Type::get_int8();
+        return Type::get_int8();
       case ast::declarator_type::type_double:
-        return spt::Type::get_double();
+        return Type::get_double();
       case ast::declarator_type::type_float:
-        return spt::Type::get_float();
+        return Type::get_float();
       case ast::declarator_type::type_short_int:
-        return spt::Type::get_int16();
+        return Type::get_int16();
       case ast::declarator_type::type_int:
       case ast::declarator_type::type_long_int:
-        return spt::Type::get_int32();
+        return Type::get_int32();
       case ast::declarator_type::type_long_long_int:
-        return spt::Type::get_int64();
+        return Type::get_int64();
       case ast::declarator_type::type_void:
-        return spt::Type::get_void();
+        return Type::get_void();
       default:
         fmt::print(
           fg(fmt::color::red), "declarator type: {}\n",
@@ -135,18 +131,18 @@ spt::Type *spt::Tree::build_declaration_declarator(ast::idx idx_declaration_decl
     switch (ast[idx_declaration_declarator].value.declaration_declarator.type)
     {
       case ast::declarator_type::type_double:
-        TODO return spt::Type::get_double();
+        TODO return Type::get_double();
       case ast::declarator_type::type_float:
-        TODO return spt::Type::get_float();
+        TODO return Type::get_float();
       case ast::declarator_type::type_char:
-        return spt::Type::get_uint8();
+        return Type::get_uint8();
       case ast::declarator_type::type_short_int:
-        return spt::Type::get_uint16();
+        return Type::get_uint16();
       case ast::declarator_type::type_int:
       case ast::declarator_type::type_long_int:
-        return spt::Type::get_uint32();
+        return Type::get_uint32();
       case ast::declarator_type::type_long_long_int:
-        return spt::Type::get_uint64();
+        return Type::get_uint64();
       default:
         fmt::print(
           fg(fmt::color::red), "declarator type: {}\n",
@@ -166,7 +162,7 @@ spt::Type *spt::Tree::build_declaration_declarator(ast::idx idx_declaration_decl
  * @param idx_declaration_declarator
  * @param idx_initial_declarator
  */
-spt::Statement *spt::Tree::build_declaration_or_definition(
+Statement *Tree::build_declaration_or_definition(
   ast::idx idx_declaration_declarator,
   ast::idx idx_initial_declarator
 )
@@ -176,11 +172,11 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
   ast::idx idx_direct_declarator
     = ast[idx_declarator].value.declarator.idx_direct_declarator;
 
-  spt::Type *ptr_type_declaration_declarator
+  Type *ptr_type_declaration_declarator
     = build_declaration_declarator(idx_declaration_declarator);
 
   // return type, var type, arrary unit type
-  spt::Type *ptr_type = build_pointer(ptr_type_declaration_declarator, idx_declarator);
+  Type *ptr_type = build_pointer(ptr_type_declaration_declarator, idx_declarator);
 
   std::string identifier_name = get_identifier_name(idx_declarator);
 
@@ -189,10 +185,10 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
   // ----------------------------------
   if (ast[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null)
   {
-    spt::Type *ptr_unit_type = ptr_type;
-    ast::idx   idx_array_declarator
+    Type    *ptr_unit_type = ptr_type;
+    ast::idx idx_array_declarator
       = ast[idx_direct_declarator].value.direct_declarator.idx_array_declarator;
-    spt::ArrayType *ptr_array_type = build_array(ptr_unit_type, idx_array_declarator);
+    ArrayType *ptr_array_type = build_array(ptr_unit_type, idx_array_declarator);
 
     // a pointer to array
     while (ast[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null)
@@ -202,7 +198,6 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
       idx_direct_declarator = ast[idx_declarator].value.declarator.idx_direct_declarator;
     }
 
-    // TODO
     // exist initializer
     if (ast[idx_initial_declarator].value.initial_declarator.idx_initializer != ast::null)
     {
@@ -211,14 +206,14 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
       ast::idx idx_assignment_expression
         = ast[idx_initializer].value.initializer.idx_assignment_expression;
 
-      return spt::VarDef::create(
+      return VarDef::create(
         ptr_type, identifier_name, build_expression(idx_assignment_expression)
       );
     }
     // not exist initializer
     else
     {
-      return spt::VarDef::create(ptr_type, identifier_name);
+      return VarDef::create(ptr_type, identifier_name);
     }
   }
   // ----------------------------------
@@ -226,15 +221,15 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
   // ----------------------------------
   else if (ast[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null)
   {
-    spt::Type *ptr_return_type = ptr_type;
+    Type *ptr_return_type = ptr_type;
     // get function type list
-    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list
+    std::tuple<std::vector<Type *>, std::vector<std::string>> argument_type_list
       = build_arguments_type_list(
         ast[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list
       );
 
-    spt::FuncType *ptr_func_type
-      = spt::FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
+    FuncType *ptr_func_type
+      = FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
 
     /// 1. a pointer to function
     if (ast[idx_direct_declarator].value.direct_declarator.idx_declarator != ast::null)
@@ -256,15 +251,15 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
       if (now_compound_statement != ast::null)
       {
         // compound_statement
-        return spt::FuncDef::create(
+        return FuncDef::create(
           ptr_return_type, identifier_name, argument_type_list,
-          build_block(now_compound_statement)
+          build_compound_statement(now_compound_statement)
         );
       }
       // 4. a function declaration
       else
       {
-        return spt::FuncDec::create(ptr_return_type, identifier_name, argument_type_list);
+        return FuncDec::create(ptr_return_type, identifier_name, argument_type_list);
       }
     }
   }
@@ -276,14 +271,14 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
     // struct definition
     if (now_compound_statement != ast::null)
     {
-      return spt::StructDef::create(
+      return StructDef::create(
         identifier_name, build_struct_element_type_list(now_compound_statement)
       );
     }
     // struct declaration
     else
     {
-      return spt::StructDec::create(identifier_name);
+      return StructDec::create(identifier_name);
     }
   }
   // ----------------------------------
@@ -298,14 +293,14 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
         = ast[idx_initial_declarator].value.initial_declarator.idx_initializer;
       ast::idx idx_assignment_expression
         = ast[idx_initializer].value.initializer.idx_assignment_expression;
-      return spt::VarDef::create(
+      return VarDef::create(
         ptr_type, identifier_name, build_expression(idx_assignment_expression)
       );
     }
     // not exist initializer
     else
     {
-      return spt::VarDef::create(ptr_type, identifier_name);
+      return VarDef::create(ptr_type, identifier_name);
     }
   }
   NOT_REACHABLE
@@ -316,17 +311,13 @@ spt::Statement *spt::Tree::build_declaration_or_definition(
  *
  * @param ptr_type_declaration_declarator
  * @param idx_declarator
- * @return spt::Type*
+ * @return Type*
  */
-spt::Type *spt::Tree::build_pointer(
-  spt::Type *ptr_type_declaration_declarator,
-  ast::idx   idx_declarator
-)
+Type *Tree::build_pointer(Type *ptr_type_declaration_declarator, ast::idx idx_declarator)
 {
   for (auto i = ast[idx_declarator].value.declarator.is_ptr; i > 0; --i)
   {
-    ptr_type_declaration_declarator
-      = spt::PointerType::get(ptr_type_declaration_declarator);
+    ptr_type_declaration_declarator = PointerType::get(ptr_type_declaration_declarator);
   }
   return ptr_type_declaration_declarator;
 }
@@ -338,7 +329,7 @@ spt::Type *spt::Tree::build_pointer(
  * @param idx_declarator
  * @return std::string
  */
-std::string spt::Tree::get_identifier_name(ast::idx idx_declarator)
+std::string Tree::get_identifier_name(ast::idx idx_declarator)
 {
   ast::idx idx_identifier = ast::null;
   for (ast::idx i = idx_declarator; ast[i].type != ast::node_type::identifier;)
@@ -374,10 +365,9 @@ std::string spt::Tree::get_identifier_name(ast::idx idx_declarator)
  *
  * @param ptr_unit_type
  * @param idx_array_declarator
- * @return spt::ArrayType*
+ * @return ArrayType*
  */
-spt::ArrayType *
-spt::Tree::build_array(spt::Type *ptr_unit_type, ast::idx idx_array_declarator)
+ArrayType *Tree::build_array(Type *ptr_unit_type, ast::idx idx_array_declarator)
 {
   ast::idx idx_next_array_declarator
     = ast[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
@@ -388,7 +378,7 @@ spt::Tree::build_array(spt::Type *ptr_unit_type, ast::idx idx_array_declarator)
     ast::idx idx_constant = ast[idx_array_declarator].value.array_declarator.idx_constant;
     dimension_len.push_back(constant_node_to_uint64(idx_constant));
   }
-  return spt::ArrayType::get(ptr_unit_type, dimension_len);
+  return ArrayType::get(ptr_unit_type, dimension_len);
 }
 
 /**
@@ -397,7 +387,7 @@ spt::Tree::build_array(spt::Type *ptr_unit_type, ast::idx idx_array_declarator)
  * @param idx_constant
  * @return std::uint64_t
  */
-std::uint64_t spt::Tree::constant_node_to_uint64(ast::idx idx_constant)
+std::uint64_t Tree::constant_node_to_uint64(ast::idx idx_constant)
 {
   return std::stoull(ast.get_constant(idx_constant).value);
 }
@@ -406,24 +396,25 @@ std::uint64_t spt::Tree::constant_node_to_uint64(ast::idx idx_constant)
  * @brief
  *
  * @param idx_compound_statement
- * @return spt::Block*
+ * @return Block*
  */
-spt::Block *spt::Tree::build_block(ast::idx idx_compound_statement)
+Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
 {
-  spt::Block *block = spt::Block::create();
+  Block *block = Block::create();
 
   ast::idx idx_block = ast[idx_compound_statement].value.compound_statement.idx_block;
 
   for (ast::idx i = idx_block; i != ast::null; i = ast[i].value.block.idx_next_block)
   {
-    ast::idx idx_declaration = ast[idx_block].value.block.idx_declaration;
+    ast::idx idx_declaration = ast[i].value.block.idx_declaration;
+    ast::idx idx_statement   = ast[i].value.block.idx_statement;
     if (idx_declaration != ast::null)
     {
       block->push_back(build_multi_declaration_or_definition(idx_declaration));
     }
     else
     {
-      block->push_back(build_statement(i));
+      block->push_back(build_statement(idx_statement));
     }
   }
   return block;
@@ -433,11 +424,10 @@ spt::Block *spt::Tree::build_block(ast::idx idx_compound_statement)
  * @brief
  *
  * @param idx_idx_block
- * @return spt::Block*
+ * @return Block*
  */
-spt::Statement *spt::Tree::build_statement(ast::idx idx_block)
+Statement *Tree::build_statement(ast::idx idx_statement)
 {
-  ast::idx idx_statement = ast[idx_block].value.block.idx_statement;
   switch (ast[idx_statement].type)
   {
     case ast::node_type::if_statement:
@@ -464,10 +454,14 @@ spt::Statement *spt::Tree::build_statement(ast::idx idx_block)
  * @brief
  *
  * @param idx_expression
- * @return spt::Expr*
+ * @return Expr*
  */
-spt::Expr *spt::Tree::build_expression(ast::idx idx_expression)
+Expr *Tree::build_expression(ast::idx idx_expression)
 {
+  if (idx_expression == ast::null)
+  {
+    return nullptr;
+  }
   switch (ast[idx_expression].type)
   {
     case ast::node_type::assignment_expression:
@@ -484,7 +478,7 @@ spt::Expr *spt::Tree::build_expression(ast::idx idx_expression)
   NOT_REACHABLE
 }
 
-spt::Expr *spt::Tree::build_binary_expression(ast::idx idx_binary_expression)
+Expr *Tree::build_binary_expression(ast::idx idx_binary_expression)
 {
   return Expr::create(
     ast[idx_binary_expression].value.binary_expression.token_operator,
@@ -493,14 +487,14 @@ spt::Expr *spt::Tree::build_binary_expression(ast::idx idx_binary_expression)
   );
 }
 
-spt::Expr *spt::Tree::build_assign_expression(ast::idx idx_assign_expression)
+Expr *Tree::build_assign_expression(ast::idx idx_assign_expression)
 {
   ast::idx idx_binary_expression
     = ast[idx_assign_expression].value.assignment_expression.idx_binary_expression;
 
   // just a binary expression without assign
-  spt::Expr *r_value = build_expression(idx_binary_expression);
-  spt::Expr *l_value;
+  Expr *r_value = build_expression(idx_binary_expression);
+  Expr *l_value;
 
   for (ast::idx i = idx_assign_expression; i != ast::null;
        i          = ast[i].value.assignment_expression.idx_next_assignment_expression)
@@ -508,9 +502,7 @@ spt::Expr *spt::Tree::build_assign_expression(ast::idx idx_assign_expression)
     l_value = build_unary_expression(
       ast[i].value.assignment_expression.idx_unary_or_binary_expression
     );
-    spt::Expr::create(
-      ast[i].value.assignment_expression.assignment_type, l_value, r_value
-    );
+    Expr::create(ast[i].value.assignment_expression.assignment_type, l_value, r_value);
 
     if (ast[i].value.assignment_expression.idx_next_assignment_expression != ast::null)
     {
@@ -521,7 +513,7 @@ spt::Expr *spt::Tree::build_assign_expression(ast::idx idx_assign_expression)
 }
 
 
-spt::Expr *spt::Tree::build_unary_expression(ast::idx idx_unary_expression)
+Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
 {
   //----------------------------------------------------------------
   // 1. sizeof
@@ -580,8 +572,7 @@ spt::Expr *spt::Tree::build_unary_expression(ast::idx idx_unary_expression)
  * @param idx_conditional_expression
  * @return Expr*
  */
-spt::Expr *spt::Tree::build_conditional_expression(ast::idx idx_conditional_expression
-){TODO}
+Expr *Tree::build_conditional_expression(ast::idx idx_conditional_expression){TODO}
 
 
 /**
@@ -590,7 +581,7 @@ spt::Expr *spt::Tree::build_conditional_expression(ast::idx idx_conditional_expr
  * @param idx_postfix_expression
  * @return Expr*
  */
-spt::Expr *spt::Tree::build_postfix_expression(ast::idx idx_postfix_expression)
+Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
 {
   ast::idx idx_primary_expression
     = ast[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
@@ -674,13 +665,13 @@ spt::Expr *spt::Tree::build_postfix_expression(ast::idx idx_postfix_expression)
         }
         idx_postfix_operator
           = ast[idx_postfix_operator].value.postfix_operator.idx_next_postfix_operator;
+        TODO
       }
     }
     // CASE not exist postfix operator
     else
     {
-      // TODO
-      //  return Var::create(identifier);
+      return Var::create(identifier, symbol_table.get_type(identifier));
     }
   }
   //------------
@@ -688,9 +679,9 @@ spt::Expr *spt::Tree::build_postfix_expression(ast::idx idx_postfix_expression)
   //------------
   else if (ast[idx_primary_expression].value.primary_expression.idx_constant != ast::null)
   {
-    // return build_constant(
-    //   ast[idx_primary_expression].value.primary_expression.idx_constant
-    //);
+    return build_constant(
+      ast[idx_primary_expression].value.primary_expression.idx_constant
+    );
   }
   //------------
   // expression
@@ -707,12 +698,12 @@ spt::Expr *spt::Tree::build_postfix_expression(ast::idx idx_postfix_expression)
  * @brief
  *
  * @param idx_arguments_type_list
- * @return std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
+ * @return std::tuple<std::vector<Type *>, std::vector<std::string>>
  */
-std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
-spt::Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
+std::tuple<std::vector<Type *>, std::vector<std::string>>
+Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
 {
-  std::tuple<std::vector<spt::Type *>, std::vector<std::string>> arguments_type_list;
+  std::tuple<std::vector<Type *>, std::vector<std::string>> arguments_type_list;
   for (ast::idx i
        = ast[idx_arguments_type_list].value.arguments_type_list.idx_argument_declaration;
        i != ast::null;
@@ -731,10 +722,10 @@ spt::Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
  * @brief
  *
  * @param idx_argument_declaration
- * @return std::tuple<spt::Type *, std::string>
+ * @return std::tuple<Type *, std::string>
  */
-std::tuple<spt::Type *, std::string>
-spt::Tree::build_argument_declaration(ast::idx idx_argument_declaration)
+std::tuple<Type *, std::string>
+Tree::build_argument_declaration(ast::idx idx_argument_declaration)
 {
   ast::idx idx_declaration_declarator
     = ast[idx_argument_declaration]
@@ -743,7 +734,7 @@ spt::Tree::build_argument_declaration(ast::idx idx_argument_declaration)
   ast::idx idx_declarator
     = ast[idx_argument_declaration].value.arguments_declaration.idx_declarator;
 
-  spt::Type *ptr_type_argument = build_type(idx_declaration_declarator, idx_declarator);
+  Type *ptr_type_argument = build_type(idx_declaration_declarator, idx_declarator);
 
   return {ptr_type_argument, get_identifier_name(idx_declarator)};
 }
@@ -754,17 +745,16 @@ spt::Tree::build_argument_declaration(ast::idx idx_argument_declaration)
  *
  * @param idx_declaration_declarator
  * @param idx_declarator
- * @return spt::Type*
+ * @return Type*
  */
 
-spt::Type *
-spt::Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarator)
+Type *Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarator)
 {
-  spt::Type *ptr_type_declaration_declarator
+  Type *ptr_type_declaration_declarator
     = build_declaration_declarator(idx_declaration_declarator);
 
   // return type, var type, arrary unit type
-  spt::Type *ptr_type = build_pointer(ptr_type_declaration_declarator, idx_declarator);
+  Type *ptr_type = build_pointer(ptr_type_declaration_declarator, idx_declarator);
 
   ast::idx idx_direct_declarator
     = ast[idx_declarator].value.declarator.idx_direct_declarator;
@@ -772,10 +762,10 @@ spt::Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarat
   // array or a pointer to array
   if (ast[idx_direct_declarator].value.direct_declarator.idx_array_declarator != ast::null)
   {
-    spt::Type *ptr_unit_type = ptr_type;
-    ast::idx   idx_array_declarator
+    Type    *ptr_unit_type = ptr_type;
+    ast::idx idx_array_declarator
       = ast[idx_direct_declarator].value.direct_declarator.idx_array_declarator;
-    spt::Type *ptr_array_type = build_array(ptr_unit_type, idx_array_declarator);
+    Type *ptr_array_type = build_array(ptr_unit_type, idx_array_declarator);
 
     // a pointer to array
     ast::idx idx_declarator;
@@ -792,15 +782,15 @@ spt::Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarat
   // function
   else if (ast[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list != ast::null)
   {
-    spt::Type *ptr_return_type = ptr_type;
+    Type *ptr_return_type = ptr_type;
     // get function type list
-    std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list
+    std::tuple<std::vector<Type *>, std::vector<std::string>> argument_type_list
       = build_arguments_type_list(
         ast[idx_direct_declarator].value.direct_declarator.idx_arguments_type_list
       );
 
-    spt::FuncType *ptr_func_type
-      = spt::FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
+    FuncType *ptr_func_type
+      = FuncType::get(ptr_return_type, std::get<0>(argument_type_list));
     return ptr_func_type;
   }
   // var
@@ -816,17 +806,17 @@ spt::Tree::build_type(ast::idx idx_declaration_declarator, ast::idx idx_declarat
  * @brief
  *
  * @param idx_compound_statement
- * @return std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
+ * @return std::tuple<std::vector<Type *>, std::vector<std::string>>
  */
-std::tuple<std::vector<spt::Type *>, std::vector<std::string>>
-spt::Tree::build_struct_element_type_list(ast::idx idx_compound_statement){TODO}
+std::tuple<std::vector<Type *>, std::vector<std::string>>
+Tree::build_struct_element_type_list(ast::idx idx_compound_statement){TODO}
 
 /**
  * @brief
  *
  * @param idx_if_statement
  */
-spt::Statement *spt::Tree::build_if_statement(ast::idx idx_if_statement)
+Statement *Tree::build_if_statement(ast::idx idx_if_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_if_statement].value.if_statement.idx_assign_expression;
@@ -834,9 +824,9 @@ spt::Statement *spt::Tree::build_if_statement(ast::idx idx_if_statement)
   ast::idx idx_if_body   = ast[idx_if_statement].value.if_statement.idx_if_body;
 
   // loop conditional
-  spt::Expr *expr = build_expression(idx_assign_expression);
+  Expr *expr = build_expression(idx_assign_expression);
   // if body
-  spt::Block *true_block = build_block(idx_if_body);
+  Block *true_block = build_compound_statement(idx_if_body);
   // else body
   if (idx_else_body != ast::null)
   {
@@ -844,7 +834,7 @@ spt::Statement *spt::Tree::build_if_statement(ast::idx idx_if_statement)
   }
   else
   {
-    spt::Block *false_block = build_block(idx_else_body);
+    Block *false_block = build_compound_statement(idx_else_body);
     return IfStatement::create(expr, true_block, false_block);
   }
 }
@@ -853,17 +843,17 @@ spt::Statement *spt::Tree::build_if_statement(ast::idx idx_if_statement)
  * @brief
  *
  * @param idx_statement
- * @return spt::Statement*
+ * @return Statement*
  */
-spt::Statement *spt::Tree::build_switch_statement(ast::idx idx_statement){TODO}
+Statement *Tree::build_switch_statement(ast::idx idx_statement){TODO}
 
 /**
  * @brief
  *
  * @param idx_statement
- * @return spt::Statement*
+ * @return Statement*
  */
-spt::Statement *spt::Tree::build_return_statement(ast::idx idx_return_statement)
+Statement *Tree::build_return_statement(ast::idx idx_return_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_return_statement].value.return_statement.idx_assignment_expression;
@@ -875,17 +865,18 @@ spt::Statement *spt::Tree::build_return_statement(ast::idx idx_return_statement)
  * @brief
  *
  * @param idx_statement
- * @return spt::Statement*
+ * @return Statement*
  */
-spt::Statement *spt::Tree::build_while_statement(ast::idx idx_while_statement)
+Statement *Tree::build_while_statement(ast::idx idx_while_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_while_statement].value.while_statement.idx_assignment_expression;
   ast::idx idx_compound_statement
     = ast[idx_while_statement].value.while_statement.idx_compound_statement;
 
-  return spt::WhileStatement::create(
-    build_expression(idx_assign_expression), build_block(idx_compound_statement)
+  return WhileStatement::create(
+    build_expression(idx_assign_expression),
+    build_compound_statement(idx_compound_statement)
   );
 }
 
@@ -893,17 +884,18 @@ spt::Statement *spt::Tree::build_while_statement(ast::idx idx_while_statement)
  * @brief
  *
  * @param idx_statement
- * @return spt::Statement*
+ * @return Statement*
  */
-spt::Statement *spt::Tree::build_do_while_statement(ast::idx idx_do_while_statement)
+Statement *Tree::build_do_while_statement(ast::idx idx_do_while_statement)
 {
   ast::idx idx_assign_expression
     = ast[idx_do_while_statement].value.do_while_statement.idx_assign_statement;
   ast::idx idx_compound_statement
     = ast[idx_do_while_statement].value.do_while_statement.idx_compound_statement;
 
-  return spt::DoWhileStatement::create(
-    build_expression(idx_assign_expression), build_block(idx_compound_statement)
+  return DoWhileStatement::create(
+    build_expression(idx_assign_expression),
+    build_compound_statement(idx_compound_statement)
   );
 }
 
@@ -911,9 +903,9 @@ spt::Statement *spt::Tree::build_do_while_statement(ast::idx idx_do_while_statem
  * @brief
  *
  * @param idx_statement
- * @return spt::Statement*
+ * @return Statement*
  */
-spt::Statement *spt::Tree::build_for_statement(ast::idx idx_for_statement)
+Statement *Tree::build_for_statement(ast::idx idx_for_statement)
 {
   ast::idx idx_change_assign_expression
     = ast[idx_for_statement].value.for_statement.idx_change_assign_expression;
@@ -933,15 +925,37 @@ spt::Statement *spt::Tree::build_for_statement(ast::idx idx_for_statement)
   // change value
   build_expression(idx_change_assign_expression);
   // compound statement
-  build_block(idx_compound_statement);
+  build_compound_statement(idx_compound_statement);
   TODO
 }
 
-spt::Expr *spt::Tree::build_compute_unary_expression_size(ast::idx unary_expression){TODO}
+Expr *Tree::build_compute_unary_expression_size(ast::idx unary_expression){TODO}
 
-spt::Expr *spt::Tree::build_compute_declarator_size(ast::idx idx_declaration_declarator)
+Expr *Tree::build_compute_declarator_size(ast::idx idx_declaration_declarator){TODO}
+
+/**
+ * @brief
+ *
+ * @param idx_constant
+ * @return Constant*
+ */
+Constant *Tree::build_constant(ast::idx idx_constant)
 {
-  TODO
+  switch (ast.get_constant(idx_constant).type)
+  {
+    case ast::node_type::constant_string:
+      return StringLiteral::create(ast.get_constant(idx_constant).value);
+    case ast::node_type::constant_negative_float_number:
+      return ConstantFloat::create(ast.get_constant(idx_constant).value, true);
+    case ast::node_type::constant_float_number:
+      return ConstantFloat::create(ast.get_constant(idx_constant).value, false);
+    case ast::node_type::constant_integer_number:
+      return ConstantInt::create(ast.get_constant(idx_constant).value, false);
+    case ast::node_type::constant_negative_integer_number:
+      return ConstantInt::create(ast.get_constant(idx_constant).value, true);
+    default:
+      SWITCH_ERROR
+  }
 }
 
 }  // namespace spt

@@ -64,7 +64,7 @@ Tree::insert(ast::node_type node_type) {
             //Tree.back().value.declare_function.loc.column = column;
 
         }
-        case ast::node_type::declare_varible: {
+        case ast::node_type::declare_variable: {
 
         }
         case ast::node_type::definition_function: {
@@ -239,7 +239,6 @@ void Tree::trans_declaration_or_definition(ast::idx idx_declaration_or_definitio
                 j = tree_body[i].value.initial_declarator.idx_next_initial_declarator;
        i != ast::null; i = j)
   {
-    // std::cout << i << ' ' << j << std::endl;
     trans_each_initial_declarator(i);
   }
 }
@@ -470,7 +469,7 @@ void Tree::print_tree()
 
   file_buffer.clear();
   file_buffer += '{';
-  dfs_print_tree(last_root_ptr);
+  dfs_print_tree(1);
   file_buffer += '}';
 
   // erase extra comma in json file string

@@ -1,6 +1,12 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-enum class token : unsigned int {
+
+#include "token.h"
+#include <map>
+#include <string>
+
+enum class token : unsigned int
+{
   invalid = 0,
 
   jmp,    //*jmp 用于while if 的
@@ -152,9 +158,36 @@ enum class token : unsigned int {
   key_return,    // return
   key_break,     // break
   key_continue,  // continue
-  key_switch,    // swtich
+  key_switch,    // switch
   key_do,        // do
   key_case,      // case
   key_default    // default
 };
+
+std::map<token, std::string> map_binary_operator_token_and_symbol{
+  {token::log_or,    "||"},
+  {token::log_and,   "&&"},
+  {token::bit_or,    "|" },
+  {token::bit_xor,   "^" },
+  {token::bit_and,   "&" },
+  {token::equ,       "=="},
+  {token::not_equ,   "!="},
+  {token::less,      "<" },
+  {token::less_equ,  "<="},
+  {token::great,     ">" },
+  {token::great_equ, ">="},
+  {token::l_shift,   "<<"},
+  {token::r_shift,   ">>"},
+  {token::plus,      "+" },
+  {token::minus,     "-" },
+  {token::div,       "/" },
+  {token::mod,       "%" },
+  {token::times,     "*" },
+};
+
+std::string binary_operator_token_to_symbol(token t)
+{
+  return map_binary_operator_token_and_symbol.at(t);
+}
+
 #endif

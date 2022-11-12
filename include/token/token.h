@@ -1,6 +1,8 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-enum class token : unsigned int {
+#include <string>
+enum class token : unsigned int
+{
   invalid = 0,
 
   jmp,    //*jmp 用于while if 的
@@ -160,9 +162,12 @@ enum class token : unsigned int {
   key_return,    // return
   key_break,     // break
   key_continue,  // continue
-  key_switch,    // swtich
+  key_switch,    // switch
   key_do,        // do
   key_case,      // case
   key_default    // default
 };
+
+std::string binary_operator_token_to_symbol(token t);
+
 #endif

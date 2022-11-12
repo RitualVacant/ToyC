@@ -84,8 +84,8 @@ class Expr : public Statement
 {
 private:
   token op;
-  Expr *l_expr;
-  Expr *r_expr;
+  Expr *l_expr = nullptr;
+  Expr *r_expr = nullptr;
 
 public:
   explicit Expr();
@@ -94,6 +94,7 @@ public:
   static Expr *create(token op, Expr *l_expr, Expr *r_expr);
   void         print() override;
 };
+
 
 /**
  * @brief Type
@@ -271,12 +272,75 @@ public:
   void             print() override;
 };
 
+
+/**
+ * @brief
+ *
+ */
+class Constant : public Expr
+{
+protected:
+  std::string value;
+
+public:
+  Constant(std::string value);
+  ~Constant() = default;
+  void print() override;
+};
+
+/**
+ * @brief
+ *
+ */
+class ConstantInt : public Constant
+{
+private:
+  Type *type;
+  bool  negative = false;
+
+public:
+  ConstantInt(std::string value, bool negative);
+  ~ConstantInt() = default;
+  static ConstantInt *create(std::string value, bool negative);
+  void                print() override;
+};
+
+/**
+ * @brief
+ *
+ */
+class ConstantFloat : public Constant
+{
+private:
+  Type *type;
+  bool  negative = false;
+
+public:
+  ConstantFloat(std::string value, bool negative);
+  ~ConstantFloat() = default;
+  static ConstantFloat *create(std::string value, bool negative);
+  void                  print() override;
+};
+
+/**
+ * @brief
+ *
+ */
+class StringLiteral : public Constant
+{
+public:
+  StringLiteral(std::string value);
+  ~StringLiteral() = default;
+  static StringLiteral *create(std::string value);
+  void                  print() override;
+};
+
 /**
  * @brief Var
  *
  */
 
-class Var : public Base
+class Var : public Expr
 {
 protected:
   std::string identifier;
@@ -294,10 +358,12 @@ public:
  * @brief VarDef
  *
  */
-class VarDef : public Def, public Var
+class VarDef : public Def
 {
 private:
-  Expr *initializer;
+  std::string identifier;
+  Type       *type;
+  Expr       *initializer;
 
 public:
   explicit VarDef(Type *type_, std::string identifier_, Expr *initializer_);
@@ -310,8 +376,11 @@ public:
  * @brief VarDec
  *
  */
-class VarDec : public Dec, public Var
+class VarDec : public Dec
 {
+  std::string identifier;
+  Type       *type;
+
 public:
   void print() override;
 };
