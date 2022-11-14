@@ -51,7 +51,10 @@ private:
   Expr     *build_unary_expression(ast::idx idx_unary_expression);
   Expr     *build_binary_expression(ast::idx idx_binary_expression);
   Expr     *build_postfix_expression(ast::idx idx_postfix_expression);
+  Expr     *build_conversion(ast::idx idx_unary_expression);
   Constant *build_constant(ast::idx idx_constant);
+
+  PostfixOperator *build_postfix_operator(ast::idx idx_postfix_operator);
 
   std::vector<Expr *> build_argument_list(ast::idx idx_expression_list);
 

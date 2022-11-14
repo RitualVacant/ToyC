@@ -51,9 +51,9 @@ private:
   void print_key_value(std::string key, std::string value);
   void print_json_key(std::string key);
   void print_json_value(std::string value);
-  void print_json_class_head(std::string value);
+  void print_class_head(std::string value);
   void print_json_constant(ast::idx idx_constant);
-  void print_json_class_end();
+  void print_class_end();
   void trans_declaration_or_definition(ast::idx idx);
   void trans_each_initial_declarator(ast::idx idx);
 

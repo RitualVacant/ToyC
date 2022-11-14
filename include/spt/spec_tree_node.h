@@ -2,6 +2,7 @@
 #define SPEC_TREE_NODE_H
 
 #include "inner.h"
+#include "token.h"
 #include <limits>
 #include <string>
 #include <variant>
@@ -132,7 +133,12 @@ public:
   static Type *get_double();
   // 11
   static Type *get_float();
-  void         print() override;
+  // 12
+  static Type *get_udouble();
+  // 13
+  static Type *get_ufloat();
+
+  void print() override;
 };
 
 /**
@@ -161,6 +167,7 @@ class ArrayType : public Type
 private:
   std::vector<std::uint64_t> dimension_len;
   Type                      *ptr_unit_type;
+  ArrayType(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len);
 
 public:
   static ArrayType *get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len);
@@ -335,54 +342,67 @@ public:
   void                  print() override;
 };
 
-/**
- * @brief Var
- *
- */
-
-class Var : public Expr
-{
-protected:
-  std::string identifier;
-  Type       *type;
-
-public:
-  explicit Var(std::string identifier_, Type *type_);
-  ~Var();
-  static Var *create(std::string identifier_, Type *type_);
-  void        print() override;
-};
-
 
 /**
- * @brief VarDef
+ * @brief Conversion
  *
  */
-class VarDef : public Def
+class Conversion : public Expr
 {
 private:
-  std::string identifier;
-  Type       *type;
-  Expr       *initializer;
+  Type *type;
+  Expr *expr;
 
 public:
-  explicit VarDef(Type *type_, std::string identifier_, Expr *initializer_);
-  static VarDef      *
-  create(Type *type_, std::string identifier_, Expr *initializer_ = nullptr);
-  void print() override;
+  explicit Conversion(Type *type, Expr *expr);
+  static Conversion *create(Type *type, Expr *expr);
+  void               print() override;
 };
 
 /**
- * @brief VarDec
+ * @brief
  *
  */
-class VarDec : public Dec
+class UnaryExpr : public Expr
 {
-  std::string identifier;
-  Type       *type;
+private:
+  token unary_op;
+  Expr *expr;
 
 public:
-  void print() override;
+  explicit UnaryExpr(token unary_op, Expr *expr);
+  static UnaryExpr *create(token unary_op, Expr *expr);
+  void              print() override;
+};
+
+
+class Array : public Expr
+{
+private:
+  std::string         identifier;
+  std::vector<Expr *> idx_list;
+
+public:
+  explicit Array(std::string identifier, std::vector<Expr *> idx_list);
+  ~Array();
+  static Array *create(std::string identifier, std::vector<Expr *> idx_list);
+  void          print() override;
+};
+
+/**
+ * @brief
+ *
+ */
+class ArrayDef : public Statement
+{
+};
+
+/**
+ * @brief
+ *
+ */
+class ArrayDecl : public Statement
+{
 };
 
 /**
@@ -411,7 +431,6 @@ public:
   static StructDec *create(std::string name);
   void              print() override;
 };
-
 
 /**
  * @brief
@@ -498,41 +517,199 @@ public:
 class ForStatement : public Statement
 {
 private:
-  Block *for_body;
-  Expr  *init_expr;
-  Def   *init_def;
+  Block *init_block;
   Expr  *condition_expr;
   Expr  *change_expr;
+  Block *for_body;
 
 public:
   explicit ForStatement(
-    Expr  *init_expr,
+    Block *init_block,
     Expr  *condition_expr,
     Expr  *change_expr,
     Block *for_body
   );
-  ForStatement(Def *init_def, Expr *condition_expr, Expr *change_expr, Block *for_body);
   ~ForStatement();
 
   static ForStatement *
-  create(Expr *init_expr, Expr *condition_expr, Expr *change_expr, Block *for_body);
-  static ForStatement      *
-  create(Def *init_def, Expr *condition_expr, Expr *change_expr, Block *for_body);
+  create(Block *init_block, Expr *condition_expr, Expr *change_expr, Block *for_body);
+  void print() override;
+};
+
+////////////////////////////////////////
+// postfix operators
+////////////////////////////////////////
+
+/**
+ * @brief PostfixOperator
+ *
+ */
+class PostfixOperator : public Base
+{
+protected:
+  PostfixOperator *next_postfix_operator = nullptr;
+
+public:
+  PostfixOperator(PostfixOperator *next_postfix_operator);
+  virtual void print();
+};
+
+/**
+ * @brief ArrayOperator
+ *
+ */
+class ArrayOperator : public PostfixOperator
+{
+private:
+  std::vector<Expr *> idx_list;
+
+  ArrayOperator(std::vector<Expr *> &idx_list, PostfixOperator *next_postfix_operator);
+
+public:
+  void print() override;
+  static ArrayOperator *
+  create(std::vector<Expr *> &idx_list, PostfixOperator *next_postfix_operator);
+};
+
+/**
+ * @brief
+ *
+ */
+class FuncOperator : public PostfixOperator
+{
+private:
+  std::vector<Expr *> arguments_list;
+
+  FuncOperator(
+    std::vector<Expr *> &arguments_list,
+    PostfixOperator     *next_postfix_operator
+  );
+
+public:
+  void print() override;
+  static FuncOperator *
+  create(std::vector<Expr *> arguments_list, PostfixOperator *next_postfix_operator);
+};
+
+/**
+ * @brief StructOperator
+ *
+ */
+class StructOperator : public PostfixOperator
+{
+private:
+  std::string identifier;
+  StructOperator(std::string identifier, PostfixOperator *next_postfix_operator);
+
+public:
+  void print() override;
+  static StructOperator *
+  create(std::string identifier, PostfixOperator *next_postfix_operator);
+};
+
+/**
+ * @brief StructOperatorPtr
+ *
+ */
+class StructOperatorPtr : public PostfixOperator
+{
+  std::string identifier;
+  StructOperatorPtr(std::string identifier, PostfixOperator *next_postfix_operator);
+
+public:
+  void print() override;
+  static StructOperatorPtr *
+  create(std::string identifier, PostfixOperator *next_postfix_operator);
+};
+
+/**
+ * @brief SelfPulsOperator
+ *
+ */
+class SelfPulsOperator : public PostfixOperator
+{
+private:
+  SelfPulsOperator(PostfixOperator *next_postfix_operator);
+
+public:
+  static SelfPulsOperator *create(PostfixOperator *next_postfix_operator);
+  void                     print() override;
+};
+
+/**
+ * @brief SelfMinusOperator
+ *
+ */
+class SelfMinusOperator : public PostfixOperator
+{
+private:
+  SelfMinusOperator(PostfixOperator *next_postfix_operator);
+
+public:
+  static SelfMinusOperator *create(PostfixOperator *next_postfix_operator);
+  void                      print() override;
+};
+
+
+/**
+ * @brief Var
+ *
+ */
+
+class Var : public Expr
+{
+private:
+  PostfixOperator *next_postfix_operator;
+
+protected:
+  std::string identifier;
+  Type       *type;
+
+public:
+  explicit Var(
+    std::string      identifier_,
+    Type            *type_,
+    PostfixOperator *next_postfix_operator
+  );
+  ~Var();
+  static Var *create(
+    std::string      identifier_,
+    Type            *type_,
+    PostfixOperator *next_postfix_operator = nullptr
+  );
   void print() override;
 };
 
 
-class Array : Expr
+/**
+ * @brief VarDef
+ *
+ */
+class VarDef : public Def
 {
 private:
-  std::string         identifier;
-  std::vector<Expr *> idx_list;
+  std::string identifier;
+  Type       *type;
+  Expr       *initializer;
 
 public:
-  explicit Array(std::string identifier, std::vector<Expr *> idx_list);
-  ~Array();
-  static Array *create(std::string identifier, std::vector<Expr *> idx_list);
-  void          print() override;
+  explicit VarDef(Type *type_, std::string identifier_, Expr *initializer_);
+  static VarDef      *
+  create(Type *type_, std::string identifier_, Expr *initializer_ = nullptr);
+  void print() override;
+};
+
+/**
+ * @brief VarDec
+ *
+ */
+class VarDec : public Dec
+{
+  std::string identifier;
+  Type       *type;
+
+public:
+  void print() override;
 };
 
 

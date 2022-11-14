@@ -25,6 +25,7 @@ Tree::Tree()
   ast = std::move(parser.get_ast_tree());
   symbol_table.push_scope();
   ptr_root_tree_body = build_multi_declaration_or_definition(1);
+  symbol_table.pop_scope();
 }
 
 /**
@@ -132,9 +133,10 @@ Type *Tree::build_declaration_declarator(ast::idx idx_declaration_declarator)
     switch (ast[idx_declaration_declarator].value.declaration_declarator.type)
     {
       case ast::declarator_type::type_double:
-        TODO return Type::get_double();
+        // TODO unsigned double
+        return Type::get_udouble();
       case ast::declarator_type::type_float:
-        TODO return Type::get_float();
+        return Type::get_ufloat();
       case ast::declarator_type::type_char:
         return Type::get_uint8();
       case ast::declarator_type::type_short_int:
@@ -396,10 +398,10 @@ std::uint64_t Tree::constant_node_to_uint64(ast::idx idx_constant)
  */
 Block *Tree::build_compound_statement(ast::idx idx_compound_statement)
 {
-  Block *block = Block::create();
-  symbol_table.push_scope();
-
+  Block   *block     = Block::create();
   ast::idx idx_block = ast[idx_compound_statement].value.compound_statement.idx_block;
+
+  symbol_table.push_scope();
 
   for (ast::idx i = idx_block; i != ast::null; i = ast[i].value.block.idx_next_block)
   {
@@ -525,6 +527,9 @@ Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
   //----------------------------------------------------------------
   if (ast[idx_unary_expression].value.unary_expression.is_sizeof)
   {
+    {
+      TODO
+    }
     // unary_expression
     if (ast[idx_unary_expression].type == ast::node_type::unary_expression)
     {
@@ -552,7 +557,12 @@ Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
   //----------------------------------------------------------------
   if (ast[idx_unary_expression].value.unary_expression.unary_operator != token::invalid)
   {
-    return build_unary_expression(idx_unary_expression);
+    return spt::UnaryExpr::create(
+      ast[idx_unary_expression].value.unary_expression.unary_operator,
+      build_unary_expression(
+        ast[idx_unary_expression].value.unary_expression.idx_unary_expression
+      )
+    );
   }
   //----------------------------------------------------------------
   // 3. postfix expression
@@ -564,12 +574,20 @@ Expr *Tree::build_unary_expression(ast::idx idx_unary_expression)
   //----------------------------------------------------------------
   // 4. declaration declarator : conversion
   //----------------------------------------------------------------
-  if (ast[idx_unary_expression].value.unary_expression.idx_declaration_declarator)
+  if (ast[idx_unary_expression].value.unary_expression.idx_declaration_declarator != ast::null)
   {
-    TODO
+    return build_conversion(idx_unary_expression);
   }
   NOT_REACHABLE
 }
+
+/**
+ * @brief
+ *
+ * @param idx_unary_expression
+ * @return Expr*
+ */
+Expr *Tree::build_conversion(ast::idx idx_unary_expression){TODO}
 
 /**
  * @brief
@@ -591,10 +609,6 @@ Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
   ast::idx idx_primary_expression
     = ast[idx_postfix_expression].value.postfix_expression.idx_primary_expression;
 
-  //--------------------------------
-  // primary expression
-  //--------------------------------
-
   //------------
   // identifier : array func call and other with identifier
   //------------
@@ -604,75 +618,50 @@ Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
       = ast[idx_primary_expression].value.primary_expression.idx_identifier;
     std::string identifier = std::string(ast[idx_identifier].value.identifier.name);
 
-    // CASE exist postfix operator
+    // exist postfix operator
     if (ast[idx_postfix_expression].value.postfix_expression.idx_postfix_operator != ast::null)
     {
       ast::idx idx_postfix_operator
         = ast[idx_postfix_expression].value.postfix_expression.idx_postfix_operator;
-      while (idx_postfix_operator != ast::null)
+
+      // array [] or function call ()
+      if (ast[idx_postfix_operator].value.postfix_operator.postfix_operator == token::invalid)
       {
-        switch (ast[idx_postfix_operator].value.postfix_operator.postfix_operator)
+        // array
+        if (ast[idx_postfix_operator].value.postfix_operator.idx_array_idx_assignment_expression != ast::null)
         {
-          // ++
-          case token::self_plus:
-            TODO break;
-
-          // --
-          case token::self_minus:
-            TODO break;
-
-          // ->
-          case token::ver:
-            TODO break;
-
-          // .
-          case token::period:
-            TODO break;
-
-          // CASE array [] or function call ()
-          case token::invalid: {
-            // CASE array
-            if (ast[idx_postfix_operator].value.postfix_operator.idx_array_idx_assignment_expression != ast::null)
-            {
-              std::vector<Expr *> idx_list;
-              for (ast::idx i = idx_postfix_operator; i != ast::null;
-                   i          = ast[i].value.postfix_operator.idx_next_postfix_operator)
-              {
-                idx_list.push_back(build_expression(
-                  ast[i].value.postfix_operator.idx_array_idx_assignment_expression
-                ));
-              }
-              // TODO
-              // return Array::create(identifier, idx_list);
-            }
-            // CASE function call
-            else if (ast[idx_postfix_operator].value.postfix_operator.idx_func_call_assignment_expression_list != ast::null)
-            {
-              // TODO
-              // return FuncCall::create(
-              //   identifier,
-              //   build_argument_list(
-              //     ast[idx_postfix_operator]
-              //       .value.postfix_operator.idx_func_call_assignment_expression_list
-              //   )
-              //);
-            }
-            else
-            {
-              NOT_REACHABLE
-            }
-            NOT_REACHABLE
+          std::vector<Expr *> idx_list;
+          for (; idx_postfix_operator != ast::null;
+               idx_postfix_operator = ast[idx_postfix_operator]
+                                        .value.postfix_operator.idx_next_postfix_operator)
+          {
+            idx_list.push_back(build_expression(
+              ast[idx_postfix_operator]
+                .value.postfix_operator.idx_array_idx_assignment_expression
+            ));
           }
-
-          default:
-            SWITCH_ERROR
+          return Array::create(identifier, idx_list);
         }
-        idx_postfix_operator
-          = ast[idx_postfix_operator].value.postfix_operator.idx_next_postfix_operator;
-        TODO
+        // function call
+        else if (ast[idx_postfix_operator].value.postfix_operator.idx_func_call_assignment_expression_list != ast::null)
+        {
+          return FuncCall::create(
+            identifier, build_argument_list(ast[idx_postfix_operator]
+                                              .value.postfix_operator
+                                              .idx_func_call_assignment_expression_list)
+          );
+        }
+      }
+      // ++ -- -> .
+      else
+      {
+        return Var::create(
+          identifier, symbol_table.get_type(identifier),
+          build_postfix_operator(idx_postfix_operator)
+        );
       }
     }
-    // CASE not exist postfix operator
+    // not exist postfix operator
     else
     {
       return Var::create(identifier, symbol_table.get_type(identifier));
@@ -701,11 +690,97 @@ Expr *Tree::build_postfix_expression(ast::idx idx_postfix_expression)
 /**
  * @brief
  *
+ * @param idx_postfix_operator
+ * @return PostfixOperator*
+ */
+PostfixOperator *Tree::build_postfix_operator(ast::idx idx_postfix_operator)
+{
+  if (idx_postfix_operator == ast::null)
+  {
+    return nullptr;
+  }
+  ast::idx idx_identifier
+    = ast[idx_postfix_operator].value.postfix_operator.idx_identifier;
+  ast::idx idx_next_postfix_operator
+    = ast[idx_postfix_operator].value.postfix_operator.idx_next_postfix_operator;
+  switch (ast[idx_postfix_operator].value.postfix_operator.postfix_operator)
+  {
+    // ++
+    case token::self_plus:
+      return SelfPulsOperator::create(build_postfix_operator(idx_next_postfix_operator));
+    // --
+    case token::self_minus:
+      return SelfMinusOperator::create(build_postfix_operator(idx_next_postfix_operator));
+    // ->
+    case token::ver:
+      return StructOperatorPtr::create(
+        ast[idx_postfix_operator].value.identifier.name,
+        build_postfix_operator(idx_next_postfix_operator)
+      );
+    // .
+    case token::period:
+      return StructOperator::create(
+        ast[idx_postfix_operator].value.identifier.name,
+        build_postfix_operator(idx_next_postfix_operator)
+      );
+    // array [] or function call ()
+    case token::invalid: {
+      // array
+      if (ast[idx_postfix_operator].value.postfix_operator.idx_array_idx_assignment_expression != ast::null)
+      {
+        std::vector<Expr *> idx_list;
+        for (; idx_postfix_operator != ast::null
+               && ast[idx_postfix_operator]
+                      .value.postfix_operator.idx_array_idx_assignment_expression
+                    != ast::null;
+
+             idx_postfix_operator
+             = ast[idx_postfix_operator].value.postfix_operator.idx_next_postfix_operator)
+        {
+          idx_list.push_back(build_expression(
+            ast[idx_postfix_operator]
+              .value.postfix_operator.idx_array_idx_assignment_expression
+          ));
+        }
+        return ArrayOperator::create(
+          idx_list, build_postfix_operator(idx_postfix_operator)
+        );
+      }
+      // function call
+      else if (ast[idx_postfix_operator].value.postfix_operator.idx_func_call_assignment_expression_list != ast::null)
+      {
+        return FuncOperator::create(
+          build_argument_list(
+            ast[idx_postfix_operator]
+              .value.postfix_operator.idx_func_call_assignment_expression_list
+          ),
+          build_postfix_operator(idx_next_postfix_operator)
+        );
+      }
+    }
+    default:
+      SWITCH_ERROR
+  }
+  NOT_REACHABLE
+}
+
+/**
+ * @brief
+ *
+ * @param idx_expression_list
+ * @return std::vector<Expr *>
+ */
+std::vector<Expr *> Tree::build_argument_list(ast::idx idx_expression_list){TODO}
+
+/**
+ * @brief
+ *
  * @param idx_arguments_type_list
  * @return std::tuple<std::vector<Type *>, std::vector<std::string>>
  */
-std::tuple<std::vector<Type *>, std::vector<std::string>>
-Tree::build_arguments_type_list(ast::idx idx_arguments_type_list)
+std::tuple<std::vector<Type *>, std::vector<std::string>> Tree::build_arguments_type_list(
+  ast::idx idx_arguments_type_list
+)
 {
   std::tuple<std::vector<Type *>, std::vector<std::string>> arguments_type_list;
   for (ast::idx i
@@ -922,15 +997,28 @@ Statement *Tree::build_for_statement(ast::idx idx_for_statement)
 
   ast::idx idx_declaration = ast[idx_for_statement].value.for_statement.idx_declaration;
 
-  // declarations
-  build_multi_declaration_or_definition(idx_declaration);
-  // condition
-  build_expression(idx_conditional_assign_expression);
-  // change value
-  build_expression(idx_change_assign_expression);
-  // compound statement
-  build_compound_statement(idx_compound_statement);
-  TODO
+  /*
+    the order of function execute is undefine in standard
+    ----------------------------------------------------
+    return ForStatement::create(
+      // declarations
+      build_multi_declaration_or_definition(idx_declaration),
+      // condition
+      build_expression(idx_conditional_assign_expression),
+      // change value
+      build_expression(idx_change_assign_expression),
+      // compound statement
+      build_compound_statement(idx_compound_statement)
+    );
+  */
+
+  symbol_table.push_scope();
+  Block *init_block     = build_multi_declaration_or_definition(idx_declaration);
+  Expr  *condition_expr = build_expression(idx_conditional_assign_expression);
+  Expr  *change_expr    = build_expression(idx_change_assign_expression);
+  Block *for_body       = build_compound_statement(idx_compound_statement);
+  symbol_table.pop_scope();
+  return ForStatement::create(init_block, condition_expr, change_expr, for_body);
 }
 
 Expr *Tree::build_compute_unary_expression_size(ast::idx unary_expression){TODO}

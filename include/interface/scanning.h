@@ -49,7 +49,7 @@ public:
   ~scanning(){};
 
   scanning(scanning const &)       = delete;
-  scanning(scanning &&)            = default;
+  explicit scanning(scanning &&)   = default;
   scanning &operator=(scanning &)  = delete;
   scanning &operator=(scanning &&) = delete;
 

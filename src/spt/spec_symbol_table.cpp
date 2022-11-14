@@ -40,7 +40,17 @@ Type *spec_symbol_table::get_type(std::string &name)
       }
     }
   }
+
   fmt::print(fg(fmt::color::red), "can't find define or declare of {}\n", name);
+  for (auto &i : table)
+  {
+    fmt::print("-------------------\n");
+    for (auto &j : i)
+    {
+      fmt::print("identifier: {}\n", j.name);
+    }
+  }
+  fmt::print("-------------------\n");
   exit(0);
 }
 
