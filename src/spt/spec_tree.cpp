@@ -206,17 +206,15 @@ Statement *Tree::build_declaration_or_definition(
     {
       ast::idx idx_initializer
         = ast[idx_initial_declarator].value.initial_declarator.idx_initializer;
-      ast::idx idx_assignment_expression
-        = ast[idx_initializer].value.initializer.idx_assignment_expression;
 
-      return VarDef::create(
-        ptr_type, identifier_name, build_expression(idx_assignment_expression)
+      return ArrayDef::create(
+        ptr_array_type, identifier_name, build_initializer(idx_initializer)
       );
     }
     // not exist initializer
     else
     {
-      return VarDef::create(ptr_type, identifier_name);
+      return ArrayDef::create(ptr_array_type, identifier_name, nullptr);
     }
   }
   // ----------------------------------
@@ -307,6 +305,49 @@ Statement *Tree::build_declaration_or_definition(
 /**
  * @brief
  *
+ * @param idx_initializer
+ * @return Initializer*
+ */
+Initializer *Tree::build_initializer(ast::idx idx_initializer)
+{
+  return Initializer::create(build_initializer_node_list(idx_initializer));
+}
+
+InitializerNode *Tree::build_initializer_node(ast::idx idx_initializer_node)
+{
+  if (idx_initializer_node == ast::null)
+  {
+    return nullptr;
+  }
+  return InitializerNode::create(
+    build_constant(ast[idx_initializer_node].value.initializer_list_node.idx_constant),
+    build_initializer_node(
+      ast[idx_initializer_node].value.initializer_list_node.idx_next_initializer_list_node
+    )
+  );
+}
+InitializerNodeList *Tree::build_initializer_node_list(ast::idx idx_initializer_node_list)
+{
+  if (idx_initializer_node_list == ast::null)
+  {
+    return nullptr;
+  }
+  return InitializerNodeList::create(
+    build_initializer_node(
+      ast[idx_initializer_node_list].value.initializer_list.idx_head_initializer_list_node
+    ),
+    build_initializer_node_list(
+      ast[idx_initializer_node_list].value.initializer_list.idx_son_initializer_list
+    ),
+    build_initializer_node_list(
+      ast[idx_initializer_node_list].value.initializer_list.idx_next_initializer_list
+    )
+  );
+}
+
+/**
+ * @brief
+ *
  * @param ptr_type_declaration_declarator
  * @param idx_declarator
  * @return Type*
@@ -367,16 +408,15 @@ std::string Tree::get_identifier_name(ast::idx idx_declarator)
  */
 ArrayType *Tree::build_array(Type *ptr_unit_type, ast::idx idx_array_declarator)
 {
-  ast::idx idx_next_array_declarator
-    = ast[idx_array_declarator].value.array_declarator.idx_next_array_declarator;
-  std::vector<std::size_t> dimension_len;
-  for (ast::idx i = idx_next_array_declarator; i != ast::null;
+  std::vector<Expr *> dimension_len_expr;
+  for (ast::idx i = idx_array_declarator; i != ast::null;
        i          = ast[i].value.array_declarator.idx_next_array_declarator)
   {
-    ast::idx idx_constant = ast[idx_array_declarator].value.array_declarator.idx_constant;
-    dimension_len.push_back(constant_node_to_uint64(idx_constant));
+    dimension_len_expr.push_back(
+      build_expression(ast[i].value.array_declarator.idx_constant)
+    );
   }
-  return ArrayType::get(ptr_unit_type, dimension_len);
+  return ArrayType::get(ptr_unit_type, dimension_len_expr);
 }
 
 /**
@@ -509,12 +549,9 @@ Expr *Tree::build_assign_expression(ast::idx idx_assign_expression)
     l_value = build_unary_expression(
       ast[i].value.assignment_expression.idx_unary_or_binary_expression
     );
-    Expr::create(ast[i].value.assignment_expression.assignment_type, l_value, r_value);
-
-    if (ast[i].value.assignment_expression.idx_next_assignment_expression != ast::null)
-    {
-      r_value = l_value;
-    }
+    r_value = Expr::create(
+      ast[i].value.assignment_expression.assignment_type, l_value, r_value
+    );
   }
   return r_value;
 }
@@ -924,7 +961,14 @@ Statement *Tree::build_if_statement(ast::idx idx_if_statement)
  * @param idx_statement
  * @return Statement*
  */
-Statement *Tree::build_switch_statement(ast::idx idx_statement){TODO}
+Statement *Tree::build_switch_statement(ast::idx idx_statement)
+{
+  ast::idx idx_assign_expression
+    = ast[idx_statement].value.switch_statement.idx_assign_expression;
+  ast::idx idx_compound_statement
+    = ast[idx_statement].value.switch_statement.idx_compound_statement;
+  TODO
+}
 
 /**
  * @brief

@@ -250,13 +250,14 @@ ast::idx parser::parser_initializer_list()
       while (scan.get_current_token() != token::r_big_par)
       {
         ast::idx idx_new_node = tree.creat_node(ast::node_type::initializer_list_node);
-        // head node
+        // first head node
         if (idx_last == ast::null)
         {
           idx_last = idx_new_node;
           tree[idx_root].value.initializer_list.idx_head_initializer_list_node
             = idx_new_node;
         }
+        // not first node
         else
         {
           tree[idx_last].value.initializer_list_node.idx_next_initializer_list_node
@@ -373,33 +374,6 @@ ast::idx parser::parser_direct_declarator()
       default:
         PRINT_TOKEN_IN_SCAN SWITCH_ERROR
     }
-    /*
-    tree[idx_root].value.direct_declarator.idx_identifier
-    = parser_identifier();
-    switch (scan.get_current_token()) {
-        case token::l_par: {
-            //eat (
-            scan.next_token();
-            tree[idx_root].value.direct_declarator.idx_arguments_type_list
-            = parser_arguments_type_list();
-            //eat )
-            scan.next_token();
-            break;
-        }
-        case token::l_mid_par: {
-            parser_temporary_1();
-            break;
-        }
-        case token::assign:
-        case token::r_par:
-        case token::comma:
-        case token::end:
-            break;
-        default:
-            PRINT_TOKEN_IN_SCAN
-            SWITCH_ERROR
-    }
-    */
   }
   else
   {

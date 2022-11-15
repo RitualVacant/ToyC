@@ -166,11 +166,12 @@ class ArrayType : public Type
 {
 private:
   std::vector<std::uint64_t> dimension_len;
+  std::vector<Expr *>        dimension_len_expr;
   Type                      *ptr_unit_type;
-  ArrayType(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len);
+  ArrayType(Type *ptr_unit_type, std::vector<Expr *> dimension_len_expr);
 
 public:
-  static ArrayType *get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len);
+  static ArrayType *get(Type *ptr_unit_type, std::vector<Expr *> dimension_len_expr);
   void              print() override;
 };
 
@@ -389,24 +390,98 @@ public:
   void          print() override;
 };
 
+
 /**
- * @brief
+ * @brief InitializerNode
+ *
+ */
+class InitializerNode
+{
+public:
+  Constant        *constant              = nullptr;
+  InitializerNode *next_initializer_node = nullptr;
+  InitializerNode(Constant *constant_, InitializerNode *next_initializer_node_);
+  static InitializerNode      *
+  create(Constant *constant_, InitializerNode *next_initializer_node_);
+  void print();
+};
+
+/**
+ * @brief InitializerNodeList
+ *
+ */
+class InitializerNodeList
+{
+public:
+  InitializerNode     *initializer_node           = nullptr;
+  InitializerNodeList *next_initializer_node_list = nullptr;
+  InitializerNodeList *son_initializer_node_list  = nullptr;
+  InitializerNodeList(
+    InitializerNode     *initializer_node_,
+    InitializerNodeList *son_initializer_node_list_,
+    InitializerNodeList *next_initializer_node_list_
+  );
+  static InitializerNodeList *create(
+    InitializerNode     *initializer_node_,
+    InitializerNodeList *son_initializer_node_list_,
+    InitializerNodeList *next_initializer_node_list_
+  );
+  void print();
+};
+
+/**
+ * @brief Initializer
+ *
+ */
+class Initializer
+{
+private:
+  InitializerNodeList *initializer_node_list;
+  Initializer(InitializerNodeList *initializer_node_list);
+
+public:
+  void                print();
+  static Initializer *create(InitializerNodeList *initializer_node_list);
+};
+
+/**
+ * @brief ArrayDef
  *
  */
 class ArrayDef : public Statement
 {
+private:
+  Type        *array_type;
+  std::string  identifier;
+  Initializer *initializer;
+  ArrayDef(Type *array_type, std::string identifier, Initializer *initializer);
+
+public:
+  static ArrayDef      *
+  create(Type *array_type, std::string identifier, Initializer *initializer);
+  void print() override;
 };
 
 /**
- * @brief
+ * @brief ArrayDecl
  *
  */
 class ArrayDecl : public Statement
 {
+private:
+  Type        *array_type;
+  std::string  identifier;
+  Initializer *initializer;
+  ArrayDecl(Type *array_type, std::string identifier, Initializer *initializer);
+
+public:
+  static ArrayDecl      *
+  create(Type *array_type, std::string identifier, Initializer *initializer);
+  void print() override;
 };
 
 /**
- * @brief
+ * @brief StructDef
  *
  */
 class StructDef : public Def
@@ -422,7 +497,7 @@ public:
 };
 
 /**
- * @brief
+ * @brief StructDec
  *
  */
 class StructDec : public Dec
@@ -433,7 +508,7 @@ public:
 };
 
 /**
- * @brief
+ * @brief IfStatement
  *
  */
 class IfStatement : public Statement
@@ -692,8 +767,9 @@ private:
   Type       *type;
   Expr       *initializer;
 
-public:
   explicit VarDef(Type *type_, std::string identifier_, Expr *initializer_);
+
+public:
   static VarDef      *
   create(Type *type_, std::string identifier_, Expr *initializer_ = nullptr);
   void print() override;
@@ -708,7 +784,11 @@ class VarDec : public Dec
   std::string identifier;
   Type       *type;
 
+  explicit VarDec(Type *type_, std::string identifier_, Expr *initializer_);
+
 public:
+  static VarDef      *
+  create(Type *type_, std::string identifier_, Expr *initializer_ = nullptr);
   void print() override;
 };
 

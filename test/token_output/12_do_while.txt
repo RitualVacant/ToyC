@@ -18,6 +18,8 @@ token: l_big_par                      string: {
 token: identify                       string: b
 token: plus_agn                       string: +=
 token: identify                       string: a
+token: minus_agn                      string: -=
+token: constant_integer_number        string: 3
 token: end                            string: ;
 token: r_big_par                      string: }
 token: key_while                      string: while

@@ -447,9 +447,12 @@ void Tree::dfs_print_tree(ast::idx idx)
       for (ast::idx i = idx; i != ast::null;
            i = tree_body[i].value.initializer_list_node.idx_next_initializer_list_node)
       {
-        now_idx = i;
         json.print_class("initializer_list_node" + num, [&] {
-          TODO print_json_constant(tree_body[i].value.initializer_list_node.idx_constant);
+          json.print_key_value(
+            "constant",
+            constant_node_tree[tree_body[i].value.initializer_list_node.idx_constant]
+              .value
+          );
         });
       }
       return;
@@ -481,7 +484,7 @@ void Tree::dfs_print_tree(ast::idx idx)
 
     case ast::node_type::constant:
       json.print_class("constant" + num, [&] {
-        print_key_value("value", tree_body[idx].value.constant.const_value);
+        json.print_key_value("value", tree_body[idx].value.constant.const_value);
       });
       return;
 
@@ -603,6 +606,7 @@ void Tree::dfs_print_tree(ast::idx idx)
             print_key_value("postfix_operator", "--");
             return;
           case token::invalid:
+            break;
           default:
             PRINT_TOKEN(tree_body[idx].value.postfix_operator.postfix_operator)
             SWITCH_ERROR

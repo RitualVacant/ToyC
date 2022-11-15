@@ -17,7 +17,7 @@ void json_str::end()
   str += "}\n@endjson";
   for (std::size_t i = 0, j = 1; j < str.size(); ++i, ++j)
   {
-    if (str[i] == ',' && str[j] == '}')
+    if (str[i] == ',' && (str[j] == '}' || str[j] == ']'))
     {
       str[i] = ' ';
     }

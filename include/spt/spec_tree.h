@@ -54,6 +54,10 @@ private:
   Expr     *build_conversion(ast::idx idx_unary_expression);
   Constant *build_constant(ast::idx idx_constant);
 
+  Initializer         *build_initializer(ast::idx idx_initializer);
+  InitializerNode     *build_initializer_node(ast::idx idx_initializer_node);
+  InitializerNodeList *build_initializer_node_list(ast::idx idx_initializer_node_list);
+
   PostfixOperator *build_postfix_operator(ast::idx idx_postfix_operator);
 
   std::vector<Expr *> build_argument_list(ast::idx idx_expression_list);

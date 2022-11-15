@@ -42,14 +42,14 @@ int main(int argc, char *argv[])
   {
     fmt::print("path of input file  : ");
 #ifndef NDEBUG
-    input_file_path = "/home/lzj/Code/Cpp/ToyC/debug/1.c";
+    input_file_path = "/home/lzj/Code/Cpp/ToyC/debug/input.c";
 #endif
 #ifdef NDEBUG
     std::cin >> input_file_path;
 #endif
     fmt::print("path of output file : ");
 #ifndef NDEBUG
-    output_file_path = "/home/lzj/Code/Cpp/ToyC/debug/1";
+    output_file_path = "/home/lzj/Code/Cpp/ToyC/debug/output";
 #endif
 #ifdef NDEBUG
     std::cin >> output_file_path;

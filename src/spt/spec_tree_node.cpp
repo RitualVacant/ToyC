@@ -267,13 +267,13 @@ void FuncType::print(){TODO}
 ////////////////////////////////////////////////////////////////
 /// @brief ArrayType
 ////////////////////////////////////////////////////////////////
-ArrayType::ArrayType(Type *ptr_unit_type_, std::vector<std::uint64_t> dimension_len_)
-    : ptr_unit_type{ptr_unit_type_}, dimension_len{dimension_len_}
+ArrayType::ArrayType(Type *ptr_unit_type_, std::vector<Expr *> dimension_len_expr_)
+    : ptr_unit_type{ptr_unit_type_}, dimension_len_expr{dimension_len_expr_}
 {
 }
-ArrayType *ArrayType::get(Type *ptr_unit_type, std::vector<std::uint64_t> dimension_len)
+ArrayType *ArrayType::get(Type *ptr_unit_type, std::vector<Expr *> dimension_len_expr)
 {
-  return new ArrayType(ptr_unit_type, dimension_len);
+  return new ArrayType(ptr_unit_type, dimension_len_expr);
 };
 
 void ArrayType::print()
@@ -281,11 +281,9 @@ void ArrayType::print()
   json.print_class("ArrayType", [&] {
     json.print_class("unit_type", [&] { ptr_unit_type->print(); });
     json.print_array("dimension_len", [&] {
-      for (auto i : dimension_len)
+      for (auto i : dimension_len_expr)
       {
-        json.print_array_item([&] {
-          json.print_key_value("dimension", std::to_string(i));
-        });
+        json.print_array_item([&] { i->print(); });
       }
     });
   });
@@ -302,7 +300,12 @@ PointerType *PointerType::get(Type *ptr_type_)
 
 PointerType::PointerType(Type *ptr_type_) : ptr_element_type{ptr_type_} {}
 PointerType::~PointerType() {}
-void PointerType::print(){TODO}
+void PointerType::print()
+{
+  json.print_class("PointerType", [&] {
+    json.print_class("element_type", [&] { ptr_element_type->print(); });
+  });
+}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Func
@@ -339,10 +342,6 @@ FuncDef *FuncDef::create(
   Block                                                    *body_
 )
 {
-  // ptr_tree_body->push_back(
-  // FuncDef(ptr_return_type_, name_, argument_type_list_, body_)
-  // );
-  // return &std::get<FuncDef>(ptr_tree_body->back());
   return new FuncDef(ptr_return_type_, name_, argument_type_list_, body_);
 }
 
@@ -379,8 +378,6 @@ FuncDec *FuncDec::create(
   std::tuple<std::vector<Type *>, std::vector<std::string>> argument_type_list_
 )
 {
-  // ptr_tree_body->push_back(FuncDec(ptr_return_type_, name_, argument_type_list_));
-  // return &std::get<FuncDec>(ptr_tree_body->back());
   return new FuncDec(ptr_return_type_, name_, argument_type_list_);
 }
 
@@ -499,7 +496,10 @@ void VarDef::print()
   json.print_class("VarDef", [&] {
     json.print_key_value("identifier:", identifier);
     type->print();
-    json.print_class("initializer", [&] { initializer->print(); });
+    if (initializer != nullptr)
+    {
+      json.print_class("initializer", [&] { initializer->print(); });
+    }
   });
 }
 
@@ -755,12 +755,76 @@ Array::~Array() {}
 
 Array *Array::create(std::string identifier, std::vector<Expr *> idx_list)
 {
-  // ptr_tree_body->push_back(Array(identifier, idx_list));
-  // return &std::get<Array>(ptr_tree_body->back());
   return new Array(identifier, idx_list);
 }
 
-void Array::print(){TODO}
+void Array::print()
+{
+  json.print_class("Array", [&] {
+    json.print_key_value("identifier", identifier);
+    json.print_array("idx_list", [&] {
+      for (auto i : idx_list)
+      {
+        json.print_array_item([&] { i->print(); });
+      }
+    });
+  });
+}
+
+
+////////////////////////////////////////////////////////////////
+/// @brief ArrayDecl
+////////////////////////////////////////////////////////////////
+
+ArrayDecl::ArrayDecl(
+  Type        *array_type_,
+  std::string  identifier_,
+  Initializer *initializer_
+)
+    : array_type{array_type_}, identifier{identifier_}, initializer{initializer_}
+{
+}
+
+ArrayDecl *
+ArrayDecl::create(Type *array_type, std::string identifier, Initializer *initializer)
+{
+  return new ArrayDecl(array_type, identifier, initializer);
+}
+void ArrayDecl::print()
+{
+  json.print_class("ArrayDecl", [&] {
+    json.print_class("array_type", [&] { array_type->print(); });
+    json.print_key_value("identifier", identifier);
+    json.print_class("initializer", [&] { initializer->print(); });
+  });
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief ArrayDef
+////////////////////////////////////////////////////////////////
+
+ArrayDef::ArrayDef(Type *array_type_, std::string identifier_, Initializer *initializer_)
+    : array_type{array_type_}, identifier{identifier_}, initializer{initializer_}
+{
+}
+
+ArrayDef *
+ArrayDef::create(Type *array_type, std::string identifier, Initializer *initializer)
+{
+  return new ArrayDef(array_type, identifier, initializer);
+}
+
+void ArrayDef::print()
+{
+  json.print_class("ArrayDecl", [&] {
+    json.print_class("array_type", [&] { array_type->print(); });
+    json.print_key_value("identifier", identifier);
+    if (initializer != nullptr)
+    {
+      json.print_class("initializer", [&] { initializer->print(); });
+    }
+  });
+}
 
 ////////////////////////////////////////////////////////////////
 /// @brief FuncCall
@@ -983,9 +1047,102 @@ void SelfMinusOperator::print()
 ////////////////////////////////////////////////////////////////
 PostfixOperator::PostfixOperator(PostfixOperator *next_postfix_operator) {}
 
-void PostfixOperator::print()
+void PostfixOperator::print(){TODO}
+
+////////////////////////////////////////////////////////////////
+/// @brief InitializerNode
+////////////////////////////////////////////////////////////////
+
+InitializerNode::InitializerNode(
+  Constant        *constant_,
+  InitializerNode *next_initializer_node_
+)
+    : constant{constant_}, next_initializer_node{next_initializer_node_}
 {
-  NOT_REACHABLE
+}
+
+void InitializerNode::print()
+{
+  json.print_class("InitializerNode", [&] {
+    json.print_class("constant", [&] { constant->print(); });
+    json.print_class("next_initializer_node", [&] {
+      if (next_initializer_node != nullptr)
+      {
+        next_initializer_node->print();
+      }
+    });
+  });
+}
+
+InitializerNode *
+InitializerNode::create(Constant *constant_, InitializerNode *next_initializer_node_)
+{
+  return new InitializerNode(constant_, next_initializer_node_);
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief InitializerNodeList
+////////////////////////////////////////////////////////////////
+InitializerNodeList::InitializerNodeList(
+  InitializerNode     *initializer_node_,
+  InitializerNodeList *son_initializer_node_list_,
+  InitializerNodeList *next_initializer_node_list_
+)
+    : initializer_node{initializer_node_},
+      next_initializer_node_list{next_initializer_node_list_},
+      son_initializer_node_list{son_initializer_node_list_}
+{
+}
+void InitializerNodeList::print()
+{
+  json.print_class("InitializerNodeList", [&] {
+    if (initializer_node != nullptr)
+    {
+      json.print_class("initializer_node", [&] { initializer_node->print(); });
+    }
+    if (next_initializer_node_list != nullptr)
+    {
+      json.print_class("next_initializer_node", [&] {
+        next_initializer_node_list->print();
+      });
+    }
+    if (son_initializer_node_list != nullptr)
+    {
+      json.print_class("son_initializer_node_list", [&] {
+        son_initializer_node_list->print();
+      });
+    }
+  });
+}
+
+InitializerNodeList *InitializerNodeList::create(
+  InitializerNode     *initializer_node_,
+  InitializerNodeList *son_initializer_node_list_,
+  InitializerNodeList *next_initializer_node_list_
+)
+{
+  return new InitializerNodeList(
+    initializer_node_, son_initializer_node_list_, next_initializer_node_list_
+  );
+}
+
+////////////////////////////////////////////////////////////////
+/// @brief Initializer
+////////////////////////////////////////////////////////////////
+
+Initializer::Initializer(InitializerNodeList *initializer_node_list_)
+    : initializer_node_list{initializer_node_list_}
+{
+}
+
+void Initializer::print()
+{
+  json.print_class("Initializer", [&] { initializer_node_list->print(); });
+}
+
+Initializer *Initializer::create(InitializerNodeList *initializer_node_list)
+{
+  return new Initializer(initializer_node_list);
 }
 
 }  // namespace spt
