@@ -83,9 +83,11 @@ private:
 
 public:
   void print_spec_tree();
+  void generate_llvm_ir();
   Tree();
   ~Tree() = default;
 };
+
 
 }  // namespace spt
 

@@ -47,6 +47,17 @@ void Tree::print_spec_tree()
   file << json.get_str_ref();
 }
 
+
+/**
+ * @brief
+ *
+ */
+void Tree::generate_llvm_ir()
+{
+  ptr_root_tree_body->gen();
+}
+
+
 /**
  * @brief
  *

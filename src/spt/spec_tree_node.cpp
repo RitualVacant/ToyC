@@ -9,10 +9,32 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <iostream>
+#include <llvm/ADT/STLExtras.h>
+#include <llvm/Analysis/BasicAliasAnalysis.h>
+#include <llvm/Analysis/Passes.h>
+#include <llvm/IR/DIBuilder.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/Support/Host.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Transforms/Scalar.h>
 #include <string>
 
 namespace spt
 {
+
+////////////////////////////////////////////////////////////////
+/// @brief Base
+////////////////////////////////////////////////////////////////
+
+std::unique_ptr<llvm::LLVMContext> context = std::make_unique<llvm::LLVMContext>();
+std::unique_ptr<llvm::Module>      module
+  = std::make_unique<llvm::Module>("text_module", *context);
+std::unique_ptr<llvm::IRBuilder<>> builder
+  = std::make_unique<llvm::IRBuilder<>>(*context);
 
 uint64_t number_print_node = 0;
 
@@ -31,11 +53,21 @@ void Base::print()
   NOT_REACHABLE
 }
 
+void Base::gen()
+{
+  NOT_REACHABLE
+}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Statement
 ////////////////////////////////////////////////////////////////
 
-void Statement::print(){NOT_REACHABLE}
+void Statement::print()
+{
+  NOT_REACHABLE
+}
+
+void Statement::gen(){NOT_REACHABLE}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Block
@@ -44,11 +76,11 @@ void Statement::print(){NOT_REACHABLE}
 Block::Block()
 {
 }
+
 Block::~Block() {}
+
 Block *Block::create()
 {
-  // ptr_tree_body->push_back(Block());
-  // return &(std::get<Block>(ptr_tree_body->back()));
   return new Block();
 }
 
@@ -77,6 +109,14 @@ void Block::print()
   });
 }
 
+void Block::gen()
+{
+  for (auto i : block_body)
+  {
+    i->gen();
+  }
+}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Def
 ////////////////////////////////////////////////////////////////
@@ -86,11 +126,21 @@ void Def::print()
   NOT_REACHABLE
 }
 
+void Def::gen()
+{
+  NOT_REACHABLE
+}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Dec
 ////////////////////////////////////////////////////////////////
 
-void Dec::print(){NOT_REACHABLE}
+void Dec::print()
+{
+  NOT_REACHABLE
+}
+
+void Dec::gen(){NOT_REACHABLE}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Type
@@ -245,6 +295,8 @@ void Type::print()
   }
 }
 
+void Type::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief FunctionType
 ////////////////////////////////////////////////////////////////
@@ -262,7 +314,11 @@ FuncType *FuncType::get(Type *ptr_return_type, std::vector<Type *> argument_type
   return new FuncType(ptr_return_type, argument_type_list);
 }
 
-void FuncType::print(){TODO}
+void FuncType::print()
+{
+  TODO
+}
+void FuncType::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ArrayType
@@ -289,6 +345,8 @@ void ArrayType::print()
   });
 };
 
+void ArrayType::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief PointerType
 ////////////////////////////////////////////////////////////////
@@ -299,13 +357,17 @@ PointerType *PointerType::get(Type *ptr_type_)
 }
 
 PointerType::PointerType(Type *ptr_type_) : ptr_element_type{ptr_type_} {}
+
 PointerType::~PointerType() {}
+
 void PointerType::print()
 {
   json.print_class("PointerType", [&] {
     json.print_class("element_type", [&] { ptr_element_type->print(); });
   });
 }
+
+void PointerType::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Func
@@ -319,13 +381,19 @@ Func::Func(
 )
     : ptr_return_type{ptr_return_type_}, name{name_}, argument_type_list{
                                                         argument_type_list_} {};
+
 Func::~Func(){};
-void Func::print(){NOT_REACHABLE}
+
+void Func::print()
+{
+  NOT_REACHABLE
+}
+
+void Func::gen(){NOT_REACHABLE}
 
 ////////////////////////////////////////////////////////////////
 /// @brief FuncDef
 ////////////////////////////////////////////////////////////////
-
 
 FuncDef::FuncDef(
   Type                                                     *ptr_return_type_,
@@ -358,6 +426,8 @@ void FuncDef::print()
     json.print_class("body", [&] { body->print(); });
   });
 }
+
+void FuncDef::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief FuncDec
@@ -394,12 +464,22 @@ void FuncDec::print()
   });
 }
 
+void FuncDec::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Constant
 ////////////////////////////////////////////////////////////////
-Constant::Constant(std::string value_) : value{value_} {}
+Constant::Constant(std::string value_)
+    : value{value_}
+{
+}
 
-void Constant::print(){NOT_REACHABLE}
+void Constant::print()
+{
+  NOT_REACHABLE
+}
+
+void Constant::gen(){NOT_REACHABLE}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ConstantInt
@@ -430,6 +510,8 @@ void ConstantInt::print()
   });
 }
 
+void ConstantInt::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief ConstantFloat
 ////////////////////////////////////////////////////////////////
@@ -459,11 +541,16 @@ void ConstantFloat::print()
   });
 }
 
+void ConstantFloat::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief StringLiteral
 ////////////////////////////////////////////////////////////////
 
-StringLiteral::StringLiteral(std::string value_) : Constant{value_} {}
+StringLiteral::StringLiteral(std::string value_)
+    : Constant{value_}
+{
+}
 
 StringLiteral *StringLiteral::create(std::string value)
 {
@@ -475,6 +562,7 @@ void StringLiteral::print()
   json.print_class("StringLiteral", [&] { json.print_key_value("value", value); });
 }
 
+void StringLiteral::gen(){TODO}
 ////////////////////////////////////////////////////////////////
 /// @brief VarDef
 ////////////////////////////////////////////////////////////////
@@ -486,9 +574,12 @@ VarDef::VarDef(Type *type_, std::string identifier_, Expr *initializer_)
 
 VarDef *VarDef::create(Type *type_, std::string name_, Expr *initializer_)
 {
-  // ptr_tree_body->push_back(VarDef(type_, name_, initializer_));
-  // return &std::get<VarDef>(ptr_tree_body->back());
   return new VarDef(type_, name_, initializer_);
+}
+
+void VarDef::gen()
+{
+  TODO
 }
 
 void VarDef::print()
@@ -514,7 +605,12 @@ Conversion *Conversion::create(Type *type, Expr *expr)
   return new Conversion(type, expr);
 }
 
-void Conversion::print(){TODO}
+void Conversion::print()
+{
+  TODO
+}
+
+void Conversion::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Conversion
@@ -538,6 +634,8 @@ void UnaryExpr::print()
   });
 }
 
+void UnaryExpr::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief StrcutDef
 ////////////////////////////////////////////////////////////////
@@ -550,14 +648,25 @@ StructDef *StructDef::create(
   TODO
 }
 
-void StructDef::print(){TODO}
+void StructDef::print()
+{
+  TODO
+}
+
+void StructDef::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief StructDec
 ////////////////////////////////////////////////////////////////
 
 StructDec *StructDec::create(std::string name){TODO};
-void StructDec::print(){TODO}
+
+void StructDec::print()
+{
+  TODO
+}
+
+void StructDec::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief IfStatement
@@ -596,11 +705,16 @@ void IfStatement::print()
   });
 }
 
+void IfStatement::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief ReturnStatement
 ////////////////////////////////////////////////////////////////
 
-ReturnStatement::ReturnStatement(Expr *return_expr_) : return_expr{return_expr_} {}
+ReturnStatement::ReturnStatement(Expr *return_expr_)
+    : return_expr{return_expr_}
+{
+}
 ReturnStatement::~ReturnStatement() {}
 ReturnStatement *ReturnStatement::create(Expr *return_expr)
 {
@@ -617,6 +731,8 @@ void ReturnStatement::print()
     }
   });
 }
+
+void ReturnStatement::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief WhileStatement
@@ -642,6 +758,8 @@ void WhileStatement::print()
   });
 }
 
+void WhileStatement::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief DoWhileStatement
 ////////////////////////////////////////////////////////////////
@@ -665,6 +783,8 @@ void DoWhileStatement::print()
     json.print_class("do_while_body", [&] { do_while_body->print(); });
   });
 }
+
+void DoWhileStatement::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ForStatement
@@ -703,11 +823,21 @@ void ForStatement::print()
   });
 }
 
+void ForStatement::gen()
+{
+  TODO
+}
+
 ////////////////////////////////////////////////////////////////
-/// @brief ForStatement
+/// @brief SwitchStatement
 ////////////////////////////////////////////////////////////////
 
-void SwitchStatement::print(){TODO}
+void SwitchStatement::print()
+{
+  TODO
+}
+
+void SwitchStatement::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Expr
@@ -742,6 +872,9 @@ void Expr::print()
     }
   });
 }
+
+void Expr::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Array
 ////////////////////////////////////////////////////////////////
@@ -771,6 +904,7 @@ void Array::print()
   });
 }
 
+void Array::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ArrayDecl
@@ -790,6 +924,7 @@ ArrayDecl::create(Type *array_type, std::string identifier, Initializer *initial
 {
   return new ArrayDecl(array_type, identifier, initializer);
 }
+
 void ArrayDecl::print()
 {
   json.print_class("ArrayDecl", [&] {
@@ -798,6 +933,8 @@ void ArrayDecl::print()
     json.print_class("initializer", [&] { initializer->print(); });
   });
 }
+
+void ArrayDecl::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ArrayDef
@@ -826,6 +963,8 @@ void ArrayDef::print()
   });
 }
 
+void ArrayDef::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief FuncCall
 ////////////////////////////////////////////////////////////////
@@ -852,6 +991,8 @@ void FuncCall::print()
     }
   });
 }
+
+void FuncCall::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief Var
@@ -885,11 +1026,21 @@ void Var::print()
   });
 }
 
+void Var::gen()
+{
+  TODO
+}
+
 ////////////////////////////////////////////////////////////////
 /// @brief VarDec
 ////////////////////////////////////////////////////////////////
 
-void VarDec::print(){TODO}
+void VarDec::print()
+{
+  TODO
+}
+
+void VarDec::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief ArrayOperator
@@ -924,6 +1075,8 @@ ArrayOperator *ArrayOperator::create(
   return new ArrayOperator(idx_list, next_postfix_operator);
 }
 
+void ArrayOperator::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief FuncOperator
 ////////////////////////////////////////////////////////////////
@@ -954,6 +1107,8 @@ FuncOperator *FuncOperator::create(
   return new FuncOperator(arguments_list, next_postfix_operator);
 }
 
+void FuncOperator::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief StructOperator
 ////////////////////////////////////////////////////////////////
@@ -979,6 +1134,7 @@ StructOperator::create(std::string identifier, PostfixOperator *next_postfix_ope
   return new StructOperator(identifier, next_postfix_operator);
 }
 
+void StructOperator::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief StructOperatorPtr
@@ -1005,6 +1161,8 @@ StructOperatorPtr::create(std::string identifier, PostfixOperator *next_postfix_
   return new StructOperatorPtr(identifier, next_postfix_operator);
 }
 
+void StructOperatorPtr::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief SelfPulsOperator
 ////////////////////////////////////////////////////////////////
@@ -1018,10 +1176,13 @@ SelfPulsOperator *SelfPulsOperator::create(PostfixOperator *next_postfix_operato
 {
   return new SelfPulsOperator(next_postfix_operator);
 }
+
 void SelfPulsOperator::print()
 {
   json.print_class("SelfPulsOperator", [&] { json.print_class("", [&] {}); });
 }
+
+void SelfPulsOperator::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief SelfMinusOperator
@@ -1042,12 +1203,21 @@ void SelfMinusOperator::print()
   json.print_class(" SelfMinusOperator", [] {});
 }
 
+void SelfMinusOperator::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief PostfixOperator
 ////////////////////////////////////////////////////////////////
-PostfixOperator::PostfixOperator(PostfixOperator *next_postfix_operator) {}
+PostfixOperator::PostfixOperator(PostfixOperator *next_postfix_operator)
+{
+}
 
-void PostfixOperator::print(){TODO}
+void PostfixOperator::print()
+{
+  TODO
+}
+
+void PostfixOperator::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief InitializerNode
@@ -1079,6 +1249,8 @@ InitializerNode::create(Constant *constant_, InitializerNode *next_initializer_n
 {
   return new InitializerNode(constant_, next_initializer_node_);
 }
+
+void InitializerNode::gen(){TODO}
 
 ////////////////////////////////////////////////////////////////
 /// @brief InitializerNodeList
@@ -1126,6 +1298,8 @@ InitializerNodeList *InitializerNodeList::create(
   );
 }
 
+void InitializerNodeList::gen(){TODO}
+
 ////////////////////////////////////////////////////////////////
 /// @brief Initializer
 ////////////////////////////////////////////////////////////////
@@ -1143,6 +1317,11 @@ void Initializer::print()
 Initializer *Initializer::create(InitializerNodeList *initializer_node_list)
 {
   return new Initializer(initializer_node_list);
+}
+
+void Initializer::gen()
+{
+  TODO
 }
 
 }  // namespace spt

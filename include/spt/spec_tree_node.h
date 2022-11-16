@@ -23,6 +23,7 @@ private:
 
 public:
   virtual void print();
+  virtual void gen();
   Base()  = default;
   ~Base() = default;
 };
@@ -35,6 +36,7 @@ class Statement : public Base
 {
 public:
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -54,6 +56,7 @@ public:
   void          push_back(Statement *ptr_statement);
   void          push_back(Block *block);
   void          print() override;
+  void          gen() override;
 };
 
 /**
@@ -64,6 +67,7 @@ class Def : public Statement
 {
 public:
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -74,6 +78,7 @@ class Dec : public Statement
 {
 public:
   void print() override;
+  void gen() override;
 };
 
 
@@ -94,6 +99,7 @@ public:
   ~Expr();
   static Expr *create(token op, Expr *l_expr, Expr *r_expr);
   void         print() override;
+  void         gen() override;
 };
 
 
@@ -139,6 +145,7 @@ public:
   static Type *get_ufloat();
 
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -156,6 +163,7 @@ public:
   static FuncType      *
   get(Type *ptr_return_type, std::vector<spt::Type *> argument_type_list);
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -173,6 +181,7 @@ private:
 public:
   static ArrayType *get(Type *ptr_unit_type, std::vector<Expr *> dimension_len_expr);
   void              print() override;
+  void              gen() override;
 };
 
 /**
@@ -190,6 +199,7 @@ public:
   explicit PointerType(Type *ptr_type);
   ~PointerType();
   void print() override;
+  void gen() override;
 };
 
 
@@ -213,6 +223,7 @@ public:
   );
   ~Func();
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -240,6 +251,7 @@ public:
   //
 
   virtual void print() override;
+  void         gen() override;
 };
 
 /**
@@ -261,6 +273,7 @@ public:
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> argument_type_list
   );
   virtual void print() override;
+  void         gen() override;
 };
 
 /**
@@ -278,6 +291,7 @@ public:
   ~FuncCall();
   static FuncCall *create(std::string identifier, std::vector<Expr *> argument_list);
   void             print() override;
+  void             gen() override;
 };
 
 
@@ -294,6 +308,7 @@ public:
   Constant(std::string value);
   ~Constant() = default;
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -311,6 +326,7 @@ public:
   ~ConstantInt() = default;
   static ConstantInt *create(std::string value, bool negative);
   void                print() override;
+  void                gen() override;
 };
 
 /**
@@ -328,6 +344,7 @@ public:
   ~ConstantFloat() = default;
   static ConstantFloat *create(std::string value, bool negative);
   void                  print() override;
+  void                  gen() override;
 };
 
 /**
@@ -341,6 +358,7 @@ public:
   ~StringLiteral() = default;
   static StringLiteral *create(std::string value);
   void                  print() override;
+  void                  gen() override;
 };
 
 
@@ -358,6 +376,7 @@ public:
   explicit Conversion(Type *type, Expr *expr);
   static Conversion *create(Type *type, Expr *expr);
   void               print() override;
+  void               gen() override;
 };
 
 /**
@@ -374,6 +393,7 @@ public:
   explicit UnaryExpr(token unary_op, Expr *expr);
   static UnaryExpr *create(token unary_op, Expr *expr);
   void              print() override;
+  void              gen() override;
 };
 
 
@@ -388,6 +408,7 @@ public:
   ~Array();
   static Array *create(std::string identifier, std::vector<Expr *> idx_list);
   void          print() override;
+  void          gen() override;
 };
 
 
@@ -404,6 +425,7 @@ public:
   static InitializerNode      *
   create(Constant *constant_, InitializerNode *next_initializer_node_);
   void print();
+  void gen();
 };
 
 /**
@@ -427,6 +449,7 @@ public:
     InitializerNodeList *next_initializer_node_list_
   );
   void print();
+  void gen();
 };
 
 /**
@@ -441,6 +464,7 @@ private:
 
 public:
   void                print();
+  void                gen();
   static Initializer *create(InitializerNodeList *initializer_node_list);
 };
 
@@ -460,6 +484,7 @@ public:
   static ArrayDef      *
   create(Type *array_type, std::string identifier, Initializer *initializer);
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -478,6 +503,7 @@ public:
   static ArrayDecl      *
   create(Type *array_type, std::string identifier, Initializer *initializer);
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -494,6 +520,7 @@ public:
     std::tuple<std::vector<spt::Type *>, std::vector<std::string>> element_list
   );
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -505,6 +532,7 @@ class StructDec : public Dec
 public:
   static StructDec *create(std::string name);
   void              print() override;
+  void              gen() override;
 };
 
 /**
@@ -523,6 +551,7 @@ public:
   static IfStatement *create(Expr *expr, Block *true_block);
   static IfStatement *create(Expr *expr, Block *true_block, Block *false_block);
   void                print() override;
+  void                gen() override;
 };
 
 /**
@@ -533,6 +562,7 @@ class SwitchStatement : public Statement
 {
 public:
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -549,6 +579,7 @@ public:
   ~ReturnStatement();
   static ReturnStatement *create(Expr *return_expr);
   void                    print() override;
+  void                    gen() override;
 };
 
 /**
@@ -566,6 +597,7 @@ public:
   ~WhileStatement();
   static WhileStatement *create(Expr *expr, Block *while_body);
   void                   print() override;
+  void                   gen() override;
 };
 
 /**
@@ -583,6 +615,7 @@ public:
   ~DoWhileStatement();
   static DoWhileStatement *create(Expr *expr, Block *do_while_body);
   void                     print() override;
+  void                     gen() override;
 };
 
 /**
@@ -609,6 +642,7 @@ public:
   static ForStatement *
   create(Block *init_block, Expr *condition_expr, Expr *change_expr, Block *for_body);
   void print() override;
+  void gen() override;
 };
 
 ////////////////////////////////////////
@@ -627,6 +661,7 @@ protected:
 public:
   PostfixOperator(PostfixOperator *next_postfix_operator);
   virtual void print();
+  void         gen() override;
 };
 
 /**
@@ -642,6 +677,7 @@ private:
 
 public:
   void print() override;
+  void gen() override;
   static ArrayOperator *
   create(std::vector<Expr *> &idx_list, PostfixOperator *next_postfix_operator);
 };
@@ -662,6 +698,7 @@ private:
 
 public:
   void print() override;
+  void gen() override;
   static FuncOperator *
   create(std::vector<Expr *> arguments_list, PostfixOperator *next_postfix_operator);
 };
@@ -678,6 +715,7 @@ private:
 
 public:
   void print() override;
+  void gen() override;
   static StructOperator *
   create(std::string identifier, PostfixOperator *next_postfix_operator);
 };
@@ -693,6 +731,7 @@ class StructOperatorPtr : public PostfixOperator
 
 public:
   void print() override;
+  void gen() override;
   static StructOperatorPtr *
   create(std::string identifier, PostfixOperator *next_postfix_operator);
 };
@@ -709,6 +748,7 @@ private:
 public:
   static SelfPulsOperator *create(PostfixOperator *next_postfix_operator);
   void                     print() override;
+  void                     gen() override;
 };
 
 /**
@@ -723,6 +763,7 @@ private:
 public:
   static SelfMinusOperator *create(PostfixOperator *next_postfix_operator);
   void                      print() override;
+  void                      gen() override;
 };
 
 
@@ -753,6 +794,7 @@ public:
     PostfixOperator *next_postfix_operator = nullptr
   );
   void print() override;
+  void gen() override;
 };
 
 
@@ -773,6 +815,7 @@ public:
   static VarDef      *
   create(Type *type_, std::string identifier_, Expr *initializer_ = nullptr);
   void print() override;
+  void gen() override;
 };
 
 /**
@@ -790,6 +833,7 @@ public:
   static VarDef      *
   create(Type *type_, std::string identifier_, Expr *initializer_ = nullptr);
   void print() override;
+  void gen() override;
 };
 
 
