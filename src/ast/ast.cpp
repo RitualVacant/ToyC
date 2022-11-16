@@ -250,7 +250,7 @@ void Tree::trans_to_arrary_definition(ast::idx idx_initial_declarator)
   tree_body[idx_initial_declarator].value.struct_definition.idx_struct_type
     = idx_now_declaration_declarator;
 
-  // struct identifer
+  // struct identifier
   tree_body[idx_initial_declarator].value.struct_definition.idx_struct_name
     = tree_body[tree_body[tree_body[idx_initial_declarator]
                             .value.initial_declarator.idx_declarator]
