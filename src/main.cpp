@@ -115,8 +115,10 @@ void gflags_choose_mode_run()
       break;
     }
     case mode::llvm_ir: {
-      toy_c::build_llvm_ir ir;
-      ir.output_llvm_ir();
+      // toy_c::build_llvm_ir ir;
+      // ir.output_llvm_ir();
+      spt::Tree spt_tree;
+      spt_tree.generate_llvm_ir();
       break;
     }
     case mode::llvm_opt: {
@@ -179,8 +181,10 @@ void choose_mode_run()
         break;
       }
       case mode::llvm_ir: {
-        toy_c::build_llvm_ir ir;
-        ir.output_llvm_ir();
+        // toy_c::build_llvm_ir ir;
+        // ir.output_llvm_ir();
+        spt::Tree spt_tree;
+        spt_tree.generate_llvm_ir();
         break;
       }
       case mode::llvm_opt: {
