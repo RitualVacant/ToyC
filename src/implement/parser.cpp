@@ -21,10 +21,7 @@ parser::parser()
   }
 };
 
-parser::~parser(){
-  // delete scan;
-  // delete asm_file;
-};
+parser::~parser(){};
 
 
 // NEW
@@ -377,7 +374,7 @@ ast::idx parser::parser_direct_declarator()
   }
   else
   {
-    fmt::print("an unknow erorr at parser::parser_direct_declarator()");
+    fmt::print("an unknow error at parser::parser_direct_declarator()");
     exit(0);
   }
   return idx_root;
@@ -1020,7 +1017,7 @@ ast::idx parser::parser_assignment_expression(ast::idx last_assign)
 
   switch (scan.get_current_token())
   {
-    // left is a unary experssion
+    // left is a unary expression
     case token::assign:
     case token::plus_agn:
     case token::minus_agn:
