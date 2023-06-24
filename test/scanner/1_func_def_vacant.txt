@@ -1,0 +1,6 @@
+token: key_int                        string: int                            line:      1 column: 1
+token: identify                       string: main                           line:      1 column: 5
+token: l_par                          string: (                              line:      1 column: 9
+token: r_par                          string: )                              line:      1 column: 10
+token: l_big_par                      string: {                              line:      1 column: 12
+token: r_big_par                      string: }                              line:      1 column: 13

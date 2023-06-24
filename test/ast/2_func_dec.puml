@@ -1,0 +1,3 @@
+@startjson
+{"translationUnit":[{"declarationDeclarator":{"functionSpecifier":"empty","isSigned":true,"storageClassSpecifier":"empty","type":"DeclarationSpecifiers","typeQualifier":"empty","typeSpecifier":"int"},"initialDeclaratorList":{"list":[{"declarator":{"directDeclarator":{"argumentsList":{"type":"ArgumentsList"},"identifier":{"name":"main","type":"Identifier"},"type":"DirectDeclarator"},"type":"Declarator"},"type":"InitialDeclarator"}],"type":"InitialDeclaratorList"},"type":"DeclarationOrDefinition"}]}
+@endjson
