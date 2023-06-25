@@ -122,6 +122,36 @@ void Scanner::nextToken()
       break;
     }
 
+    case '.': {
+      m_inputFile.nextChar();
+      if (m_inputFile.getCurrentChar() == '.')
+      {
+        m_inputFile.nextChar();
+        if (m_inputFile.getCurrentChar() == '.')
+        {
+          m_inputFile.nextChar();
+          m_currentToken.type = token::TokenType::ellipsis;
+          m_currentToken.str  = "...";
+        }
+        else
+        {
+          fmt::print(
+            fg(fmt::color::red), "[ERROR] line: {}, column: {}, error: {}.\n",
+            m_currentToken.line, m_currentToken.column, "ellipsis error"
+          );
+          exit(1);
+        }
+        m_currentToken.type = token::TokenType::ellipsis;
+        m_currentToken.str  = "...";
+      }
+      else
+      {
+        m_currentToken.type = token::TokenType::dot;
+        m_currentToken.str  = ".";
+      }
+      break;
+    }
+
     case '+': {
       m_inputFile.nextChar();
       if (m_inputFile.getCurrentChar() == '=')

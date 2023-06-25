@@ -33,6 +33,8 @@ enum class TokenType : char
   mod,             // %
   dot,             // .
 
+  ellipsis,        // ...
+
   self_plus,       // ++
   self_minus,      // --
 
